@@ -2,28 +2,52 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <title>Let's Play Chess</title>
 </head>
 <body>
 
+<nav class="nav">
+    <ul class="nav-links">
+        <li class="nav-link">Link 1</li>
+        <li class="nav-link">Link 2</li>
+    </ul>
+</nav>
+
 <main class="container">
 
-    <div id="black-info" class="user-info">
-        <div class="username">Black's Username</div>
+    <div id="player2-info" class="user-info">
+        <div class="username">BennyJBentley</div>
         <div id="clock1" class="black-clock clock">2:00</div>
     </div>
 
     <div id="board"></div>
-    <div id="white-info" class="user-info">
-        <div class="username">White's Username</div>
+    <div id="player1-info" class="user-info">
+        <div class="username">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
     <div id="pgn" class="pgn">Waiting for the first move!</div>
-
 </main>
 
+<nav class="chat-nav">
+    <ul class="chat-links">
+        <li class="chat-link"><span class="fa fa-comments"></span></li>
+        <li class="chat-link"><span class="fa fa-sticky-note"></span></li>
+        <li class="chat-link"><span class="fa fa-chess-pawn"></span></li>
+    </ul>
+</nav>
+<section class="chat">
+
+    <p class="opponent_message">Hello there</p>
+    <p class="user-message">Yo</p>
+    <p class="opponent-message">Good luck!</p>
+    <p class="user-message">You too!</p>
+</section>
+
+<footer style="height: 300px;"></footer>
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
 <script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>

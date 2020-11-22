@@ -1,10 +1,12 @@
 // NOTE: this example uses the chess.js library:
 // https://github.com/jhlywa/chess.js
-var board = null;
-var game = new Chess();
-var whiteSquareGrey = '#a9a9a9';
-var blackSquareGrey = '#696969';
+let board = null;
+const game = new Chess();
+const whiteSquareGrey = '#a9a9a9';
+const blackSquareGrey = '#696969';
 const pgn = $('#pgn');
+let id = 1;
+
 let moveList = [];
 const evansGambit = [
     '[Event "Casual Game"]',
@@ -26,6 +28,8 @@ const evansGambit = [
     'Rg8 19.Rad1 Qxf3 20.Rxe7+ Nxe7 21.Qxd7+ Kxd7 22.Bf5+ Ke8',
     '23.Bd7+ Kf8'
 ]
+
+
 
 
 function removeGreySquares () {
@@ -99,7 +103,7 @@ function onSnapEnd () {
     pgn.html(moveList.join(' '));
     addPGNElement();
     console.log("sending data");
-    stompClient.send('/app/game/1', {}, JSON.stringify({'pgn': currFen}));
+    stompClient.send(`/app/game/${id}`, {}, JSON.stringify({'pgn': currFen}));
     console.log('data sent');
 }
 
@@ -114,6 +118,10 @@ function addPGNElement() {
     }
 }
 
+function sendData() {
+    stompClient.send('/app/game/1', {}, JSON.stringify({'pgn': game.fen()}));
+}
+
 const config = {
     draggable: true,
     position: 'start',
@@ -124,3 +132,29 @@ const config = {
     onSnapEnd: onSnapEnd
 }
 board = Chessboard('board', config);
+
+function determineSize () {
+
+    let htmlBoard = document.getElementsByClassName('board-b72b1')[0];
+    let oldWidth = htmlBoard.style.width.split('px')[0];
+
+    // + 4 because htmlBoard has a 2px border and content-box box-sizing
+    let newWidth = Number(oldWidth) + 4;
+
+    let info = document.getElementsByClassName('user-info');
+    for (let arg of info) {
+        arg.style.width = newWidth + 'px';
+    }
+
+    let pgn = document.getElementById('pgn');
+    pgn.style.width = newWidth + 'px';
+}
+
+function onWindowResize() {
+    console.log('window resizing');
+    board.resize();
+    determineSize();
+}
+
+determineSize();
+window.onresize = onWindowResize;
