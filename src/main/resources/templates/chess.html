@@ -29,23 +29,48 @@
         <div class="username">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
-    <div id="pgn" class="pgn">Waiting for the first move!</div>
-</main>
+    <ol id="pgn" class="pgn">Waiting for the first move!</ol>
 
-<nav class="chat-nav">
-    <ul class="chat-links">
-        <li class="chat-link"><span class="fa fa-comments"></span></li>
-        <li class="chat-link"><span class="fa fa-sticky-note"></span></li>
-        <li class="chat-link"><span class="fa fa-chess-pawn"></span></li>
+<nav class="logs-nav">
+    <ul class="log-links">
+        <li id="chat-link" class="widget-link selected" data-for="chat-log"><span class="fa fa-comments"></span></li>
+        <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
+        <li id="pgn-link" class="widget-link" data-for="pgn-log"><span class="fa fa-chess-pawn"></span></li>
     </ul>
 </nav>
-<section class="chat">
+<section class="logs">
+    <div id="chat-log" class="log active">
+        <ol id="chat-messages" class="log-window">
+            <li class="opponent-message">Hello there</li>
+            <li class="user-message">Yo</li>
+            <li class="opponent-message">Good luck!</li>
+            <li class="user-message">You too!</li>
+        </ol>
+        <div class="input-wrap">
+            <button id="chat-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
+            <input id="chat-input" type="text" class="input" placeholder="Be nice!">
+        </div>
+    </div>
+    <div id="notes-log" class="log">
+        <ol id="notes" class="log-window">
+            <li class="note">This is a note!</li>
+            <li class="note">This is a note!</li>
+            <li class="note">This is a note!</li>
+            <li class="note">This is a note!</li>
+        </ol>
+        <div class="input-wrap">
+        <button id="notes-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
+            <input id="notes-input" type="text" class="input" placeholder="Observations?">
+        </div>
+    </div>
+    <div id="pgn-log" class="log">
+        <ol id="pgn-long-form" class="log-window">
 
-    <p class="opponent_message">Hello there</p>
-    <p class="user-message">Yo</p>
-    <p class="opponent-message">Good luck!</p>
-    <p class="user-message">You too!</p>
+        </ol>
+    </div>
+
 </section>
+</main>
 
 <footer style="height: 300px;"></footer>
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
@@ -55,5 +80,6 @@
 <script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
 <script th:src="@{/js/websocket.js}"></script>
 <script th:src="@{/js/app_chess.js}"></script>
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>

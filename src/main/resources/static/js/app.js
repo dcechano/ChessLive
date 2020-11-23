@@ -1,44 +1,34 @@
-const connectBtn = document.getElementById('connect');
-const disconnectBtn = document.getElementById('disconnect');
-const input = document.getElementById('input');
-const sendBtn = document.getElementById('send');
-const output = document.getElementById('output');
-var stompClient = null;
-console.log('Connected!');
+console.log('connected to app.js');
 
-sendBtn.addEventListener('click', function () {
-    console.log("inside send event listener");
-    console.log(`The value being sent is ${input.value}`);
-    sendMessage(input.value);
-});
+let links = document.getElementsByClassName('widget-link');
+for (let link of links) {
+    link.addEventListener('click', () => {
+        console.log(this);
+        let currSelected = document.getElementsByClassName('selected')[0];
+        currSelected.classList.toggle('selected');
+        link.classList.toggle('selected');
 
-connectBtn.addEventListener('click', function () {
-    connect();
-});
-
-function connect() {
-    let socket = new SockJS('/chess-lite');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/get-move/1', function (greeting) {
-            showMessage(JSON.parse(greeting.body).pgn);
-        });
+        let dataSet = link.dataset.for;
+        let ref = document.getElementById(dataSet);
+        let currActive = document.getElementsByClassName('active')[0];
+        currActive.classList.toggle('active');
+        ref.classList.toggle('active');
     });
 }
 
-function sendMessage(msg) {
-    console.log(`Sending message ${msg}`);
-    stompClient.send('/app/game/1', {}, JSON.stringify({'pgn': msg}))
-    // stompClient.send("/app/game", {}, JSON.stringify({'pgn': 'hello world!'}))
-}
+let chatButton = document.getElementById('chat-button');
+chatButton.addEventListener('click', function () {
 
-function showMessage(msg) {
-    console.log(msg);
-    let tr = document.createElement('tr');
-    let td = document.createElement('td');
-    let txt = document.createTextNode(msg);
-    td.appendChild(txt);
-    tr.appendChild(td);
-    output.appendChild(tr);
-}
+    let input = document.getElementById('chat-input');
+    let chatLog = document.getElementById('chat-messages');
+    chatLog.innerHTML += `<li class="user-message">${input.value}</li>`;
+    input.value = null;
+});
+
+let noteButton = document.getElementById('notes-button');
+noteButton.addEventListener('click', function () {
+    let input = document.getElementById('notes-input');
+    let notesLog = document.getElementById('notes');
+    notesLog.innerHTML += `<li class="note">${input.value}</li> `
+    input.value = null;
+});
