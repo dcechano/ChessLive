@@ -116,6 +116,14 @@ function addPgnListeners() {
             board.position(pos);
         });
     }
+
+    let longform = $('#pgn-long-form').children();
+    for (let i = 0; i < longform.length; i++) {
+        longform[i].addEventListener('click', function () {
+            let pos = longform[i].dataset.fen;
+            board.position(pos);
+        });
+    }
 }
 
 function sendData() {

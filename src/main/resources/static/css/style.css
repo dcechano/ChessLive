@@ -6,6 +6,7 @@
     --backgroundColor: rgba(31, 31, 31, 0.94);
     --secondaryColor: rgba(64, 64, 64, 1);
     font-size: 30px;
+
 }
 
 
@@ -13,7 +14,6 @@ html, body {
     /*min-width: 100%;*/
     min-height: 100%;
     font-family: var(--roboto);
-    font-weight: 400;
 }
 
 body {
@@ -23,13 +23,14 @@ body {
 }
 
 .nav {
+    box-sizing: border-box;
     position: sticky;
     top: 0;
     height: fit-content;
     background-color: var(--secondaryColor);
     color: white;
     width: inherit;
-    padding: 10px 0;
+    padding: 30px 0;
     margin: 0 -10px 10px;
     z-index: 100;
 }
@@ -39,10 +40,86 @@ body {
     display: flex;
     justify-content: space-around;
     margin: 0;
+    padding-left: 0;
 }
 
 .nav-link {
     padding: 3px;
+}
+
+.profile-link {
+    color: lightskyblue;
+    text-decoration: none;
+    font-size: inherit;
+    letter-spacing: 1.5px;
+}
+
+.profile-link:hover {
+    color: #35be35;
+}
+
+.endgame{
+    cursor: pointer;
+}
+
+
+.end-buttons {
+    left: 0;
+    top: 0;
+    display: none;
+    flex-direction:row;
+    border-radius: 10px;
+    width: 100%;
+    height: 200px;
+    position: absolute;
+    background-color: rgba(64, 64, 64, 0.95);
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 1rem;
+}
+
+.end-buttons a {
+    box-sizing: border-box;
+    height: 75px;
+    width: 25%;
+    padding-top: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: inherit;
+    margin: 20px;
+}
+
+.resign {
+    border:5px solid crimson;
+    color: white;
+}
+
+.resign:hover{
+    background-color: crimson;
+}
+
+.draw {
+    border:5px solid lightskyblue;
+    color: white;
+}
+
+.draw:hover{
+    background-color: lightskyblue;
+}
+
+
+.window-close {
+    width: 20%;
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+.window-close:hover {
+    background-color: crimson;
+    color: white;
 }
 
 .container {
@@ -54,11 +131,7 @@ body {
 
 #board {
     width: inherit;
-    /*border: 3px solid blue;*/
-    /*align-self: start;*/
-    /*width: 400px;*/
-    /*justify-self: stretch;*/
-    /*padding: 0 5px;*/
+
 }
 
 .board-b72b1 {
@@ -79,19 +152,16 @@ body {
 
 .username {
     background: none;
-    color: white;
     padding: 5px 0;
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
     font-weight: 400;
     color: lightskyblue;
-
 }
 
 .user-info {
     display: flex;
     justify-content: space-between;
-    /*     background-color: rgba(37, 39, 55, 0.82); */
     padding: 0 10px;
     box-sizing: border-box;
     width: 100.5%;
@@ -120,6 +190,9 @@ body {
     box-sizing: border-box;
 }
 
+#pgn .fen-link{
+    display: inline;
+}
 
 
 .fen-link:hover {
@@ -129,14 +202,45 @@ body {
     cursor: pointer;
 }
 
+#pgn-long-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    grid-auto-rows: 50px;
+    height: 100%;
+}
+
 #pgn-long-form li {
-    display: inline-block;
-    width: 48.961%;
+    width: 100%;
+    border-bottom: 1px solid #676767;
+    border-left:1px solid #676767;
+    list-style: none;
+    padding-top: 5px;
+
 }
 
 
-#pgn-long-form li:nth-of-type(2n){
+#pgn-long-form li:nth-of-type(2n + 1) {
+    text-align: left;
+    grid-column: 1/2;
+    grid-row: auto;
+}
+
+
+#pgn-long-form li:nth-of-type(2n) {
     text-align: right;
+    grid-column: 2/3;
+    grid-row: auto;
+    border-right:1px solid #676767;
+}
+
+#pgn-long-form li:nth-of-type(1){
+    border-top: 1px solid #676767;
+}
+
+#pgn-long-form li:nth-of-type(2){
+    border-top:1px solid #676767;
+    padding-leftL: 1px;
 }
 
 #pgn-long-form li:hover{
@@ -152,8 +256,6 @@ body {
     display: flex;
     flex-direction: column;
     height: 350px;
-    /* overflow-y: auto; */
-    /* overflow-x: hidden; */
     margin: 0;
     box-sizing: border-box;
 }
@@ -162,7 +264,6 @@ body {
     background: none;
     margin: 0;
     margin-top: 20px;
-    margin-bottom: 0;
     padding: 0;
     width: inherit
 }
@@ -208,7 +309,7 @@ body {
 }
 
 .fa:hover {
-    color: inherit;
+    color: lightskyblue;
     background: none;
 }
 
@@ -289,23 +390,59 @@ body {
 }
 
 
+
 /*MEDIA QUERIES*/
 
-@media screen and (min-width: 560px) {
-    .container {
-        place-items: center;
+@media screen and (min-width: 500px) {
+    :root {
+        font-size: 1rem;
     }
 
-    #board {
-        /*width: 464px;*/
+    .nav{
+        padding: 10px 0;
     }
 
-    #black-info {
+    .end-buttons{
+        height: 100px;
     }
 
-    #white-info {
-
+    .end-buttons a {
+        height: 50px;
+        width: 25%;
+        padding-top: 10px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: inherit;
+        margin: 20px;
+        font-size: .9rem;
     }
+
+    .resign {
+        border:5px solid crimson;
+        color: white;
+    }
+
+    .draw {
+        border:5px solid lightskyblue;
+        color: white;
+    }
+
+
+    .widget-link{
+        height: 25px;
+    }
+
+    .logs{
+        height: 275px
+    }
+
+    .input-wrap{
+        height: 50px;
+    }
+    #pgn-long-form {
+        grid-auto-rows: 25px;
+    }
+
 }
 
 @media screen and (min-width: 760px) {

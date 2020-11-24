@@ -3,7 +3,6 @@ console.log('connected to app.js');
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
     link.addEventListener('click', () => {
-        console.log(this);
         let currSelected = document.getElementsByClassName('selected')[0];
         currSelected.classList.toggle('selected');
         link.classList.toggle('selected');
@@ -31,4 +30,17 @@ noteButton.addEventListener('click', function () {
     let notesLog = document.getElementById('notes');
     notesLog.innerHTML += `<li class="note">${input.value}</li> `
     input.value = null;
+});
+
+let endGame = document.getElementsByClassName('endgame')[0];
+endGame.addEventListener('click', function () {
+    let btns = document.getElementsByClassName('end-buttons')[0];
+    btns.style.display = 'flex';
+});
+
+let close = document.getElementsByClassName('window-close')[0];
+close.addEventListener('click', function(e){
+    e.stopPropagation();
+    let btns = document.getElementsByClassName('end-buttons')[0];
+    btns.style.display = 'none';
 });
