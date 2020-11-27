@@ -126,17 +126,17 @@ body {
     width: 97%;
     display: flex;
     flex-direction: column;
-    margin: 20px 1.5%;
+    margin: 20px auto;
 }
 
 #board {
     width: inherit;
-
+    margin:auto;
 }
 
 .board-b72b1 {
     width: inherit;
-    margin: 5px 0;
+    margin: 5px auto;
 }
 
 .clock {
@@ -166,6 +166,7 @@ body {
     box-sizing: border-box;
     width: 100.5%;
     border-radius: 3px;
+    margin: auto;
 }
 
 #player1-info {
@@ -180,13 +181,13 @@ body {
     display: block;
     padding: 5px 10px;
     border-radius: 2px;
-    margin: 10px 0;
+    margin: 10px auto;
     color: whitesmoke;
     background-color: var(--secondaryColor);
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    width: 100.5%;
+    width: 100%;
     box-sizing: border-box;
 }
 
@@ -219,7 +220,6 @@ body {
 
 }
 
-
 #pgn-long-form li:nth-of-type(2n + 1) {
     text-align: left;
     grid-column: 1/2;
@@ -240,7 +240,7 @@ body {
 
 #pgn-long-form li:nth-of-type(2){
     border-top:1px solid #676767;
-    padding-leftL: 1px;
+    padding-left: 1px;
 }
 
 #pgn-long-form li:hover{
@@ -256,13 +256,13 @@ body {
     display: flex;
     flex-direction: column;
     height: 350px;
-    margin: 0;
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
 .logs-nav {
     background: none;
-    margin: 0;
+    margin: 0 auto;
     margin-top: 20px;
     padding: 0;
     width: inherit
@@ -322,7 +322,7 @@ body {
     width: 100%;
     margin-top: 0;
     margin-bottom: 30px;
-    height: calc(100% - 100px);
+    height: calc(100% - 50px);
     overflow-wrap: break-word;
 }
 
@@ -361,6 +361,7 @@ body {
     bottom: 0;
     height: 100px;
     align-items: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .send-button {
@@ -427,6 +428,9 @@ body {
         color: white;
     }
 
+    #board {
+        width: 450px;
+    }
 
     .widget-link{
         height: 25px;
@@ -439,20 +443,47 @@ body {
     .input-wrap{
         height: 50px;
     }
+
     #pgn-long-form {
         grid-auto-rows: 25px;
     }
-
 }
 
-@media screen and (min-width: 760px) {
+@media screen and (min-width: 900px) {
+    .container {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        grid-template-columns: 3fr 2fr;
+    }
 
-}
+    #board {
+        grid-row: 2/4;
+        grid-column: 1/2;
+    }
 
-@media screen and (min-width: 1024px) {
+    .logs-nav {
+        grid-column: 2/3;
+        grid-row: 1/2;
+        width: 100%;
+    }
+    .logs{
+        height: 100%;
+        width: 100%;
+        grid-column: 2/3;
+        grid-row: 2/4;
+    }
 
-}
+    .pgn {
+        display: none;
+    }
 
-@media screen and (min-width: 1280px) {
+    #player1-info{
+        grid-column: 1/2;
+        grid-row: 4/5;
+    }
+
+    footer{
+        display: none;
+    }
 
 }
