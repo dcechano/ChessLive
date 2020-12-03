@@ -3,10 +3,7 @@ package com.example.chess.model;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +16,7 @@ public class Player extends AbstractEntity{
     private String username;
 
     @Transient
+//    @OneToMany(mappedBy = "white")
     private List<Game> gameList;
 
     @Column(name = "JOIN_DATE")
@@ -49,5 +47,14 @@ public class Player extends AbstractEntity{
 
     public void setJoinDate(LocalDate joinDate) {
         this.joinDate = joinDate;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Player{");
+        sb.append("username='").append(username).append('\'');
+        sb.append(", joinDate=").append(joinDate);
+        sb.append('}');
+        return sb.toString();
     }
 }

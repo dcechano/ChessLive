@@ -47,4 +47,14 @@ public class WaitingPlayer extends AbstractEntity {
     public void setTimeControl(TimeControl timeControl) {
         this.timeControl = timeControl;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("WaitingPlayer{");
+        sb.append("player=").append(player);
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", timeControl=").append(timeControl);
+        sb.append('}');
+        return sb.toString();
+    }
 }

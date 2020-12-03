@@ -10,9 +10,11 @@ import javax.persistence.*;
 public class Game extends AbstractEntity {
 
     @JoinColumn(name = "WHITE")
+    @OneToOne
     private Player white;
 
     @JoinColumn(name = "BLACK")
+    @OneToOne
     private Player black;
 
     @Column(name = "PGN")
@@ -44,6 +46,14 @@ public class Game extends AbstractEntity {
         this.black = black;
     }
 
+    public PGN getPgn() {
+        return pgn;
+    }
+
+    public void setPgn(PGN pgn) {
+        this.pgn = pgn;
+    }
+
     public String getResult() {
         return result;
     }
@@ -60,4 +70,15 @@ public class Game extends AbstractEntity {
         this.timeControl = timeControl;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Game{");
+        sb.append("white=").append(white);
+        sb.append(", black=").append(black);
+        sb.append(", pgn=").append(pgn);
+        sb.append(", result='").append(result).append('\'');
+        sb.append(", timeControl=").append(timeControl);
+        sb.append('}');
+        return sb.toString();
+    }
 }

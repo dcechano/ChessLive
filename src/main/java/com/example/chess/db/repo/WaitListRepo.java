@@ -1,4 +1,6 @@
 package com.example.chess.db.repo;
 
-public interface WaitListRepo {
+import com.example.chess.model.WaitingPlayer;
+
+public interface WaitListRepo extends H2AbstractRepo<WaitingPlayer> {
 }
