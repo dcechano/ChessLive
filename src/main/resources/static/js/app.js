@@ -44,3 +44,9 @@ close.addEventListener('click', function(e){
     let btns = document.getElementsByClassName('end-buttons')[0];
     btns.style.display = 'none';
 });
+
+let newGame = document.getElementById('newGame');
+newGame.addEventListener('click', function () {
+    console.log('Sending new Game request');
+    stompClient.send(`/app/challenge/${sessionId}`, {});
+});

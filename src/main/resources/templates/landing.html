@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+    <style>
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .time-control {
+            box-sizing: border-box;
+            width: 300px;
+            height: 100px;
+            padding: 20px;
+            background-color: var(--secondaryColor);
+            text-align: center;
+        }
+
+        .time-control:hover {
+            cursor: pointer;
+            border: 3px solid white;
+            border-radius: 10px;
+        }
+
+        .time-control a {
+            color: white;
+            text-decoration: none;
+        }
+
+    </style>
+    <title>ChessLive</title>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="time-control" th:each="control : ${T(com.example.chess.model.TimeControl).values()}">
+        <a  th:data-time="${control.toString()}"
+           th:text="${control.name}" th:href="@{/new_game(time_control=${control.name})}"></a>
+    </div>
+</div>
+
+<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+<script th:src="@{/js/landing.js}"></script>
+</body>
+</html>

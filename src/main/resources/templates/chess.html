@@ -13,7 +13,7 @@
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link"><a href="#" class="profile-link">SirRobin95</a></li>
-        <li class="nav-link">2 + 1 Bullet</li>
+        <li id="newGame" class="nav-link">New Game</li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
                 <a href="#" class="draw">Offer Draw</a>
@@ -34,6 +34,7 @@
     </div>
 
     <div id="board"></div>
+
     <div id="player1-info" class="user-info">
         <div class="username">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
@@ -80,7 +81,6 @@
 </section>
 </main>
 
-<footer style="height: 300px;"></footer>
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
 <script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>

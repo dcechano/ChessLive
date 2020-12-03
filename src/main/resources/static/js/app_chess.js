@@ -2,6 +2,7 @@
 // https://github.com/jhlywa/chess.js
 let board = null;
 const game = new Chess();
+let gameId = 1;
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
 const pgn = $('#pgn');
@@ -96,6 +97,7 @@ function onMouseoutSquare(square, piece) {
 function onSnapEnd() {
     board.position(game.fen());
     updatePgn();
+    sendData();
 }
 
 function updatePgn() {
@@ -127,7 +129,11 @@ function addPgnListeners() {
 }
 
 function sendData() {
-    stompClient.send('/app/game/1', {}, JSON.stringify({'pgn': game.fen()}));
+    stompClient.send(`/app/game/${gameId}`, {}, JSON.stringify({'pgn': game.fen()}));
+}
+
+function getGame() {
+    stompClient.send('/app/game/new_game', {});
 }
 
 const config = {
