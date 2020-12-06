@@ -1,4 +1,4 @@
-package com.example.chess.model;
+package com.example.chess.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
     @Id
     @Column(name = "ID")

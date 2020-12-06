@@ -1,6 +1,6 @@
 package com.example.chess.model;
 
-import com.example.chess.websocket.PGN;
+import com.example.chess.model.entity.Game;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;

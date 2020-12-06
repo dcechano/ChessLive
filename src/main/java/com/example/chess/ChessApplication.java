@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -24,58 +25,85 @@ public class ChessApplication {
         SpringApplication.run(ChessApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner run(H2PlayerRepo playerRepo, WaitListRepo waitListRepo, H2GameRepo gameRepo) throws Exception {
-
-        return (String[] args) -> {
-            Player player1 = new Player();
-            UUID uuid = UUID.randomUUID();
-            logger.info("UUID length is: " + uuid.toString().length());
-
-            player1.setId(uuid);
-            player1.setUsername("Dylan");
-            player1.setJoinDate(LocalDate.now());
-            playerRepo.save(player1);
-
-            Optional<Player> player = playerRepo.findById(player1.getId());
-            assert (player.isPresent());
-            assert (player.get().getUsername().equals("Dylan"));
-            logger.info("Printing Player1");
-            logger.info(player1.toString());
-
-            WaitingPlayer waitingPlayer = new WaitingPlayer();
-            waitingPlayer.setId(UUID.randomUUID());
-            waitingPlayer.setPlayer(player1);
-            waitListRepo.save(waitingPlayer);
-
-            Optional<WaitingPlayer> waitingPlayer1 = waitListRepo.findById(waitingPlayer.getId());
-            assert (waitingPlayer1.isPresent());
-            assert (waitingPlayer1.get().getPlayer().getUsername().equals(player1.getUsername()));
-            logger.info("Printing the WaitingPlayer object");
-            logger.info(waitingPlayer1.toString());
-
-            Player player2 = new Player();
-            UUID uuid2 = UUID.randomUUID();
-            player2.setId(uuid2);
-            logger.info("UUID length is: " + uuid2.toString().length());
-
-            player2.setUsername("Donovan");
-            player2.setJoinDate(LocalDate.now());
-            playerRepo.save(player2);
-            logger.info("Printing the player 2 object");
-            logger.info(player2.toString());
-
-            Game game = GameFactory.createGame(player1, player2);
-            game.setPgn(new PGN());
-            game.setTimeControl(TimeControl.TWO_PLUS_1);
-            gameRepo.save(game);
-
-            Optional<Game> game1 = gameRepo.findById(game.getId());
-            assert (game1.isPresent());
-            logger.info("Printing the game object");
-            logger.info(game1.toString());
-
-        };
-    }
+//    @Bean
+//    public CommandLineRunner run(H2PlayerRepo playerRepo, WaitListRepo waitListRepo, H2GameRepo gameRepo) throws Exception {
+//
+//        return (String[] args) -> {
+//            Player dylan = new Player();
+//            UUID uuid = UUID.randomUUID();
+//
+//            dylan.setId(uuid);
+//            dylan.setUsername("Dylan");
+//            dylan.setJoinDate(LocalDate.now());
+//            playerRepo.save(dylan);
+//
+//            Optional<Player> dylanOp = playerRepo.findById(dylan.getId());
+//            assert (dylanOp.isPresent());
+//            assert (dylanOp.get().getUsername().equals("Dylan"));
+//            logger.info("Printing Player1");
+//            logger.info(dylanOp.get().toString());
+//
+//            WaitingPlayer waitingDylan = new WaitingPlayer();
+//            waitingDylan.setId(UUID.randomUUID());
+//            waitingDylan.setPlayer(dylan);
+//            waitingDylan.setTimeControl(TimeControl.TWO_PLUS_1);
+//            waitListRepo.save(waitingDylan);
+//
+//            Optional<WaitingPlayer> waitingPlayer1 = waitListRepo.findById(waitingDylan.getId());
+//            assert (waitingPlayer1.isPresent());
+//            assert (waitingPlayer1.get().getPlayer().getUsername().equals(dylan.getUsername()));
+//            logger.info("Printing the WaitingPlayer object");
+//            logger.info(waitingPlayer1.toString());
+//
+//            Player donovan = new Player();
+//            donovan.setId(UUID.randomUUID());
+//
+//
+//            donovan.setUsername("Donovan");
+//            donovan.setJoinDate(LocalDate.now());
+//            playerRepo.save(donovan);
+//            logger.info("Printing Donovan");
+//            logger.info(donovan.toString());
+//            waitListRepo.addPlayerToWaitList(donovan, TimeControl.TWO_PLUS_1);
+//
+//
+//            Player veronica = new Player();
+//            veronica.setUsername("veronica");
+//            veronica.setId(UUID.randomUUID());
+//            playerRepo.save(veronica);
+//            waitListRepo.addPlayerToWaitList(veronica, TimeControl.TWO_PLUS_1);
+//
+//            Game game = GameFactory.createGame(dylan, donovan);
+//            game.setPgn(new PGN());
+//            game.setTimeControl(TimeControl.TWO_PLUS_1);
+//            gameRepo.save(game);
+//
+//            Optional<Game> game1 = gameRepo.findById(game.getId());
+//            assert (game1.isPresent());
+//            logger.info("Printing the game object");
+//            logger.info(game1.toString());
+//
+//            logger.info("Testing the new Waiting player repo methods");
+//            logger.info("Getting all waiting players");
+//            Player newPlayer = new Player();
+//            newPlayer.setUsername("TestPlayer");
+//            newPlayer.setId(UUID.randomUUID());
+//            playerRepo.save(newPlayer);
+//            UUID exclusionId = waitListRepo.addPlayerToWaitList(newPlayer, TimeControl.TWO_PLUS_1);
+//            List<WaitingPlayer> waitingPlayers = waitListRepo.getWaitingPlayersByTimeControl(TimeControl.TWO_PLUS_1);
+//            logger.info("Printing off the currently waiting players");
+//            waitingPlayers.forEach((obj) -> logger.info(obj.toString()));
+//
+//            logger.info("Now grabbing a waiting players that is not 'TestPlayer'");
+//            logger.info("Will print several tries");
+//
+//            for (int i = 0; i < 10; i++) {
+//                Player player3 = waitListRepo.getPlayerByTimeControl(TimeControl.TWO_PLUS_1, exclusionId);
+//                assert (player3 != null);
+//                assert (!player3.getUsername().equals(newPlayer.getUsername()));
+//                logger.info(player3.toString());
+//            }
+//        };
+//    }
 
 }

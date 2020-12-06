@@ -1,14 +1,12 @@
 package com.example.chess.websocket.controller;
 
-import com.example.chess.model.Game;
-import com.example.chess.model.GameFactory;
+import com.example.chess.model.entity.Game;
+import com.example.chess.model.entity.GameFactory;
 import com.example.chess.model.GlobalManager;
 import com.example.chess.websocket.PGN;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -64,6 +62,6 @@ public class WebSocketController {
     @MessageMapping("/register")
     public void register(String sessionId) {
         logger.info("registration endpoint hit");
-        globalManager.addSession(sessionId);
+//        globalManager.addSession(sessionId);
     }
 }

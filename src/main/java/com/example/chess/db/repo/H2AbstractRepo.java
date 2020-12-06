@@ -1,10 +1,9 @@
 package com.example.chess.db.repo;
 
-import com.example.chess.model.AbstractEntity;
+import com.example.chess.model.entity.AbstractEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface H2AbstractRepo<T extends AbstractEntity> {
 

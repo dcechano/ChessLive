@@ -1,12 +1,8 @@
-package com.example.chess.model;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Component;
+package com.example.chess.model.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "PLAYER")
