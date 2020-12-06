@@ -1,4 +1,4 @@
-package com.example.chess.model;
+package com.example.chess.model.entity;
 
 import org.springframework.format.annotation.DateTimeFormat;
 

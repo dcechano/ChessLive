@@ -1,5 +1,12 @@
 package com.example.chess.model;
 
+import com.example.chess.db.repo.GameRepo;
+import com.example.chess.db.repo.PairedPlayersRepo;
+import com.example.chess.db.repo.PlayerRepo;
+import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.model.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -8,95 +15,97 @@ import java.util.logging.Logger;
 @Component
 public class GlobalManager {
 
-    private final Set<String> activeSessions;
+    private final Map<String, Player> activeSessions;
 
-    private final Set<String> waiting;
-
-    private final Set<String> twoP1;
-
-    private final Set<String> fiveP0;
-
-    private final Set<String> fiveP5;
-
-    private final Set<String> tenP10;
-
-    private final Map<String, Game> activeGames;
     private final ClientNotifier clientNotifier;
 
     private final Logger logger;
 
+    private PlayerRepo playerRepo;
+
+    private WaitListRepo waitListRepo;
+
+    private PairedPlayersRepo pairedPlayersRepo;
+
+    private GameRepo gameRepo;
+
 
     public GlobalManager(ClientNotifier clientNotifier) {
+
         this.clientNotifier = clientNotifier;
-        twoP1 = Collections.synchronizedSet(new HashSet<>());
-        fiveP0 = Collections.synchronizedSet(new HashSet<>());
-        fiveP5 = Collections.synchronizedSet(new HashSet<>());
-        tenP10 = Collections.synchronizedSet(new HashSet<>());
-
-        activeSessions = Collections.synchronizedSet(new HashSet<>());
-        waiting = Collections.synchronizedSet(new HashSet<>());
-        activeGames = Collections.synchronizedMap(new HashMap<>());
+        activeSessions = Collections.synchronizedMap(new HashMap<>());
         this.logger = Logger.getLogger(getClass().toString());
-
     }
 
     //    TODO clean up the if else logic... checking if the set contains the session
     //    May be unnecessary
-    private Game awaitChallenge(Set<String> set, String sessionId) {
-        logger.info("inside awaitChallenge");
-        if (set.size() < 1) {
-            logger.info("adding session Id to waiting list");
-            set.add(sessionId);
-            while (true) {
-                if (activeGames.containsKey(sessionId)) {
-                    return activeGames.get(sessionId);
+    private Game awaitChallenge(Player player, TimeControl timeControl) {
+
+        WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
+        if (matchedPlayer == null) {
+            UUID waitId = waitListRepo.addPlayerToWaitList(player, timeControl);
+
+            if (pairedPlayersRepo.isPaired(player)) {
+                waitListRepo.deleteById(waitId);
+                return null;
+
+            } else {
+                while (matchedPlayer == null) {
+                    if (pairedPlayersRepo.isPaired(player)) {
+                        return null;
+                    }
+                    matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
                 }
+                waitListRepo.delete(matchedPlayer);
             }
-
-        } else if (!set.contains(sessionId)) {
-            logger.info("There was a player to match with!");
-            Player player1 = new Player();
-            player1.setUsername(sessionId);
-
-            String sessionId2 = set.iterator().next();
-            set.remove(sessionId2);
-
-            Player player2 = new Player();
-            player2.setUsername(sessionId2);
-
-            Game game = GameFactory.createGame(player1, player2);
-            activeGames.put(sessionId, game);
-            activeGames.put(sessionId2, game);
-            return game;
+        } else {
+            waitListRepo.delete(matchedPlayer);
+            return pair(player, matchedPlayer.getPlayer());
         }
-        //            TODO def dont leave this in the production code
-        throw new RuntimeException("There was a random exception while pairing");
+
+        return pair(player, matchedPlayer.getPlayer());
+    }
+
+    private Game pair(Player player1, Player player2) {
+        pairedPlayersRepo.setPairedPlayers(player1, player2);
+        Game game = GameFactory.createGame(player1, player2);
+        gameRepo.save(game);
+        return game;
     }
 
     public Game createChallenge(String timeControl, String sessionId) {
         TimeControl time = TimeControl.valueOf(timeControl);
-        Set<String> set = matchSet(time);
-        return awaitChallenge(set, sessionId);
+        Player player = new Player();
+        player.setId(UUID.randomUUID());
+        player.setUsername(String.valueOf(Math.random()));
+
+        activeSessions.put(sessionId, player);
+        playerRepo.save(player);
+        return awaitChallenge(player, time);
     }
 
-    private Set<String> matchSet(TimeControl timeControl) {
-        switch (timeControl) {
-            case TWO_PLUS_1:
-                return twoP1;
-            case FIVE_PLUS_0:
-                return fiveP0;
-            case FIVE_PLUS_5:
-                return fiveP5;
-            default:
-                return tenP10;
-        }
+    public Player getActivePlayer(String sessionId) {
+        return activeSessions.get(sessionId);
     }
 
-    public boolean addSession(String sessionId) {
-        return activeSessions.add(sessionId);
+    @Autowired
+    @Qualifier("H2PlayerRepo")
+    public void setPlayerRepo(PlayerRepo playerRepo) {
+        this.playerRepo = playerRepo;
     }
 
-    public boolean removeSession(String sessionId) {
-        return activeSessions.remove(sessionId);
+    @Autowired
+    public void setWaitListRepo(WaitListRepo waitListRepo) {
+        this.waitListRepo = waitListRepo;
+    }
+
+    @Autowired
+    public void setPairedPlayersRepo(PairedPlayersRepo pairedPlayersRepo) {
+        this.pairedPlayersRepo = pairedPlayersRepo;
+    }
+
+    @Autowired
+    public void setGameRepo(GameRepo gameRepo) {
+        this.gameRepo = gameRepo;
     }
 }

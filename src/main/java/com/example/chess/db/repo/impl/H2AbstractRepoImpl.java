@@ -1,8 +1,7 @@
 package com.example.chess.db.repo.impl;
 
 import com.example.chess.db.repo.H2AbstractRepo;
-import com.example.chess.model.AbstractEntity;
-import org.springframework.stereotype.Repository;
+import com.example.chess.model.entity.AbstractEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

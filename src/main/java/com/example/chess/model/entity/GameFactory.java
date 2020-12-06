@@ -1,4 +1,4 @@
-package com.example.chess.model;
+package com.example.chess.model.entity;
 
 import java.util.UUID;
 
