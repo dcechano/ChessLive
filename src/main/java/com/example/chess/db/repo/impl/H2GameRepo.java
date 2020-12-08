@@ -5,8 +5,10 @@ import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.logging.Logger;
 
 @Repository
 @Transactional
@@ -22,7 +24,14 @@ public class H2GameRepo extends H2AbstractRepoImpl<Game> implements GameRepo {
         TypedQuery<Game> query = this.entityManager.createQuery(
                 "SELECT g FROM Game g WHERE g.black =: player OR g.white =: player", Game.class);
         query.setParameter("player", player);
-        return query.getSingleResult();
+
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            Logger logger = Logger.getLogger(getClass().toString());
+            logger.warning("FindGame failed! Player Id is: " + player.getId());
+            throw e;
+        }
     }
 
 }

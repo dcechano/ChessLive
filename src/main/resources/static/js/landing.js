@@ -18,11 +18,11 @@ function newGame(time_control) {
     stompClient.send(`/app/new_game/${time_control}/${sessionId}`, {});
 }
 
-let links = document.getElementsByTagName('a');
+let links = document.getElementsByClassName('time-control');
 
 for (let i = 0; i < links.length; i++) {
     links[i].addEventListener('click', function () {
         let time = links[i].dataset.time;
-        newGame(time);
+        // newGame(time);
     });
 }

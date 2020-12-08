@@ -29,14 +29,17 @@
 <main class="container">
 
     <div id="player2-info" class="user-info">
-        <div class="username">BennyJBentley</div>
+        <div class="username"
+             th:text="${game.white.username eq user.username ? game.black.username : game.white.username}">
+        </div>
+
         <div id="clock1" class="black-clock clock">2:00</div>
     </div>
 
     <div id="board"></div>
 
     <div id="player1-info" class="user-info">
-        <div class="username">SirRobin95</div>
+        <div class="username" th:text="${user.username}">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
     <ol id="pgn" class="pgn">Waiting for the first move!</ol>

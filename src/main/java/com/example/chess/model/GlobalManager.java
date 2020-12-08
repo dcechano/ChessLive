@@ -73,11 +73,8 @@ public class GlobalManager {
         return game;
     }
 
-    public Game createChallenge(String timeControl, String sessionId) {
+    public Game createChallenge(String timeControl, String sessionId, Player player) {
         TimeControl time = TimeControl.valueOf(timeControl);
-        Player player = new Player();
-        player.setId(UUID.randomUUID());
-        player.setUsername(String.valueOf(Math.random()));
 
         activeSessions.put(sessionId, player);
         playerRepo.save(player);

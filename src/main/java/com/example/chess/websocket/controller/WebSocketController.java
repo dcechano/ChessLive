@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 
 @Controller
-@CrossOrigin
+@CrossOrigin // TODO remove?
 public class WebSocketController {
 
     private final Logger logger;
@@ -39,14 +39,6 @@ public class WebSocketController {
     public Game sendGame() {
         logger.info("Creating Game and sending to client");
         return GameFactory.createGame();
-    }
-
-    @MessageMapping("/challenge/{sessionId}")
-    public void challenge(@DestinationVariable String sessionId) {
-        logger.info("Challenge endpoint hit");
-
-//        TODO remove this please
-        globalManager.createChallenge(null, sessionId);
     }
 
     @MessageMapping("/new_game/{timeControl}/{sessionId}")
