@@ -11,7 +11,7 @@ public abstract class AbstractEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
-    private UUID id;
+    protected UUID id;
 
     public UUID getId() {
         return id;

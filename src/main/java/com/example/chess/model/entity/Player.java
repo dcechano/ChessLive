@@ -47,10 +47,11 @@ public class Player extends AbstractEntity{
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Player{");
-        sb.append("username='").append(username).append('\'');
-        sb.append(", joinDate=").append(joinDate);
-        sb.append('}');
-        return sb.toString();
+        return "Player{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", gameList=" + gameList +
+                ", joinDate=" + joinDate +
+                "} " + super.toString();
     }
 }

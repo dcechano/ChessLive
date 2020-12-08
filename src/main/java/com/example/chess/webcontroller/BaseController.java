@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Controller
 public class BaseController {
 
+//    TODO remove unnecessary fields
     Logger logger = Logger.getLogger(getClass().toString());
 
     @Autowired
@@ -25,38 +28,51 @@ public class BaseController {
 
     private final GlobalManager globalManager;
 
-    private GameRepo gameRepo;
+    private final GameRepo gameRepo;
 
     public BaseController(GlobalManager globalManager, GameRepo gameRepo) {
+        logger.info("creating BaseController. Hash is: " + this.hashCode());
         this.globalManager = globalManager;
         this.gameRepo = gameRepo;
     }
 
+
     @GetMapping
-    public String chess() {
-        return "chess";
+    public String landing(HttpSession session) {
+        logger.info("Creating player! Session ID is: " + session.getId());
+        Player player = new Player();
+        player.setId(UUID.randomUUID());
+        logger.info("UUID is: " + player.getId().toString());
+        player.setUsername(session.getId());
+        session.setAttribute("user", player);
+
+        return "landing";
     }
 
     @GetMapping("/{gameId}")
-    public String game(Model model, @SessionAttribute("currentGame") Game game) {
+    public String game(Model model, @SessionAttribute("currentGame") Game game, @SessionAttribute("user") Player player) {
+        model.addAttribute("user", player);
         model.addAttribute("game", game);
         return "chess";
-    }
-
-    @GetMapping("/landing")
-    public String landing() {
-        return "landing";
     }
 
     @GetMapping("/new_game")
     public String newGame(@RequestParam("time_control") String timeControl, HttpSession httpSession) {
 
         String sessionId = httpSession.getId();
-        Game game = globalManager.createChallenge(timeControl, sessionId);
+
+        Player player = (Player) httpSession.getAttribute("user");
+        Game game = globalManager.createChallenge(timeControl, sessionId, player);
         if (game == null) {
-            Player player = globalManager.getActivePlayer(sessionId);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             game = gameRepo.getGameByPlayer(player);
         }
+
+
         String gameId = game.getId().toString();
         httpSession.setAttribute("currentGame", game);
 
@@ -66,6 +82,17 @@ public class BaseController {
     @GetMapping("/websocket")
     public String socket() {
         return "websocket";
+    }
+
+    public void debug(Game game) {
+        if (game != null) {
+            logger.warning("Printing the game object: " + game);
+        }
+
+        logger.warning("Printing off all game objects");
+        List<Game> games = gameRepo.findAll();
+        games.forEach(g -> logger.warning(g.toString()));
+
     }
 
 }

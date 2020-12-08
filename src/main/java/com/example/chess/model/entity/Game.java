@@ -72,13 +72,13 @@ public class Game extends AbstractEntity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Game{");
-        sb.append("white=").append(white);
-        sb.append(", black=").append(black);
-        sb.append(", pgn=").append(pgn);
-        sb.append(", result='").append(result).append('\'');
-        sb.append(", timeControl=").append(timeControl);
-        sb.append('}');
-        return sb.toString();
+        return "Game{" +
+                "id=" + id +
+                ", white=" + white +
+                ", black=" + black +
+                ", pgn=" + pgn +
+                ", result='" + result + '\'' +
+                ", timeControl=" + timeControl +
+                "} " + super.toString();
     }
 }
