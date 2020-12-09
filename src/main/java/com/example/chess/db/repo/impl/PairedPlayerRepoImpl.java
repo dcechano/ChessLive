@@ -5,13 +5,9 @@ import com.example.chess.model.entity.PairedPlayer;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional

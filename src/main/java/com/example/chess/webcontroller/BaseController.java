@@ -1,8 +1,8 @@
 package com.example.chess.webcontroller;
 
 import com.example.chess.db.repo.GameRepo;
-import com.example.chess.model.entity.Game;
 import com.example.chess.model.GlobalManager;
+import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -83,16 +82,4 @@ public class BaseController {
     public String socket() {
         return "websocket";
     }
-
-    public void debug(Game game) {
-        if (game != null) {
-            logger.warning("Printing the game object: " + game);
-        }
-
-        logger.warning("Printing off all game objects");
-        List<Game> games = gameRepo.findAll();
-        games.forEach(g -> logger.warning(g.toString()));
-
-    }
-
 }
