@@ -1,6 +1,9 @@
 package com.example.chess.model.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "PAIRED_PLAYERS")

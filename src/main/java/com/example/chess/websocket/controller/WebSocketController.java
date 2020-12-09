@@ -1,8 +1,8 @@
 package com.example.chess.websocket.controller;
 
+import com.example.chess.model.GlobalManager;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.GameFactory;
-import com.example.chess.model.GlobalManager;
 import com.example.chess.websocket.PGN;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
