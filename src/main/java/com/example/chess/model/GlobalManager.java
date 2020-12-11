@@ -32,17 +32,21 @@ public class GlobalManager {
 
     private GameRepo gameRepo;
 
-
     public GlobalManager(ClientNotifier clientNotifier) {
-
+        activeSessions = new HashMap<>();
+        logger = Logger.getLogger(getClass().toString());
         this.clientNotifier = clientNotifier;
-        activeSessions = Collections.synchronizedMap(new HashMap<>());
-        this.logger = Logger.getLogger(getClass().toString());
     }
+
 
     //    TODO clean up the if else logic... checking if the set contains the session
     //    May be unnecessary
     private Game awaitChallenge(Player player, TimeControl timeControl) {
+
+//        TODO remove when not necessary anymore
+        if (waitListRepo == null || pairedPlayersRepo == null || playerRepo == null || gameRepo == null) {
+            throw new RuntimeException("Stuff was null");
+        }
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
         if (matchedPlayer == null) {
@@ -89,7 +93,6 @@ public class GlobalManager {
     }
 
     @Autowired
-    @Qualifier("H2PlayerRepo")
     public void setPlayerRepo(PlayerRepo playerRepo) {
         this.playerRepo = playerRepo;
     }

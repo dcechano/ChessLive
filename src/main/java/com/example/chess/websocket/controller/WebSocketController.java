@@ -56,4 +56,14 @@ public class WebSocketController {
         logger.info("registration endpoint hit");
 //        globalManager.addSession(sessionId);
     }
+
+    @MessageMapping("/chess-lite")
+    @SendTo("/secured/history")
+    public Game send() {
+        logger.info("secured endpoint hit!");
+
+        Game game = GameFactory.createGame();
+        game.setPgn(new PGN("This was sent via the secured endpoint"));
+        return game;
+    }
 }

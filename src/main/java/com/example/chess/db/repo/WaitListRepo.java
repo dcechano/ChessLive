@@ -7,15 +7,11 @@ import com.example.chess.model.entity.WaitingPlayer;
 import java.util.List;
 import java.util.UUID;
 
-public interface WaitListRepo extends H2AbstractRepo<WaitingPlayer> {
+public interface WaitListRepo extends AbstractRepo<WaitingPlayer> {
     UUID addPlayerToWaitList(Player player, TimeControl timeControl);
 
     WaitingPlayer getWaitingPlayerByTimeControl(TimeControl timeControl, UUID exclusionId);
 
     List<WaitingPlayer> getWaitingPlayersByTimeControl(TimeControl timeControl);
-
-    void setPairedPlayer(Player player1, Player player2);
-
-    boolean isPaired(Player player);
 
 }

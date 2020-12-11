@@ -5,7 +5,7 @@ import com.example.chess.model.entity.AbstractEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface H2AbstractRepo<T extends AbstractEntity> {
+public interface AbstractRepo<T extends AbstractEntity> {
 
     void save(T entity);
 

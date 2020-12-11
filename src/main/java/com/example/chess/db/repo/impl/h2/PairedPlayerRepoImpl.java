@@ -1,4 +1,4 @@
-package com.example.chess.db.repo.impl;
+package com.example.chess.db.repo.impl.h2;
 
 import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.model.entity.PairedPlayer;

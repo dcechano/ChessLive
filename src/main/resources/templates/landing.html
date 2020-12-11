@@ -7,6 +7,7 @@
     <title>ChessLive</title>
 </head>
 <body>
+<button id="test_button">Click button</button>
 
 <div class="wrapper">
     <div class="time-control" th:each="control : ${T(com.example.chess.model.entity.TimeControl).values()}">
@@ -14,5 +15,9 @@
     </div>
 </div>
 
+
+<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+<script th:src="@{/js/landing.js}"></script>
 </body>
 </html>
