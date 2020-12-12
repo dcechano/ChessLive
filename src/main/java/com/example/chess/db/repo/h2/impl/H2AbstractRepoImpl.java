@@ -1,6 +1,6 @@
-package com.example.chess.db.repo.impl;
+package com.example.chess.db.repo.h2.impl;
 
-import com.example.chess.db.repo.H2AbstractRepo;
+import com.example.chess.db.repo.AbstractRepo;
 import com.example.chess.model.entity.AbstractEntity;
 
 import javax.persistence.EntityManager;
@@ -8,10 +8,13 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Transactional
-public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements H2AbstractRepo<T> {
+public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements AbstractRepo<T> {
 
+//    TODO remove this and logging statements
+    Logger logger = Logger.getLogger(getClass().toString());
     private final Class<T> clazz;
 
     protected EntityManager entityManager;
@@ -22,7 +25,15 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements H2
 
     @Override
     public void save(T entity) {
+        logger.info("Persisting entity: " + entity.toString());
         entityManager.persist(entity);
+        logger.info("Attempting to retrieve the entity for verification");
+        var result = this.findById(entity.getId());
+        if (result == null) {
+            throw new RuntimeException("Entity failed to be retrieved after saving");
+        } else {
+            logger.info("Entity successfully retrieved: " + entity.toString());
+        }
     }
 
     @Override
@@ -30,8 +41,7 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements H2
         if (entityManager.contains(entity)) {
             entityManager.remove(entity);
         } else {
-            var newEntity = entityManager.merge(entity);
-            entityManager.remove(newEntity);
+            entityManager.remove(entityManager.merge(entity));
         }
     }
 
@@ -48,18 +58,17 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements H2
 
     @Override
     public Optional<T> findById(Object id) {
-        var entity = entityManager.find(clazz, id);
-        return Optional.ofNullable(entity);
+        return Optional.ofNullable(entityManager.find(clazz, id));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findAll() {
         return (List<T>) entityManager.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e").getResultList();
     }
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "H2PersistenceUnit")
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 }

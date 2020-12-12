@@ -1,6 +1,6 @@
 package com.example.chess.webcontroller;
 
-import com.example.chess.db.repo.GameRepo;
+import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.model.GlobalManager;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
@@ -30,7 +30,6 @@ public class BaseController {
     private final GameRepo gameRepo;
 
     public BaseController(GlobalManager globalManager, GameRepo gameRepo) {
-        logger.info("creating BaseController. Hash is: " + this.hashCode());
         this.globalManager = globalManager;
         this.gameRepo = gameRepo;
     }
@@ -48,7 +47,7 @@ public class BaseController {
         return "landing";
     }
 
-    @GetMapping("/{gameId}")
+    @GetMapping("/game/{gameId}")
     public String game(Model model, @SessionAttribute("currentGame") Game game, @SessionAttribute("user") Player player) {
         model.addAttribute("user", player);
         model.addAttribute("game", game);
@@ -75,7 +74,12 @@ public class BaseController {
         String gameId = game.getId().toString();
         httpSession.setAttribute("currentGame", game);
 
-        return "redirect:/" + gameId;
+        return "redirect:/game/" + gameId;
+    }
+
+    @GetMapping("/analysis")
+    public String analysis() {
+        return "analysis";
     }
 
     @GetMapping("/websocket")

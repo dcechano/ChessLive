@@ -1,10 +1,11 @@
 package com.example.chess.db.config;
 
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -14,33 +15,53 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(value = "com.example.chess.db.repo.impl.mysql")
-public class H2Config{
+@ComponentScan("com.example.chess.db.repo")
+public class MySqlConfig {
 
-    @Bean("h2DataSource")
+    @Primary
+    @Bean
     public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder
-                .setType(EmbeddedDatabaseType.H2)
-                .generateUniqueName(true)
-                .addScript("classpath:sql_scripts/create_dbs.sql")
-                .build();
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        try {
+            dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
+        } catch (PropertyVetoException e) {
+            Logger logger = Logger.getLogger(getClass().toString());
+            logger.warning("PropertyVetoException throw assigning the database driver");
+            e.printStackTrace();
+        }
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/chesslive");
+        dataSource.setUser("springstudent");
+        dataSource.setPassword("springstudent");
+        dataSource.setInitialPoolSize(5);
+        dataSource.setMinPoolSize(5);
+        dataSource.setMaxPoolSize(20);
+        dataSource.setMaxIdleTime(3000);
+        return dataSource;
     }
 
-    @Bean("h2TransactionManager")
+    @Primary
+    @Bean
     public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager(h2EntityManagerFactory());
+        return new JpaTransactionManager(entityManagerFactory());
     }
 
+    @Primary
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
+    }
 
-    @Bean("h2HibernateProperties")
+    @Primary
+    @Bean
     public Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         properties.put("hibernate.format_sql", true);
         properties.put("hibernate.show_sql", false);
         properties.put("hibernate.max_fetch_depth", 3);
@@ -50,20 +71,16 @@ public class H2Config{
         return properties;
     }
 
-    @Bean("H2PersistenceUnit")
-    public EntityManagerFactory h2EntityManagerFactory() {
+    @Primary
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setPackagesToScan("com.example.chess.model.entity");
         factoryBean.setDataSource(dataSource());
-        factoryBean.setJpaVendorAdapter(jpaVendorAdaptor());
+        factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
         factoryBean.setJpaProperties(hibernateProperties());
         factoryBean.afterPropertiesSet();
 
         return factoryBean.getNativeEntityManagerFactory();
-    }
-
-    @Bean("h2JpaVendorAdapter")
-    public JpaVendorAdapter jpaVendorAdaptor() {
-        return new HibernateJpaVendorAdapter();
     }
 }

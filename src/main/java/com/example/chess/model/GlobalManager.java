@@ -1,15 +1,14 @@
 package com.example.chess.model;
 
-import com.example.chess.db.repo.GameRepo;
-import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.db.repo.PlayerRepo;
-import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.db.repo.h2.GameRepo;
+import com.example.chess.db.repo.h2.PairedPlayersRepo;
+import com.example.chess.db.repo.h2.WaitListRepo;
 import com.example.chess.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,17 +31,21 @@ public class GlobalManager {
 
     private GameRepo gameRepo;
 
-
     public GlobalManager(ClientNotifier clientNotifier) {
-
+        activeSessions = new HashMap<>();
+        logger = Logger.getLogger(getClass().toString());
         this.clientNotifier = clientNotifier;
-        activeSessions = Collections.synchronizedMap(new HashMap<>());
-        this.logger = Logger.getLogger(getClass().toString());
     }
+
 
     //    TODO clean up the if else logic... checking if the set contains the session
     //    May be unnecessary
     private Game awaitChallenge(Player player, TimeControl timeControl) {
+
+//        TODO remove when not necessary anymore
+        if (waitListRepo == null || pairedPlayersRepo == null || playerRepo == null || gameRepo == null) {
+            throw new RuntimeException("Stuff was null");
+        }
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
         if (matchedPlayer == null) {
@@ -89,8 +92,7 @@ public class GlobalManager {
     }
 
     @Autowired
-    @Qualifier("H2PlayerRepo")
-    public void setPlayerRepo(PlayerRepo playerRepo) {
+    public void setPlayerRepo(@Qualifier("h2PlayerRepo") PlayerRepo playerRepo) {
         this.playerRepo = playerRepo;
     }
 
@@ -105,7 +107,7 @@ public class GlobalManager {
     }
 
     @Autowired
-    public void setGameRepo(GameRepo gameRepo) {
+    public void setGameRepo(@Qualifier("h2GameRepo") GameRepo gameRepo) {
         this.gameRepo = gameRepo;
     }
 }

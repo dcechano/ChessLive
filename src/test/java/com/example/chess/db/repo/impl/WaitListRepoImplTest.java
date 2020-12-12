@@ -1,8 +1,8 @@
 package com.example.chess.db.repo.impl;
 
-import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.db.repo.PlayerRepo;
-import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.db.repo.h2.PairedPlayersRepo;
+import com.example.chess.db.repo.h2.WaitListRepo;
 import com.example.chess.model.entity.Player;
 import com.example.chess.model.entity.TimeControl;
 import com.example.chess.model.entity.WaitingPlayer;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,8 +21,6 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-//@Sql(scripts = {"classpath:/waitlist-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//@Rollback
 class WaitListRepoImplTest {
 
     @Autowired
@@ -56,10 +55,14 @@ class WaitListRepoImplTest {
         UUID uuid = UUID.randomUUID();
         player.setId(uuid);
         player.setUsername("this is a test username");
+        player.setJoinDate(LocalDate.now());
         playerRepo.save(player);
 
         UUID waitingId = waitListRepo.addPlayerToWaitList(player, TimeControl.TWO_PLUS_1);
         Optional<WaitingPlayer> opt = waitListRepo.findById(waitingId);
+        if (opt.isEmpty()) {
+            fail("Optional was empty!");
+        }
         opt.ifPresentOrElse(obj ->{
             assertEquals(waitingId, obj.getId());
         }, Assertions::fail);

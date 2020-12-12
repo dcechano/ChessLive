@@ -14,6 +14,9 @@ public class Player extends AbstractEntity{
     @Column(name = "USERNAME")
     private String username;
 
+    @Column(name = "PASSWORD")
+    private String password;
+
     @Transient
 //    @OneToMany(mappedBy = "white")
     private List<Game> gameList;
@@ -30,6 +33,14 @@ public class Player extends AbstractEntity{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<Game> getGameList() {

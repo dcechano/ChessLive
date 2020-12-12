@@ -10,6 +10,13 @@ let sessionId;
         sessionId = urlArray[urlArray.length - 2];
         console.log(`Logging frame: ${frame}`);
 
+
+        stompClient.subscribe('/secured/history', function (data) {
+            console.log(data);
+            let json = JSON.parse(data.body).pgn;
+            console.log(`Printing data from secured endpoint: ${json}`);
+        });
+
     });
 })();
 
@@ -26,3 +33,9 @@ for (let i = 0; i < links.length; i++) {
         // newGame(time);
     });
 }
+
+let test_button = document.getElementById('test_button');
+test_button.addEventListener('click', function () {
+    console.log("attempting to hit the secured endpoint");
+    stompClient.send("/app/chess-lite", {});
+});
