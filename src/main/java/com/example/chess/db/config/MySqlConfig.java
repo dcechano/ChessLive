@@ -72,7 +72,7 @@ public class MySqlConfig {
     }
 
     @Primary
-    @Bean(value = "MySqlEntityManagerFactory")
+    @Bean
     public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setPackagesToScan("com.example.chess.model.entity");

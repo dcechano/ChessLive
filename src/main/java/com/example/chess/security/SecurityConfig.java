@@ -1,5 +1,7 @@
 package com.example.chess.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private UserDetailsService userDetailsService;
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/game/img/**", "/libraries/**",
@@ -34,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
-//                .loginPage("/login").permitAll()
+                .loginPage("/login").permitAll()
+                .loginProcessingUrl("/auth")
                 .defaultSuccessUrl("/")
                 .permitAll()
                 .and()
@@ -46,19 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("john")
-                .password(encoder().encode("password"))
-                .roles("USER").and()
-                .withUser("jane")
-                .password(encoder().encode("password"))
-                .roles("USER");
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService());
+        auth.setUserDetailsService(userDetailsService);
+        auth.setPasswordEncoder(encoder());
         return auth;
     }
 
@@ -67,4 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    public void setUserDetailsService(@Qualifier("userDetailsServiceImpl")
+                                                  UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 }

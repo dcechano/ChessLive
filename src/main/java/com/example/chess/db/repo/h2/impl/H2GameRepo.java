@@ -1,6 +1,6 @@
-package com.example.chess.db.repo.impl.h2;
+package com.example.chess.db.repo.h2.impl;
 
-import com.example.chess.db.repo.GameRepo;
+import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;

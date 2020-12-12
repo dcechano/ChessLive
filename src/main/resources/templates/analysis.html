@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <title>Let's Play Chess</title>
+</head>
+<body>
+
+<nav class="nav">
+    <ul class="nav-links">
+        <li class="nav-link"><a href="#" class="profile-link">SirRobin95</a></li>
+        <li id="newGame" class="nav-link">New Game</li>
+        <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
+            <div class="end-buttons">
+                <a href="#" class="draw">Offer Draw</a>
+                <a href="#" class="resign">Resign</a>
+                <div class="window-close">
+                    <span class="fa fa-window-close"></span>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <div id="player2-info" class="user-info">
+        <div class="username" th:text="BennyJBentley"></div>
+        <div id="clock1" class="black-clock clock">2:00</div>
+    </div>
+
+    <div id="board"></div>
+
+    <div id="player1-info" class="user-info">
+        <div class="username" th:text="SirRobin95">SirRobin95</div>
+        <div id="clock2" class="white-clock clock">2:00</div>
+    </div>
+
+    <ol id="pgn" class="pgn">Waiting for the first move!</ol>
+
+    <nav class="logs-nav">
+        <ul class="log-links">
+            <li id="chat-link" class="widget-link selected" data-for="chat-log"><span class="fa fa-comments"></span></li>
+            <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
+            <li id="pgn-link" class="widget-link" data-for="pgn-log"><span class="fa fa-chess-pawn"></span></li>
+        </ul>
+    </nav>
+    <section class="logs">
+        <div id="chat-log" class="log active">
+            <ol id="chat-messages" class="log-window">
+                <li class="opponent-message">Hello there</li>
+                <li class="user-message">Yo</li>
+                <li class="opponent-message">Good luck!</li>
+                <li class="user-message">You too!</li>
+            </ol>
+            <div class="input-wrap">
+                <button id="chat-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
+                <input id="chat-input" type="text" class="input" placeholder="Be nice!">
+            </div>
+        </div>
+        <div id="notes-log" class="log">
+            <ol id="notes" class="log-window">
+                <li class="note">This is a note!</li>
+                <li class="note">This is a note!</li>
+                <li class="note">This is a note!</li>
+                <li class="note">This is a note!</li>
+            </ol>
+            <div class="input-wrap">
+                <button id="notes-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
+                <input id="notes-input" type="text" class="input" placeholder="Observations?">
+            </div>
+        </div>
+        <div id="pgn-log" class="log">
+            <ol id="pgn-long-form" class="log-window">
+
+            </ol>
+        </div>
+    </section>
+</main>
+
+<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+<script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>
+<script th:src="@{/libraries/node_modules/jquery/dist/jquery.js}"></script>
+<script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
+<script th:src="@{/js/websocket.js}"></script>
+<script th:src="@{/js/app_chess.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

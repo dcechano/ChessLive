@@ -1,8 +1,8 @@
 package com.example.chess.db.repo.impl;
 
-import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.db.repo.PlayerRepo;
-import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.db.repo.h2.PairedPlayersRepo;
+import com.example.chess.db.repo.h2.WaitListRepo;
 import com.example.chess.model.entity.Player;
 import com.example.chess.model.entity.TimeControl;
 import com.example.chess.model.entity.WaitingPlayer;

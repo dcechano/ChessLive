@@ -1,11 +1,12 @@
 package com.example.chess.model;
 
-import com.example.chess.db.repo.GameRepo;
-import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.db.repo.PlayerRepo;
-import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.db.repo.h2.GameRepo;
+import com.example.chess.db.repo.h2.PairedPlayersRepo;
+import com.example.chess.db.repo.h2.WaitListRepo;
 import com.example.chess.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public class GlobalManager {
     }
 
     @Autowired
-    public void setPlayerRepo(PlayerRepo playerRepo) {
+    public void setPlayerRepo(@Qualifier("h2PlayerRepo") PlayerRepo playerRepo) {
         this.playerRepo = playerRepo;
     }
 
@@ -106,7 +107,7 @@ public class GlobalManager {
     }
 
     @Autowired
-    public void setGameRepo(GameRepo gameRepo) {
+    public void setGameRepo(@Qualifier("h2GameRepo") GameRepo gameRepo) {
         this.gameRepo = gameRepo;
     }
 }

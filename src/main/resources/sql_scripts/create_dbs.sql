@@ -1,6 +1,9 @@
-CREATE TABLE PLAYER(
-    ID VARCHAR(100) PRIMARY KEY NOT NULL,
-    USERNAME VARCHAR(50) NOT NULL,
+create table PLAYER
+(
+	ID VARCHAR(100) not null
+		primary key,
+	USERNAME VARCHAR(50) unique not null,
+    PASSWORD varchar(100) not null,
     JOIN_DATE DATETIME
 );
 

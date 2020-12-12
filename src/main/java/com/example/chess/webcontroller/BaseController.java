@@ -1,6 +1,6 @@
 package com.example.chess.webcontroller;
 
-import com.example.chess.db.repo.GameRepo;
+import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.model.GlobalManager;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
@@ -75,6 +75,11 @@ public class BaseController {
         httpSession.setAttribute("currentGame", game);
 
         return "redirect:/game/" + gameId;
+    }
+
+    @GetMapping("/analysis")
+    public String analysis() {
+        return "analysis";
     }
 
     @GetMapping("/websocket")

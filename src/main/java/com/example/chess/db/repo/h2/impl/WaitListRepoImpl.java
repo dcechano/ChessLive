@@ -1,19 +1,19 @@
-package com.example.chess.db.repo.impl.h2;
+package com.example.chess.db.repo.h2.impl;
 
-import com.example.chess.db.repo.WaitListRepo;
+import com.example.chess.db.repo.h2.WaitListRepo;
 import com.example.chess.model.entity.Player;
 import com.example.chess.model.entity.TimeControl;
 import com.example.chess.model.entity.WaitingPlayer;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-@Transactional(transactionManager = "h2TransactionManager")
+@Transactional
 public class WaitListRepoImpl extends H2AbstractRepoImpl<WaitingPlayer> implements WaitListRepo {
 
     public WaitListRepoImpl() {

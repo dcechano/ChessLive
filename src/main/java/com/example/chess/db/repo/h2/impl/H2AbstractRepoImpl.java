@@ -1,16 +1,16 @@
-package com.example.chess.db.repo.impl.h2;
+package com.example.chess.db.repo.h2.impl;
 
 import com.example.chess.db.repo.AbstractRepo;
 import com.example.chess.model.entity.AbstractEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@Transactional(transactionManager = "h2TransactionManager")
+@Transactional
 public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements AbstractRepo<T> {
 
 //    TODO remove this and logging statements
@@ -41,8 +41,7 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
         if (entityManager.contains(entity)) {
             entityManager.remove(entity);
         } else {
-            var newEntity = entityManager.merge(entity);
-            entityManager.remove(newEntity);
+            entityManager.remove(entityManager.merge(entity));
         }
     }
 
@@ -59,9 +58,7 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
 
     @Override
     public Optional<T> findById(Object id) {
-        logger.info("Attempting to find entity with Id: " + id.toString());
-        var entity = entityManager.find(clazz, id);
-        return Optional.ofNullable(entity);
+        return Optional.ofNullable(entityManager.find(clazz, id));
     }
 
     @SuppressWarnings("unchecked")
