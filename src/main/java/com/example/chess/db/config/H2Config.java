@@ -1,6 +1,5 @@
 package com.example.chess.db.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +13,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan
+@ComponentScan(value = "com.example.chess.db.repo.impl.mysql")
 public class H2Config{
 
     @Bean("h2DataSource")
@@ -36,8 +33,9 @@ public class H2Config{
 
     @Bean("h2TransactionManager")
     public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager();
+        return new JpaTransactionManager(h2EntityManagerFactory());
     }
+
 
     @Bean("h2HibernateProperties")
     public Properties hibernateProperties() {
@@ -52,7 +50,6 @@ public class H2Config{
         return properties;
     }
 
-    @PersistenceUnit(name = "H2PersistenceUnit")
     @Bean("H2PersistenceUnit")
     public EntityManagerFactory h2EntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();

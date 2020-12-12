@@ -4,13 +4,13 @@ import com.example.chess.db.repo.PairedPlayersRepo;
 import com.example.chess.model.entity.PairedPlayer;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Repository
-@Transactional
+@Transactional(transactionManager = "h2TransactionManager")
 public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> implements PairedPlayersRepo {
 
     public PairedPlayerRepoImpl() {

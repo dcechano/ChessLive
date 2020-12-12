@@ -3,7 +3,6 @@ package com.example.chess.security.auth;
 import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.model.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

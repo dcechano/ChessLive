@@ -12,7 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class H2PlayerRepoTest {
@@ -34,7 +35,6 @@ class H2PlayerRepoTest {
         player.setId(id);
         player.setUsername("dylan");
         playerRepo.save(player);
-        playerRepo.findAll().stream().forEach(p -> logger.info(p.toString()));
 
         Optional<Player> dylanOpt = playerRepo.findById(id);
         if (dylanOpt.isEmpty()) {

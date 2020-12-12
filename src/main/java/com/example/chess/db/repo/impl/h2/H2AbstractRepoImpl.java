@@ -2,15 +2,15 @@ package com.example.chess.db.repo.impl.h2;
 
 import com.example.chess.db.repo.AbstractRepo;
 import com.example.chess.model.entity.AbstractEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@Transactional
+@Transactional(transactionManager = "h2TransactionManager")
 public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements AbstractRepo<T> {
 
 //    TODO remove this and logging statements
@@ -26,10 +26,9 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
     @Override
     public void save(T entity) {
         logger.info("Persisting entity: " + entity.toString());
-        logger.info("Generic is: " + entity.getClass().toString());
         entityManager.persist(entity);
-        logger.info("Attempting to retrieve the entity");
-        var result = entityManager.find(clazz, entity.getId());
+        logger.info("Attempting to retrieve the entity for verification");
+        var result = this.findById(entity.getId());
         if (result == null) {
             throw new RuntimeException("Entity failed to be retrieved after saving");
         } else {
@@ -60,7 +59,7 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
 
     @Override
     public Optional<T> findById(Object id) {
-        logger.info("Attempting to find entity with IdL " + id.toString());
+        logger.info("Attempting to find entity with Id: " + id.toString());
         var entity = entityManager.find(clazz, id);
         return Optional.ofNullable(entity);
     }
@@ -75,5 +74,4 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 }

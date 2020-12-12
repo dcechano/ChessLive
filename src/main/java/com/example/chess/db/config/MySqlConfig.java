@@ -14,17 +14,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@PersistenceUnit(unitName = "MySQLPersistenceUnit")
 @Configuration
 @EnableTransactionManagement
-@ComponentScan
+@ComponentScan("com.example.chess.db.repo")
 public class MySqlConfig {
 
     @Primary
@@ -64,7 +61,7 @@ public class MySqlConfig {
     @Bean
     public Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         properties.put("hibernate.format_sql", true);
         properties.put("hibernate.show_sql", false);
         properties.put("hibernate.max_fetch_depth", 3);
@@ -75,7 +72,7 @@ public class MySqlConfig {
     }
 
     @Primary
-    @Bean
+    @Bean(value = "MySqlEntityManagerFactory")
     public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setPackagesToScan("com.example.chess.model.entity");

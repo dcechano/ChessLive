@@ -6,10 +6,8 @@ import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.db.repo.WaitListRepo;
 import com.example.chess.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

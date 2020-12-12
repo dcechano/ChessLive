@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/img.chesspieces.wikipedia/**", "/libraries/**",
+        web.ignoring().antMatchers("/game/img/**", "/libraries/**",
                 "/css/**", "/js/**", "/webjars/**");
     }
 

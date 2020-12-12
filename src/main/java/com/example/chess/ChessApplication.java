@@ -1,22 +1,8 @@
 package com.example.chess;
 
-import com.example.chess.db.repo.GameRepo;
-import com.example.chess.db.repo.PlayerRepo;
-import com.example.chess.db.repo.WaitListRepo;
-import com.example.chess.db.repo.impl.h2.H2GameRepo;
-import com.example.chess.db.repo.impl.h2.H2PlayerRepo;
-import com.example.chess.model.entity.*;
-import com.example.chess.websocket.PGN;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @SpringBootApplication
