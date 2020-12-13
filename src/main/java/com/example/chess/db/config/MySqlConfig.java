@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("com.example.chess.db.repo")
+@ComponentScan
 public class MySqlConfig {
 
     @Primary

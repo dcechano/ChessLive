@@ -6,20 +6,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class H2PlayerRepoTest {
 
     Logger logger = Logger.getLogger(getClass().toString());
 
+    @Qualifier("h2PlayerRepo")
     @Autowired
     PlayerRepo playerRepo;
 
@@ -29,11 +31,31 @@ class H2PlayerRepoTest {
     }
 
     @Test
-    void findById() {
+    void findByUsername() {
         Player player = new Player();
         UUID id = UUID.randomUUID();
         player.setId(id);
         player.setUsername("dylan");
+        player.setPassword("password");
+        player.setJoinDate(LocalDate.now());
+        playerRepo.save(player);
+
+        Player dylan = playerRepo.findByUsername("dylan");
+        assertNotNull(dylan);
+        assertEquals("dylan", dylan.getUsername());
+
+    }
+
+    @Test
+//    @Transactional
+    void findById() {
+        logger.info("Doing the test");
+        Player player = new Player();
+        UUID id = UUID.randomUUID();
+        player.setId(id);
+        player.setUsername("john");
+        player.setPassword("password");
+        player.setJoinDate(LocalDate.now());
         playerRepo.save(player);
 
         Optional<Player> dylanOpt = playerRepo.findById(id);

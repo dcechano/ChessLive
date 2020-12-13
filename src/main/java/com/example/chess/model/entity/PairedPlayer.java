@@ -13,8 +13,8 @@ public class PairedPlayer extends AbstractEntity {
     @JoinColumn(name = "WHITE")
     private Player white;
 
-    @JoinColumn(name = "BLACK")
     @OneToOne
+    @JoinColumn(name = "BLACK")
     private Player black;
 
     public PairedPlayer() {

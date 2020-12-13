@@ -18,7 +18,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(value = "com.example.chess.db.repo.impl.mysql")
+@ComponentScan
 public class H2Config{
 
     @Bean("h2DataSource")
@@ -58,7 +58,6 @@ public class H2Config{
         factoryBean.setJpaVendorAdapter(jpaVendorAdaptor());
         factoryBean.setJpaProperties(hibernateProperties());
         factoryBean.afterPropertiesSet();
-
         return factoryBean.getNativeEntityManagerFactory();
     }
 
