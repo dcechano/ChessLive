@@ -4,13 +4,13 @@ import com.example.chess.db.repo.h2.PairedPlayersRepo;
 import com.example.chess.model.entity.PairedPlayer;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Repository
-@Transactional
+@Transactional(transactionManager = "h2TransactionManager")
 public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> implements PairedPlayersRepo {
 
     public PairedPlayerRepoImpl() {
@@ -18,7 +18,6 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
     }
 
     @Override
-
     public void setPairedPlayers(Player white, Player black) {
         PairedPlayer pairedPlayer = new PairedPlayer(white, black);
         pairedPlayer.setId(UUID.randomUUID());
@@ -42,11 +41,8 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
     public boolean isPaired(Player player) {
 
         TypedQuery<Long> query = this.entityManager.createQuery(
-                "SELECT COUNT (s) FROM PairedPlayer s WHERE s.black =: black OR s.white =: white", Long.class);
-        query.setParameter("black", player);
-        query.setParameter("white", player);
+                "SELECT COUNT (s) FROM PairedPlayer s WHERE s.black =: player OR s.white =: player", Long.class);
+        query.setParameter("player", player);
         return query.getSingleResult() > 0;
     }
-
-
 }

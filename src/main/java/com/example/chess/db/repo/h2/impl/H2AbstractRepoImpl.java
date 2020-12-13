@@ -2,15 +2,15 @@ package com.example.chess.db.repo.h2.impl;
 
 import com.example.chess.db.repo.AbstractRepo;
 import com.example.chess.model.entity.AbstractEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@Transactional
+@Transactional(transactionManager = "h2TransactionManager")
 public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements AbstractRepo<T> {
 
 //    TODO remove this and logging statements
@@ -25,15 +25,16 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
 
     @Override
     public void save(T entity) {
-        logger.info("Persisting entity: " + entity.toString());
+        Logger logger = Logger.getLogger(getClass().toString());
+        logger.info("Saving entity: " + entity.toString());
         entityManager.persist(entity);
-        logger.info("Attempting to retrieve the entity for verification");
-        var result = this.findById(entity.getId());
-        if (result == null) {
-            throw new RuntimeException("Entity failed to be retrieved after saving");
-        } else {
-            logger.info("Entity successfully retrieved: " + entity.toString());
+        logger.info("retrieving entity to confirm");
+        Optional<T> t = this.findById(entity.getId());
+        if (t.isEmpty()) {
+            throw new RuntimeException("It wasn't there lol");
         }
+        logger.info("it was there");
+
     }
 
     @Override

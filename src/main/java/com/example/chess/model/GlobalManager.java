@@ -9,15 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 @Component
 public class GlobalManager {
 
-    private final Map<String, Player> activeSessions;
 
     private final ClientNotifier clientNotifier;
 
@@ -32,20 +29,12 @@ public class GlobalManager {
     private GameRepo gameRepo;
 
     public GlobalManager(ClientNotifier clientNotifier) {
-        activeSessions = new HashMap<>();
         logger = Logger.getLogger(getClass().toString());
         this.clientNotifier = clientNotifier;
     }
 
 
-    //    TODO clean up the if else logic... checking if the set contains the session
-    //    May be unnecessary
     private Game awaitChallenge(Player player, TimeControl timeControl) {
-
-//        TODO remove when not necessary anymore
-        if (waitListRepo == null || pairedPlayersRepo == null || playerRepo == null || gameRepo == null) {
-            throw new RuntimeException("Stuff was null");
-        }
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
         if (matchedPlayer == null) {
@@ -79,17 +68,13 @@ public class GlobalManager {
         return game;
     }
 
-    public Game createChallenge(String timeControl, String sessionId, Player player) {
+    public Game createChallenge(String timeControl, Player player) {
         TimeControl time = TimeControl.valueOf(timeControl);
 
-        activeSessions.put(sessionId, player);
         playerRepo.save(player);
         return awaitChallenge(player, time);
     }
 
-    public Player getActivePlayer(String sessionId) {
-        return activeSessions.get(sessionId);
-    }
 
     @Autowired
     public void setPlayerRepo(@Qualifier("h2PlayerRepo") PlayerRepo playerRepo) {

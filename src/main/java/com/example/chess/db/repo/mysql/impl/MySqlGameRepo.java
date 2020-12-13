@@ -4,12 +4,12 @@ import com.example.chess.db.repo.mysql.GameRepo;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+@Transactional(transactionManager = "h2TransactionManager")
 @Repository
 public class MySqlGameRepo extends MySqlAbstractRepo<Game> implements GameRepo {
 
