@@ -24,24 +24,17 @@ public class WebSocketController {
         logger = Logger.getLogger(getClass().toString());
     }
 
-
-    @MessageMapping("/sendToUser")
+    @MessageMapping("/updateOpponent")
     public void sendToUser(@Payload GameUpdate gameUpdate, Principal principal) {
         logger.info("/sendToUser endpoint hit by " + principal.getName());
         logger.info("Printing the GameUpdate object: " + gameUpdate.toString());
-        messagingTemplate.convertAndSendToUser(gameUpdate.getTo(), "/queue/private", gameUpdate);
+        messagingTemplate.convertAndSendToUser(gameUpdate.getTo(), "/queue/update", gameUpdate);
     }
 
     @MessageMapping("/message")
     @SendTo("/topic")
     public GameUpdate send(@Payload GameUpdate gameUpdate) {
         return gameUpdate;
-    }
-
-    @MessageMapping("/questions")
-    public String questions(String question, Principal principal) {
-
-        return question.toUpperCase() + " by " + principal.getName();
     }
 
 }

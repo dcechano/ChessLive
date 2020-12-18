@@ -1,5 +1,3 @@
-console.log('connected to app.js');
-
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
     link.addEventListener('click', () => {
@@ -45,8 +43,4 @@ close.addEventListener('click', function(e){
     btns.style.display = 'none';
 });
 
-let newGame = document.getElementById('newGame');
-newGame.addEventListener('click', function () {
-    console.log('Sending new Game request');
-    stompClient.send(`/app/challenge/${sessionId}`, {});
-});
+

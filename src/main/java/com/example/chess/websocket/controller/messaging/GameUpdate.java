@@ -10,14 +10,17 @@ public class GameUpdate {
 
     private String to;
 
-    private FEN newPosition;
+    private String newMove;
+
+    private String newPosition;
 
     public GameUpdate() {
     }
 
-    public GameUpdate(String from, String to, FEN newPosition) {
+    public GameUpdate(String from, String to, String newMove, String newPosition) {
         this.from = from;
         this.to = to;
+        this.newMove = newMove;
         this.newPosition = newPosition;
     }
 
@@ -37,11 +40,19 @@ public class GameUpdate {
         this.to = to;
     }
 
-    public FEN getNewPosition() {
+    public String getNewMove() {
+        return newMove;
+    }
+
+    public void setNewMove(String newMove) {
+        this.newMove = newMove;
+    }
+
+    public String getNewPosition() {
         return newPosition;
     }
 
-    public void setNewPosition(FEN newPosition) {
+    public void setNewPosition(String newPosition) {
         this.newPosition = newPosition;
     }
 

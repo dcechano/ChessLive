@@ -4,6 +4,8 @@ import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.model.GlobalManager;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,9 +60,13 @@ public class BaseController {
     }
 
     @GetMapping("/game/{gameId}")
-    public String game(Model model, @SessionAttribute("currentGame") Game game, @SessionAttribute("user") Player player) {
+    public String game(Model model, @SessionAttribute("currentGame") Game game,
+                       @SessionAttribute("user") Player player) throws JsonProcessingException {
+
         model.addAttribute("user", player);
         model.addAttribute("game", game);
+//        TODO refactor this so the client isn't receiving sensitive data about opponent
+        model.addAttribute("gameAsJSON", new ObjectMapper().writeValueAsString(game));
         return "chess";
     }
 

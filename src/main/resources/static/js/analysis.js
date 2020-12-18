@@ -2,15 +2,11 @@
 // https://github.com/jhlywa/chess.js
 let board = null;
 const game = new Chess();
+let gameId = 1;
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
 const fen = $('#FEN');
 const pgnLog = document.getElementById('FEN-long-form');
-const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
-const me = document.getElementById('you');
-const opponent = document.getElementById('opponent');
-let stompClient = null;
-
 
 let moveList = [];
 
@@ -77,11 +73,9 @@ function onMouseoutSquare(square, piece) {
 }
 
 function onSnapEnd() {
-    let fen = game.fen();
-    board.position(fen);
+    board.position(game.fen());
     updatePgn();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, "newMove", fen);
-    sendData(gameUpdate);
+    sendData();
 }
 
 function updatePgn() {
@@ -113,13 +107,12 @@ function addPgnListeners() {
     }
 }
 
-function sendData(gameUpdate) {
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+function sendData() {
+    stompClient.send(`/app/game/${gameId}`, {}, JSON.stringify({'pgn': game.fen()}));
 }
 
 
 const config = {
-    orientation: gameData.white.username === 'dylan' ? 'white' : 'black',
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
@@ -157,25 +150,3 @@ function onWindowResize() {
 
 determineSize();
 window.onresize = onWindowResize;
-
-(function () {
-    let socket = new SockJS('/chess-lite');
-    stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function (frame) {
-        console.log(`Logging frame: ${frame}`);
-
-
-        stompClient.subscribe("/user/getGame", function (data) {
-            console.log("message recieved from the /user/getGame endpoint");
-            console.log(JSON.stringify(data.body));
-        });
-
-        stompClient.subscribe('/user/queue/update', function (data) {
-            console.log("Printing message");
-            console.log(data.body);
-            board.position(JSON.parse(data.body).newPosition);
-        });
-    });
-
-})();

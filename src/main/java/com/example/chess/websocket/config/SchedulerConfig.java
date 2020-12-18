@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.logging.Logger;
 
+// TODO delete this class before publication
 @Component
 @EnableScheduling
 public class SchedulerConfig {

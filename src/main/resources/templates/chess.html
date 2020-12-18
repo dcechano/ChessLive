@@ -9,6 +9,7 @@
     <title>Let's Play Chess</title>
 </head>
 <body>
+<input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
 
 <nav class="nav">
     <ul class="nav-links">
@@ -29,7 +30,7 @@
 <main class="container">
 
     <div id="player2-info" class="user-info">
-        <div class="username"
+        <div id="opponent" class="username"
              th:text="${game.white.username eq user.username ? game.black.username : game.white.username}">
         </div>
 
@@ -39,7 +40,7 @@
     <div id="board"></div>
 
     <div id="player1-info" class="user-info">
-        <div class="username" th:text="${user.username}">SirRobin95</div>
+        <div id="you" class="username" th:text="${user.username}">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
     <ol id="FEN" class="FEN">Waiting for the first move!</ol>
@@ -84,12 +85,12 @@
 </section>
 </main>
 
-<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
 <script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>
 <script th:src="@{/libraries/node_modules/jquery/dist/jquery.js}"></script>
 <script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
-<script th:src="@{/js/websocket.js}"></script>
+<script th:src="@{/js/GameUpdate.js}"></script>
 <script th:src="@{/js/app_chess.js}"></script>
 <script th:src="@{/js/app.js}"></script>
 </body>

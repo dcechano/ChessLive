@@ -1,6 +1,5 @@
 package com.example.chess.model.entity;
 
-
 import com.example.chess.websocket.FEN;
 
 import javax.persistence.*;
