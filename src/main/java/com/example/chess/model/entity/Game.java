@@ -1,7 +1,7 @@
 package com.example.chess.model.entity;
 
 
-import com.example.chess.websocket.PGN;
+import com.example.chess.websocket.FEN;
 
 import javax.persistence.*;
 
@@ -17,8 +17,8 @@ public class Game extends AbstractEntity {
     @OneToOne
     private Player black;
 
-    @Column(name = "PGN")
-    private PGN pgn;
+    @Column(name = "FEN")
+    private FEN FEN;
 
     @Column(name = "RESULT")
     private String result;
@@ -46,12 +46,12 @@ public class Game extends AbstractEntity {
         this.black = black;
     }
 
-    public PGN getPgn() {
-        return pgn;
+    public FEN getPgn() {
+        return FEN;
     }
 
-    public void setPgn(PGN pgn) {
-        this.pgn = pgn;
+    public void setPgn(FEN FEN) {
+        this.FEN = FEN;
     }
 
     public String getResult() {
@@ -76,7 +76,7 @@ public class Game extends AbstractEntity {
                 "id=" + id +
                 ", white=" + white +
                 ", black=" + black +
-                ", pgn=" + pgn +
+                ", pgn=" + FEN +
                 ", result='" + result + '\'' +
                 ", timeControl=" + timeControl +
                 "} " + super.toString();

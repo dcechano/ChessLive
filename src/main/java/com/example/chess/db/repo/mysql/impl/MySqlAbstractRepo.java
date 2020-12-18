@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Transactional
 public abstract class MySqlAbstractRepo<T extends AbstractEntity> implements AbstractRepo<T> {
@@ -23,16 +22,7 @@ public abstract class MySqlAbstractRepo<T extends AbstractEntity> implements Abs
 
     @Override
     public void save(T entity) {
-        Logger logger = Logger.getLogger(getClass().toString());
-        logger.info("Saving entity: " + entity.toString());
         entityManager.persist(entity);
-        logger.info("retrieving entity to confirm");
-        Optional<T> t = this.findById(entity.getId());
-        if (t.isEmpty()) {
-            throw new RuntimeException("It wasn't there lol");
-        }
-        logger.info("it was there");
-
     }
 
     @Override
@@ -57,7 +47,6 @@ public abstract class MySqlAbstractRepo<T extends AbstractEntity> implements Abs
 
     @Override
     public Optional<T> findById(Object id) {
-        String x = "x";
         return Optional.ofNullable(entityManager.find(clazz, id));
     }
 

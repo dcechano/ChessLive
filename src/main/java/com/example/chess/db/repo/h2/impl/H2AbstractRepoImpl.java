@@ -25,16 +25,7 @@ public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements Ab
 
     @Override
     public void save(T entity) {
-        Logger logger = Logger.getLogger(getClass().toString());
-        logger.info("Saving entity: " + entity.toString());
         entityManager.persist(entity);
-        logger.info("retrieving entity to confirm");
-        Optional<T> t = this.findById(entity.getId());
-        if (t.isEmpty()) {
-            throw new RuntimeException("It wasn't there lol");
-        }
-        logger.info("it was there");
-
     }
 
     @Override

@@ -35,13 +35,6 @@ public class BaseController {
         return "landing";
     }
 
-    @GetMapping("/game/{gameId}")
-    public String game(Model model, @SessionAttribute("currentGame") Game game, @SessionAttribute("user") Player player) {
-        model.addAttribute("user", player);
-        model.addAttribute("game", game);
-        return "chess";
-    }
-
     @GetMapping("/new_game")
     public String newGame(@RequestParam("time_control") String timeControl, HttpSession httpSession) {
 
@@ -63,6 +56,15 @@ public class BaseController {
 
         return "redirect:/game/" + gameId;
     }
+
+    @GetMapping("/game/{gameId}")
+    public String game(Model model, @SessionAttribute("currentGame") Game game, @SessionAttribute("user") Player player) {
+        model.addAttribute("user", player);
+        model.addAttribute("game", game);
+        return "chess";
+    }
+
+
 
     @GetMapping("/analysis")
     public String analysis() {
