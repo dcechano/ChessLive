@@ -4,8 +4,8 @@ let board = null;
 const game = new Chess();
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
-const fen = $('#FEN');
-const pgnLog = document.getElementById('FEN-long-form');
+const fen = $('#fen');
+const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
@@ -81,9 +81,6 @@ function onMouseoutSquare(square, piece) {
 }
 
 function onSnapEnd(source, target, piece) {
-    console.warn("Beginning onSnapEnd()");
-    console.log(source);
-    console.log(target);
     let fen = game.fen();
     board.position(fen);
     updatePgn();
@@ -111,7 +108,7 @@ function addPgnListeners() {
         });
     }
 
-    let longform = $('#pgn-long-form').children();
+    let longform = $('#fen-long-form').children();
     for (let i = 0; i < longform.length; i++) {
         longform[i].addEventListener('click', function () {
             let pos = longform[i].dataset.fen;
@@ -151,7 +148,7 @@ function determineSize() {
         arg.style.width = newWidth + 'px';
     }
 
-    let fen = document.getElementById('FEN');
+    let fen = document.getElementById('fen');
     fen.style.width = newWidth + 'px';
 }
 
@@ -177,19 +174,25 @@ window.onresize = onWindowResize;
         });
 
         stompClient.subscribe('/user/queue/update', function (data) {
-            console.log("Printing message");
-            console.log(data.body);
             let update = JSON.parse(data.body);
             let from_to = update.newMove.split('-');
+
             let move = game.move({
                 from: from_to[0],
                 to: from_to[1],
                 promotion: 'q'
             });
+
             if (move === null || move === undefined) {
-                window.alert("A invalid move was sent from the server. Game out of sync.")
+                window.alert("A invalid move was sent from the server. Game out of sync.");
+            } else {
+                board.position(game.fen());
+                if (game.game_over()) {
+                    // TODO definetly make this more elegent
+                    window.alert("Game over");
+                }
+                updatePgn();
             }
-            board.position(game.fen());
 
         });
     });
