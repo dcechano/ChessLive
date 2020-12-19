@@ -1,6 +1,6 @@
 class GameUpdate {
 
-    constructor(from, to,  newMove, newPosition) {
+    constructor(from, to, newMove, newPosition) {
         this.from = from;
         this.to = to;
         this.newMove = newMove;

@@ -1,6 +1,5 @@
 package com.example.chess.websocket.controller.messaging;
 
-import com.example.chess.websocket.FEN;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -15,13 +15,13 @@ let stompClient = null;
 let moveList = [];
 
 function removeGreySquares() {
-    $('#board .square-55d63').css('background', '')
+    $('#board .square-55d63').css('background', '');
 }
 
 function greySquare(square) {
-    var $square = $('#board .square-' + square)
+    let $square = $('#board .square-' + square)
 
-    var background = whiteSquareGrey
+    let background = whiteSquareGrey
     if ($square.hasClass('black-3c85d')) {
         background = blackSquareGrey
     }
@@ -43,19 +43,23 @@ function onDragStart(source, piece) {
 function onDrop(source, target) {
     removeGreySquares()
     // see if the move is legal
-    var move = game.move({
+    let move = game.move({
         from: source,
         to: target,
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
     })
 
     // illegal move
-    if (move === null) return 'snapback'
+    if (move === null) {
+        return 'snapback';
+    } else {
+        console.log(move);
+    }
 }
 
 function onMouseoverSquare(square, piece) {
     // get list of possible moves for this square
-    var moves = game.moves({
+    let moves = game.moves({
         square: square,
         verbose: true
     })
@@ -67,7 +71,7 @@ function onMouseoverSquare(square, piece) {
     greySquare(square)
 
     // highlight the possible squares for this piece
-    for (var i = 0; i < moves.length; i++) {
+    for (let i = 0; i < moves.length; i++) {
         greySquare(moves[i].to)
     }
 }
@@ -76,11 +80,14 @@ function onMouseoutSquare(square, piece) {
     removeGreySquares()
 }
 
-function onSnapEnd() {
+function onSnapEnd(source, target, piece) {
+    console.warn("Beginning onSnapEnd()");
+    console.log(source);
+    console.log(target);
     let fen = game.fen();
     board.position(fen);
     updatePgn();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, "newMove", fen);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, `${source}-${target}`, fen);
     sendData(gameUpdate);
 }
 
@@ -129,7 +136,6 @@ const config = {
     onSnapEnd: onSnapEnd,
 };
 
-console.log(`Printing config obj: ${JSON.stringify(config)}`);
 board = Chessboard('board', config);
 
 function determineSize() {
@@ -165,7 +171,6 @@ window.onresize = onWindowResize;
     stompClient.connect({}, function (frame) {
         console.log(`Logging frame: ${frame}`);
 
-
         stompClient.subscribe("/user/getGame", function (data) {
             console.log("message recieved from the /user/getGame endpoint");
             console.log(JSON.stringify(data.body));
@@ -174,7 +179,18 @@ window.onresize = onWindowResize;
         stompClient.subscribe('/user/queue/update', function (data) {
             console.log("Printing message");
             console.log(data.body);
-            board.position(JSON.parse(data.body).newPosition);
+            let update = JSON.parse(data.body);
+            let from_to = update.newMove.split('-');
+            let move = game.move({
+                from: from_to[0],
+                to: from_to[1],
+                promotion: 'q'
+            });
+            if (move === null || move === undefined) {
+                window.alert("A invalid move was sent from the server. Game out of sync.")
+            }
+            board.position(game.fen());
+
         });
     });
 
