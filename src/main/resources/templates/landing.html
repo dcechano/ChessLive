@@ -7,14 +7,22 @@
     <title>ChessLive</title>
 </head>
 <body>
-<button id="test_button">Click button</button>
-
-<div class="wrapper">
+<nav class="nav">
+    <ul class="nav-links">
+        <li class="nav-link">Play</li>
+        <li class="nav-link">About</li>
+        <li class="nav-link"><a th:href="@{/login}">Login</a></li>
+    </ul>
+</nav>
+<aside class="wrapper">
     <div class="time-control" th:each="control : ${T(com.example.chess.model.entity.TimeControl).values()}">
         <a th:text="${control.name}" th:href="@{/new_game(time_control=${control.name})}"></a>
     </div>
-</div>
-
+</aside>
+<!--TODO remove these debug buttons-->
+<input id="question" type="text" placeholder="Ask a question">
+<button id="sendButton">Send</button>
+<button id="sendToUser">Send to User</button>
 
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
