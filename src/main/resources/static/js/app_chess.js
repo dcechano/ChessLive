@@ -9,6 +9,7 @@ const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
+const color = gameData.white.username === me.textContent ? 'w' : 'b';
 let stompClient = null;
 
 
@@ -34,8 +35,9 @@ function onDragStart(source, piece) {
     if (game.game_over()) return false
 
     // or if it's not that side's turn
-    if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+    let regEx = new RegExp(`^${color}`);
+    console.log(piece.search(regEx));
+    if (game.turn() !== color || piece.search(regEx) === -1) {
         return false
     }
 }
@@ -52,8 +54,6 @@ function onDrop(source, target) {
     // illegal move
     if (move === null) {
         return 'snapback';
-    } else {
-        console.log(move);
     }
 }
 
@@ -123,7 +123,7 @@ function sendData(gameUpdate) {
 
 
 const config = {
-    orientation: gameData.white.username === 'dylan' ? 'white' : 'black',
+    orientation: gameData.white.username === me.textContent ? 'white' : 'black',
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
@@ -131,7 +131,7 @@ const config = {
     onMouseoutSquare: onMouseoutSquare,
     onMouseoverSquare: onMouseoverSquare,
     onSnapEnd: onSnapEnd,
-};
+}
 
 board = Chessboard('board', config);
 

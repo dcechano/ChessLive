@@ -18,7 +18,9 @@ import java.io.IOException;
 @Component
 public class AuthenticationHandler implements AuthenticationSuccessHandler {
 
-    private PlayerRepo playerRepo;
+    private PlayerRepo mySqlPlayerRepo;
+
+    private PlayerRepo h2PlayerRepo;
 
     public AuthenticationHandler() {
     }
@@ -30,7 +32,8 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler {
 
         String username = authentication.getName();
         authentication.getPrincipal();
-        Player player = playerRepo.findByUsername(username);
+        Player player = mySqlPlayerRepo.findByUsername(username);
+        h2PlayerRepo.save(player);
 
         HttpSession session = httpServletRequest.getSession();
         session.setAttribute("user", player);
@@ -39,7 +42,12 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler {
     }
 
     @Autowired
-    public void setPlayerRepo(@Qualifier("mySqlPlayerRepo") PlayerRepo playerRepo) {
-        this.playerRepo = playerRepo;
+    public void setMySqlPlayerRepo(@Qualifier("mySqlPlayerRepo") PlayerRepo mySqlPlayerRepo) {
+        this.mySqlPlayerRepo = mySqlPlayerRepo;
+    }
+
+    @Autowired
+    public void setH2PlayerRepo(@Qualifier("h2PlayerRepo") PlayerRepo h2PlayerRepo) {
+        this.h2PlayerRepo = h2PlayerRepo;
     }
 }

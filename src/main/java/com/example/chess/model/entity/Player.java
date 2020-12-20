@@ -1,9 +1,5 @@
 package com.example.chess.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -25,7 +21,6 @@ public class Player extends AbstractEntity{
 //    @OneToMany(mappedBy = "white")
     private List<Game> gameList;
 
-    @JsonIgnore
     @Column(name = "JOIN_DATE")
     private LocalDate joinDate;
 

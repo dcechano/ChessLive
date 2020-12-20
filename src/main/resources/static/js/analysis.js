@@ -1,12 +1,11 @@
-// NOTE: this example uses the chess.js library:
+// NOTE: this uses the chess.js library:
 // https://github.com/jhlywa/chess.js
 let board = null;
 const game = new Chess();
-let gameId = 1;
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
-const fen = $('#FEN');
-const pgnLog = document.getElementById('FEN-long-form');
+const fen = $('#fen');
+const pgnLog = document.getElementById('fen-long-form');
 
 let moveList = [];
 
@@ -15,9 +14,9 @@ function removeGreySquares() {
 }
 
 function greySquare(square) {
-    var $square = $('#board .square-' + square)
+    let $square = $('#board .square-' + square)
 
-    var background = whiteSquareGrey
+    let background = whiteSquareGrey
     if ($square.hasClass('black-3c85d')) {
         background = blackSquareGrey
     }
@@ -39,7 +38,7 @@ function onDragStart(source, piece) {
 function onDrop(source, target) {
     removeGreySquares()
     // see if the move is legal
-    var move = game.move({
+    let move = game.move({
         from: source,
         to: target,
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
@@ -51,7 +50,7 @@ function onDrop(source, target) {
 
 function onMouseoverSquare(square, piece) {
     // get list of possible moves for this square
-    var moves = game.moves({
+    let moves = game.moves({
         square: square,
         verbose: true
     })
@@ -63,7 +62,7 @@ function onMouseoverSquare(square, piece) {
     greySquare(square)
 
     // highlight the possible squares for this piece
-    for (var i = 0; i < moves.length; i++) {
+    for (let i = 0; i < moves.length; i++) {
         greySquare(moves[i].to)
     }
 }
@@ -75,7 +74,6 @@ function onMouseoutSquare(square, piece) {
 function onSnapEnd() {
     board.position(game.fen());
     updatePgn();
-    sendData();
 }
 
 function updatePgn() {
@@ -98,7 +96,7 @@ function addPgnListeners() {
         });
     }
 
-    let longform = $('#pgn-long-form').children();
+    let longform = $('#fen-long-form').children();
     for (let i = 0; i < longform.length; i++) {
         longform[i].addEventListener('click', function () {
             let pos = longform[i].dataset.fen;
@@ -106,11 +104,6 @@ function addPgnListeners() {
         });
     }
 }
-
-function sendData() {
-    stompClient.send(`/app/game/${gameId}`, {}, JSON.stringify({'pgn': game.fen()}));
-}
-
 
 const config = {
     draggable: true,
@@ -122,7 +115,6 @@ const config = {
     onSnapEnd: onSnapEnd,
 };
 
-console.log(`Printing config obj: ${JSON.stringify(config)}`);
 board = Chessboard('board', config);
 
 function determineSize() {

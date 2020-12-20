@@ -25,6 +25,7 @@ public class BaseController {
 
     private final GameRepo gameRepo;
 
+
     public BaseController(GlobalManager globalManager, @Qualifier("h2GameRepo") GameRepo gameRepo) {
         this.globalManager = globalManager;
         this.gameRepo = gameRepo;

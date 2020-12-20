@@ -52,6 +52,7 @@ public class GlobalManager {
                     matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
                 }
                 waitListRepo.delete(matchedPlayer);
+                waitListRepo.deleteById(waitId);
             }
         } else {
             waitListRepo.delete(matchedPlayer);
@@ -70,8 +71,6 @@ public class GlobalManager {
 
     public Game createChallenge(String timeControl, Player player) {
         TimeControl time = TimeControl.valueOf(timeControl);
-
-        playerRepo.save(player);
         return awaitChallenge(player, time);
     }
 
