@@ -1,6 +1,6 @@
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', function () {
         let currSelected = document.getElementsByClassName('selected')[0];
         currSelected.classList.toggle('selected');
         link.classList.toggle('selected');
@@ -43,4 +43,17 @@ close.addEventListener('click', function(e){
     btns.style.display = 'none';
 });
 
+let resign = document.getElementById('resign');
+resign.addEventListener('click', function () {
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    gameUpdate.resign();
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+});
+
+let draw = document.getElementById('offer_draw');
+draw.addEventListener('click', function () {
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    gameUpdate.draw();
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+});
 

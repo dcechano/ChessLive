@@ -66,6 +66,7 @@ public class BaseController {
 
         model.addAttribute("user", player);
         model.addAttribute("game", game);
+
 //        TODO refactor this so the client isn't receiving sensitive data about opponent
         model.addAttribute("gameAsJSON", new ObjectMapper().writeValueAsString(game));
         return "chess";

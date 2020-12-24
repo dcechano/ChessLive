@@ -32,8 +32,7 @@ public class GlobalManager {
         logger = Logger.getLogger(getClass().toString());
         this.clientNotifier = clientNotifier;
     }
-
-
+    
     private Game awaitChallenge(Player player, TimeControl timeControl) {
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());

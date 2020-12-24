@@ -175,25 +175,39 @@ window.onresize = onWindowResize;
 
         stompClient.subscribe('/user/queue/update', function (data) {
             let update = JSON.parse(data.body);
-            let from_to = update.newMove.split('-');
 
-            let move = game.move({
-                from: from_to[0],
-                to: from_to[1],
-                promotion: 'q'
-            });
-
-            if (move === null || move === undefined) {
-                window.alert("A invalid move was sent from the server. Game out of sync.");
-            } else {
-                board.position(game.fen());
-                if (game.game_over()) {
-                    // TODO definetly make this more elegent
-                    window.alert("Game over");
-                }
-                updatePgn();
+            if (update.updateType === null || update.updateType === undefined) {
+                throw new Error("The type of update hasn't been set for GameUpdate object");
             }
 
+            if (update.updateType === 'NEW_MOVE') {
+                let from_to = update.newMove.split('-');
+
+                let move = game.move({
+                    from: from_to[0],
+                    to: from_to[1],
+                    promotion: 'q'
+                });
+
+                if (move === null || move === undefined) {
+                    window.alert("A invalid move was sent from the server. Game out of sync.");
+                } else {
+                    board.position(game.fen());
+                    if (game.game_over()) {
+                        // TODO definetly make this more elegent
+                        window.alert("Game over");
+                    }
+                    updatePgn();
+                }
+            //    TODO figure out what to do here
+            } else if(update.updateType === 'RESIGNATION') {
+                game.set_resign(true);
+                window.alert("Your opponent resigned");
+
+            } else if (update.updateType === 'DRAW') {
+                game.set_draw(true);
+                window.alert('You\'re opponent offered a draw');
+            }
         });
     });
 

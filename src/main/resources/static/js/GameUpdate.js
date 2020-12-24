@@ -5,6 +5,7 @@ class GameUpdate {
         this.to = to;
         this.newMove = newMove;
         this.newPosition = newPosition;
+        this.updateType = 'NEW_MOVE';
     }
 
     getObj() {
@@ -12,7 +13,16 @@ class GameUpdate {
             from: this.from,
             to: this.to,
             newMove: this.newMove,
-            newPosition: this.newPosition
+            newPosition: this.newPosition,
+            updateType: this.updateType
         };
+    }
+
+    resign() {
+        this.updateType = 'RESIGNATION';
+    }
+
+    draw() {
+        this.updateType = 'DRAW';
     }
 }

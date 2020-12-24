@@ -13,14 +13,16 @@ public class GameUpdate {
 
     private String newPosition;
 
-    public GameUpdate() {
+    private UpdateType updateType;
+
+
+    public enum UpdateType {
+        NEW_MOVE,
+        RESIGNATION,
+        DRAW
     }
 
-    public GameUpdate(String from, String to, String newMove, String newPosition) {
-        this.from = from;
-        this.to = to;
-        this.newMove = newMove;
-        this.newPosition = newPosition;
+    public GameUpdate() {
     }
 
     public String getFrom() {
@@ -55,12 +57,22 @@ public class GameUpdate {
         this.newPosition = newPosition;
     }
 
+    public UpdateType getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(UpdateType updateType) {
+        this.updateType = updateType;
+    }
+
     @Override
     public String toString() {
         return "GameUpdate{" +
                 "from='" + from + '\'' +
                 ", to='" + to + '\'' +
-                ", newPosition=" + newPosition +
+                ", newMove='" + newMove + '\'' +
+                ", newPosition='" + newPosition + '\'' +
+                ", type=" + updateType +
                 '}';
     }
 }

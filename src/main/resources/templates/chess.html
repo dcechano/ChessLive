@@ -9,6 +9,7 @@
     <title>Let's Play Chess</title>
 </head>
 <body>
+<!--TODO fix this so that less info is sent over-->
 <input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
 
 <nav class="nav">
@@ -17,8 +18,8 @@
         <li id="newGame" class="nav-link">New Game</li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
-                <a href="#" class="draw">Offer Draw</a>
-                <a href="#" class="resign">Resign</a>
+                <a id="offer_draw" href="#" class="draw">Offer Draw</a>
+                <a id="resign" href="#" class="resign">Resign</a>
                 <div class="window-close">
                     <span class="fa fa-window-close"></span>
                 </div>
