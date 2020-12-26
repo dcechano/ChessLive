@@ -32,7 +32,12 @@ function greySquare(square) {
 
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
-    if (game.game_over()) return false
+    if (game.game_over()) {
+        console.log('Game is over');
+        return false;
+    }
+
+    console.log('Game is not over');
 
     // or if it's not that side's turn
     let regEx = new RegExp(`^${color}`);
@@ -194,7 +199,7 @@ window.onresize = onWindowResize;
                 } else {
                     board.position(game.fen());
                     if (game.game_over()) {
-                        // TODO definetly make this more elegent
+                        // TODO definetly make this more elegant
                         window.alert("Game over");
                     }
                     updatePgn();
@@ -202,13 +207,32 @@ window.onresize = onWindowResize;
             //    TODO figure out what to do here
             } else if(update.updateType === 'RESIGNATION') {
                 game.set_resign(true);
-                window.alert("Your opponent resigned");
+                displayResult('Resignation');
 
-            } else if (update.updateType === 'DRAW') {
+            } else if (update.updateType === 'DRAW_OFFER') {
+                decideDrawOffer();
+            } else if (update.updateType === 'ACCEPT_DRAW') {
+                console.log('draw accepted')
                 game.set_draw(true);
-                window.alert('You\'re opponent offered a draw');
+                displayResult('Draw');
             }
         });
     });
 
 })();
+
+function displayResult(result) {
+    let game_result = document.getElementById('game_result');
+    let currActive = document.getElementsByClassName('active')[0];
+    currActive.classList.toggle('active');
+    game_result.classList.toggle('active');
+    let resultLabel = document.getElementById('result');
+    resultLabel.textContent = `Game finished by ${result}`
+}
+
+function decideDrawOffer() {
+    let draw_decision = document.getElementById('draw_decision');
+    let currActive = document.getElementsByClassName('active')[0];
+    currActive.classList.toggle('active');
+    draw_decision.classList.toggle('active');
+}

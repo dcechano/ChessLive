@@ -22,7 +22,15 @@ class GameUpdate {
         this.updateType = 'RESIGNATION';
     }
 
-    draw() {
-        this.updateType = 'DRAW';
+    offerDraw() {
+        this.updateType = 'DRAW_OFFER';
+    }
+
+    acceptDraw() {
+        this.updateType = "ACCEPT_DRAW";
+    }
+
+    declineDraw() {
+        this.updateType = "DECLINE_DRAW";
     }
 }

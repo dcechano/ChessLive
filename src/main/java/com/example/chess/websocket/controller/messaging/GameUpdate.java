@@ -19,7 +19,9 @@ public class GameUpdate {
     public enum UpdateType {
         NEW_MOVE,
         RESIGNATION,
-        DRAW
+        DRAW_OFFER,
+        ACCEPT_DRAW,
+        DECLINE_DRAW
     }
 
     public GameUpdate() {
