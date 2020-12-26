@@ -9,6 +9,7 @@
     <title>Let's Play Chess</title>
 </head>
 <body>
+<!--TODO fix this so that less info is sent over-->
 <input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
 
 <nav class="nav">
@@ -17,8 +18,8 @@
         <li id="newGame" class="nav-link">New Game</li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
-                <a href="#" class="draw">Offer Draw</a>
-                <a href="#" class="resign">Resign</a>
+                <a id="offer_draw" href="#" class="draw">Offer Draw</a>
+                <a id="resign" href="#" class="resign">Resign</a>
                 <div class="window-close">
                     <span class="fa fa-window-close"></span>
                 </div>
@@ -49,7 +50,7 @@
     <ul class="log-links">
         <li id="chat-link" class="widget-link selected" data-for="chat-log"><span class="fa fa-comments"></span></li>
         <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
-        <li id="FEN-link" class="widget-link" data-for="FEN-log"><span class="fa fa-chess-pawn"></span></li>
+        <li id="FEN-link" class="widget-link" data-for="fen-log"><span class="fa fa-chess-pawn"></span></li>
     </ul>
 </nav>
 <section class="logs">
@@ -81,6 +82,17 @@
         <ol id="fen-long-form" class="log-window">
 
         </ol>
+    </div>
+    <div id="game_result" class="log">
+        <p id="result" class="log-window"></p>
+    </div>
+    <div id="draw_decision" class="log">
+        <div class="log-window">
+            <p>You're opponent has offered a draw</p>
+            <div id="accept" class="decision">Accept</div>
+            <div id="decline" class="decision">Decline</div>
+        </div>
+
     </div>
 </section>
 </main>

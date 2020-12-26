@@ -354,6 +354,36 @@ a, a:visited {
     display: initial;
 }
 
+#accept {
+    border: 4px solid lightskyblue;
+    color: lightskyblue;
+}
+
+#accept:hover {
+    background-color: lightskyblue;
+    color: white;
+}
+
+#decline {
+    border: 4px solid crimson;
+    color: crimson;
+}
+
+#decline:hover {
+    background-color: crimson;
+    color: white;
+}
+
+.decision {
+    box-sizing: border-box;
+    background-color: inherit;
+    width: 100%;
+    height: 50px;
+    margin: 5px 0;
+    text-align: center;
+    padding-top: 10px;
+}
+
 .selected {
     color: lightskyblue;
 }
@@ -482,7 +512,7 @@ a, a:visited {
         grid-row: 2/4;
     }
 
-    .pgn {
+    .fen {
         display: none;
     }
 
