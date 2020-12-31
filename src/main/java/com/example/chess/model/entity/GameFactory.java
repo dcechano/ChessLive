@@ -9,13 +9,13 @@ public class GameFactory {
 
     public static Game createGame() {
         Game game = new Game();
-        game.setId(UUID.randomUUID());
+        game.setId(UUID.randomUUID().toString());
         return game;
     }
 
     public static Game createGame(Player player1, Player player2) {
         Game game = new Game();
-        game.setId(UUID.randomUUID());
+        game.setId(UUID.randomUUID().toString());
         if (System.currentTimeMillis() % 2 == 0) {
             game.setWhite(player1);
             game.setBlack(player2);

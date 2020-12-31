@@ -1,8 +1,9 @@
 package com.example.chess.model.entity;
 
-import com.example.chess.websocket.FEN;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table
@@ -16,8 +17,8 @@ public class Game extends AbstractEntity {
     @OneToOne
     private Player black;
 
-    @Column(name = "FEN")
-    private FEN FEN;
+    @Column(name = "PGN")
+    private String pgn;
 
     @Column(name = "RESULT")
     private String result;
@@ -25,6 +26,11 @@ public class Game extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "TIME_CONTROL")
     private TimeControl timeControl;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "DATE")
+    private LocalDate date;
+
 
     public Game() {
     }
@@ -45,12 +51,12 @@ public class Game extends AbstractEntity {
         this.black = black;
     }
 
-    public FEN getPgn() {
-        return FEN;
+    public String getPgn() {
+        return pgn;
     }
 
-    public void setPgn(FEN FEN) {
-        this.FEN = FEN;
+    public void setPgn(String pgn) {
+        this.pgn = pgn;
     }
 
     public String getResult() {
@@ -69,15 +75,24 @@ public class Game extends AbstractEntity {
         this.timeControl = timeControl;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
                 ", white=" + white +
                 ", black=" + black +
-                ", pgn=" + FEN +
+                ", pgn='" + pgn + '\'' +
                 ", result='" + result + '\'' +
                 ", timeControl=" + timeControl +
+                ", date=" + date +
                 "} " + super.toString();
     }
 }

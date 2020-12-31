@@ -182,7 +182,7 @@ a, a:visited {
     align-items: flex-end;
 }
 
-.pgn {
+#pgn {
     display: block;
     padding: 5px 10px;
     border-radius: 2px;
@@ -196,19 +196,18 @@ a, a:visited {
     box-sizing: border-box;
 }
 
-#fen .fen-link{
+.pgn-link{
     display: inline;
 }
 
-
-.fen-link:hover {
+.pgn-link:hover {
     background-color: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
     color: lightskyblue;
     cursor: pointer;
 }
 
-#pgn-long-form {
+#fen-long-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
@@ -230,7 +229,6 @@ a, a:visited {
     grid-column: 1/2;
     grid-row: auto;
 }
-
 
 #fen-long-form li:nth-of-type(2n) {
     text-align: right;
@@ -479,7 +477,7 @@ a, a:visited {
         height: 50px;
     }
 
-    #pgn-long-form {
+    #fen-long-form {
         grid-auto-rows: 25px;
     }
 }

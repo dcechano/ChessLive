@@ -20,7 +20,7 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
     @Override
     public void setPairedPlayers(Player white, Player black) {
         PairedPlayer pairedPlayer = new PairedPlayer(white, black);
-        pairedPlayer.setId(UUID.randomUUID());
+        pairedPlayer.setId(UUID.randomUUID().toString());
 
         this.entityManager.persist(pairedPlayer);
     }

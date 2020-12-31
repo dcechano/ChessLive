@@ -15,10 +15,7 @@ import java.util.logging.Logger;
 @Component
 public class GlobalManager {
 
-
-    private final ClientNotifier clientNotifier;
-
-    private final Logger logger;
+    private final Logger logger = Logger.getLogger(getClass().toString());
 
     private PlayerRepo playerRepo;
 
@@ -27,17 +24,12 @@ public class GlobalManager {
     private PairedPlayersRepo pairedPlayersRepo;
 
     private GameRepo gameRepo;
-
-    public GlobalManager(ClientNotifier clientNotifier) {
-        logger = Logger.getLogger(getClass().toString());
-        this.clientNotifier = clientNotifier;
-    }
     
     private Game awaitChallenge(Player player, TimeControl timeControl) {
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
         if (matchedPlayer == null) {
-            UUID waitId = waitListRepo.addPlayerToWaitList(player, timeControl);
+            String waitId = waitListRepo.addPlayerToWaitList(player, timeControl);
 
             if (pairedPlayersRepo.isPaired(player)) {
                 waitListRepo.deleteById(waitId);
@@ -55,15 +47,16 @@ public class GlobalManager {
             }
         } else {
             waitListRepo.delete(matchedPlayer);
-            return pair(player, matchedPlayer.getPlayer());
+            return pair(player, matchedPlayer.getPlayer(), timeControl);
         }
 
-        return pair(player, matchedPlayer.getPlayer());
+        return pair(player, matchedPlayer.getPlayer(), timeControl);
     }
 
-    private Game pair(Player player1, Player player2) {
+    private Game pair(Player player1, Player player2, TimeControl timeControl) {
         pairedPlayersRepo.setPairedPlayers(player1, player2);
         Game game = GameFactory.createGame(player1, player2);
+        game.setTimeControl(timeControl);
         gameRepo.save(game);
         return game;
     }

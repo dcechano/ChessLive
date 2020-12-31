@@ -2,6 +2,7 @@ package com.example.chess.webcontroller;
 
 import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.model.GlobalManager;
+import com.example.chess.model.dto.GameDTO;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -67,12 +68,12 @@ public class BaseController {
         model.addAttribute("user", player);
         model.addAttribute("game", game);
 
-//        TODO refactor this so the client isn't receiving sensitive data about opponent
-        model.addAttribute("gameAsJSON", new ObjectMapper().writeValueAsString(game));
+        //        TODO refactor this so the client isn't receiving sensitive data about opponent
+        model.addAttribute("gameAsJSON", new ObjectMapper()
+                .writeValueAsString(new GameDTO(game)));
+
         return "chess";
     }
-
-
 
     @GetMapping("/analysis")
     public String analysis() {

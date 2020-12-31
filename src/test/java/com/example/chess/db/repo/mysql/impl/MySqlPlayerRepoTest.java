@@ -8,50 +8,54 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class MySqlPlayerRepoTest {
+
+    Logger logger = Logger.getLogger(getClass().toString());
 
 
     @Qualifier("mySqlPlayerRepo")
     @Autowired
     PlayerRepo playerRepo;
 
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
+    int i = 0;
 
     @BeforeEach
     void setUp() {
         assertNotNull(playerRepo);
     }
 
-    @Order(1)
     @Test
-    @Transactional
     void save() {
+
+    }
+
+    @Test
+    void findById() {
+
         Player patrick = new Player();
-        patrick.setId(uuid);
-        patrick.setUsername("meow");
+        patrick.setId(uuid.toString());
+        patrick.setUsername("patrick");
         patrick.setPassword("password");
         patrick.setJoinDate(LocalDate.now());
         playerRepo.save(patrick);
 
-    }
-
-    @Order(2)
-    @Test
-    @Transactional
-    void findById() {
-        Optional<Player> result = playerRepo.findById(uuid);
-        if (result.isEmpty()) {
+        Optional<Player> optional = playerRepo.findById(uuid.toString());
+        if (optional.isEmpty()) {
             fail();
         }
+
     }
 }

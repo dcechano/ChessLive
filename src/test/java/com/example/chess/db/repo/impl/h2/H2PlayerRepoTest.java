@@ -34,7 +34,7 @@ class H2PlayerRepoTest {
     void findByUsername() {
         Player player = new Player();
         UUID id = UUID.randomUUID();
-        player.setId(id);
+        player.setId(id.toString());
         player.setUsername("dylan");
         player.setPassword("password");
         player.setJoinDate(LocalDate.now());
@@ -52,7 +52,7 @@ class H2PlayerRepoTest {
         logger.info("Doing the test");
         Player player = new Player();
         UUID id = UUID.randomUUID();
-        player.setId(id);
+        player.setId(id.toString());
         player.setUsername("john");
         player.setPassword("password");
         player.setJoinDate(LocalDate.now());

@@ -4,6 +4,7 @@ import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 

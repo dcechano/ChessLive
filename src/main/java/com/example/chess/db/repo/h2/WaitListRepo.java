@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface WaitListRepo extends AbstractRepo<WaitingPlayer> {
-    UUID addPlayerToWaitList(Player player, TimeControl timeControl);
+    String addPlayerToWaitList(Player player, TimeControl timeControl);
 
-    WaitingPlayer getWaitingPlayerByTimeControl(TimeControl timeControl, UUID exclusionId);
+    WaitingPlayer getWaitingPlayerByTimeControl(TimeControl timeControl, String exclusionId);
 
     List<WaitingPlayer> getWaitingPlayersByTimeControl(TimeControl timeControl);
 

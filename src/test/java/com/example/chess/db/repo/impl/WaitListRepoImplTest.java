@@ -48,13 +48,13 @@ class WaitListRepoImplTest {
     void addPlayerToWaitList() {
         Player player = new Player();
         UUID uuid = UUID.randomUUID();
-        player.setId(uuid);
+        player.setId(uuid.toString());
         player.setUsername("this is a test username");
         player.setPassword("passowrd");
         player.setJoinDate(LocalDate.now());
         playerRepo.save(player);
 
-        UUID waitingId = waitListRepo.addPlayerToWaitList(player, TimeControl.TWO_PLUS_1);
+        String waitingId = waitListRepo.addPlayerToWaitList(player, TimeControl.TWO_PLUS_1);
         Optional<WaitingPlayer> opt = waitListRepo.findById(waitingId);
         if (opt.isEmpty()) {
             fail("Optional was empty!");
@@ -86,7 +86,7 @@ class WaitListRepoImplTest {
     void isPaired() {
         Player dylan = new Player();
         UUID dylanId = UUID.randomUUID();
-        dylan.setId(dylanId);
+        dylan.setId(dylanId.toString());
         dylan.setUsername("dylan");
         dylan.setPassword("password");
         playerRepo.save(dylan);
@@ -95,7 +95,7 @@ class WaitListRepoImplTest {
         UUID donovanId = UUID.randomUUID();
         donovan.setUsername("donovan");
         donovan.setPassword("password");
-        donovan.setId(donovanId);
+        donovan.setId(donovanId.toString());
         playerRepo.save(donovan);
 
         pairedPlayersRepo.setPairedPlayers(dylan, donovan);
@@ -106,14 +106,14 @@ class WaitListRepoImplTest {
     void getPairedPlayer() {
         Player dylan = new Player();
         UUID dylanId = UUID.randomUUID();
-        dylan.setId(dylanId);
+        dylan.setId(dylanId.toString());
         dylan.setUsername("dylan");
         dylan.setPassword("password");
         playerRepo.save(dylan);
 
         Player donovan = new Player();
         UUID donovanId = UUID.randomUUID();
-        donovan.setId(donovanId);
+        donovan.setId(donovanId.toString());
         donovan.setPassword("password");
         donovan.setUsername("donovan");
         playerRepo.save(donovan);

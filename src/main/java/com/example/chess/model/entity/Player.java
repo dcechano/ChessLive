@@ -1,9 +1,6 @@
 package com.example.chess.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,9 +14,6 @@ public class Player extends AbstractEntity{
     @Column(name = "PASSWORD")
     private String password;
 
-    @Transient
-//    @OneToMany(mappedBy = "white")
-    private List<Game> gameList;
 
     @Column(name = "JOIN_DATE")
     private LocalDate joinDate;
@@ -43,13 +37,6 @@ public class Player extends AbstractEntity{
         this.password = password;
     }
 
-    public List<Game> getGameList() {
-        return gameList;
-    }
-
-    public void setGameList(List<Game> gameList) {
-        this.gameList = gameList;
-    }
 
     public LocalDate getJoinDate() {
         return joinDate;
@@ -64,7 +51,6 @@ public class Player extends AbstractEntity{
         return "Player{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", gameList=" + gameList +
                 ", joinDate=" + joinDate +
                 "} " + super.toString();
     }

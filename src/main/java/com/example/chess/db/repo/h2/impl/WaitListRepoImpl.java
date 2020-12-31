@@ -21,10 +21,10 @@ public class WaitListRepoImpl extends H2AbstractRepoImpl<WaitingPlayer> implemen
     }
 
     @Override
-    public UUID addPlayerToWaitList(Player player, TimeControl timeControl) {
+    public String addPlayerToWaitList(Player player, TimeControl timeControl) {
         WaitingPlayer waitingPlayer = new WaitingPlayer();
         waitingPlayer.setPlayer(player);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         waitingPlayer.setId(id);
         waitingPlayer.setTimeControl(timeControl);
         waitingPlayer.setCreatedAt(LocalDateTime.now());
@@ -33,7 +33,7 @@ public class WaitListRepoImpl extends H2AbstractRepoImpl<WaitingPlayer> implemen
     }
 
     @Override
-    public WaitingPlayer getWaitingPlayerByTimeControl(TimeControl timeControl, UUID exclusionId) {
+    public WaitingPlayer getWaitingPlayerByTimeControl(TimeControl timeControl, String exclusionId) {
         TypedQuery<WaitingPlayer> query = this.entityManager.createQuery(
                 "SELECT w FROM WaitingPlayer w WHERE w.timeControl =: time_control AND w.player.id !=: exclusionId", WaitingPlayer.class);
         query.setParameter("time_control", timeControl);

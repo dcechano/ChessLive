@@ -17,7 +17,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 @Configuration
 @EnableTransactionManagement
@@ -31,8 +30,6 @@ public class MySqlConfig {
         try {
             dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
         } catch (PropertyVetoException e) {
-            Logger logger = Logger.getLogger(getClass().toString());
-            logger.warning("PropertyVetoException throw assigning the database driver");
             e.printStackTrace();
         }
         dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/chesslive");

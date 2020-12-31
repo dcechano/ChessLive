@@ -44,22 +44,18 @@
         <div id="you" class="username" th:text="${user.username}">SirRobin95</div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
-    <ol id="fen" class="FEN">Waiting for the first move!</ol>
+    <ol id="pgn">Waiting for the first move!</ol>
 
 <nav class="logs-nav">
     <ul class="log-links">
         <li id="chat-link" class="widget-link selected" data-for="chat-log"><span class="fa fa-comments"></span></li>
         <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
-        <li id="FEN-link" class="widget-link" data-for="fen-log"><span class="fa fa-chess-pawn"></span></li>
+        <li id="fen-link" class="widget-link" data-for="fen-log"><span class="fa fa-chess-pawn"></span></li>
     </ul>
 </nav>
 <section class="logs">
     <div id="chat-log" class="log active">
         <ol id="chat-messages" class="log-window">
-            <li class="opponent-message">Hello there</li>
-            <li class="user-message">Yo</li>
-            <li class="opponent-message">Good luck!</li>
-            <li class="user-message">You too!</li>
         </ol>
         <div class="input-wrap">
             <button id="chat-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
@@ -68,9 +64,6 @@
     </div>
     <div id="notes-log" class="log">
         <ol id="notes" class="log-window">
-            <li class="note">This is a note!</li>
-            <li class="note">This is a note!</li>
-            <li class="note">This is a note!</li>
             <li class="note">This is a note!</li>
         </ol>
         <div class="input-wrap">

@@ -4,15 +4,14 @@ let board = null;
 const game = new Chess();
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
-const fen = $('#fen');
+const pgn = $('#pgn');
 const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
-const color = gameData.white.username === me.textContent ? 'w' : 'b';
+const color = gameData.white === me.textContent ? 'w' : 'b';
 let stompClient = null;
-
-
+console.log(JSON.stringify(gameData));
 let moveList = [];
 
 function removeGreySquares() {
@@ -20,28 +19,24 @@ function removeGreySquares() {
 }
 
 function greySquare(square) {
-    let $square = $('#board .square-' + square)
+    if (!game.game_over()) {
+        let $square = $('#board .square-' + square)
 
-    let background = whiteSquareGrey
-    if ($square.hasClass('black-3c85d')) {
-        background = blackSquareGrey
+        let background = whiteSquareGrey
+        if ($square.hasClass('black-3c85d')) {
+            background = blackSquareGrey
+        }
+
+        $square.css('background', background)
     }
-
-    $square.css('background', background)
 }
 
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
-    if (game.game_over()) {
-        console.log('Game is over');
-        return false;
-    }
-
-    console.log('Game is not over');
+    if (game.game_over()) return false;
 
     // or if it's not that side's turn
     let regEx = new RegExp(`^${color}`);
-    console.log(piece.search(regEx));
     if (game.turn() !== color || piece.search(regEx) === -1) {
         return false
     }
@@ -86,25 +81,22 @@ function onMouseoutSquare(square, piece) {
 }
 
 function onSnapEnd(source, target, piece) {
-    let fen = game.fen();
-    board.position(fen);
     updatePgn();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, `${source}-${target}`, fen);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, `${source}-${target}`, game.fen());
     sendData(gameUpdate);
 }
 
 function updatePgn() {
-
     let newMove = game.pgn().split(/(?<!\d\.) /).pop();
-    moveList.push(`<li class="fen-link" data-fen="${game.fen()}">${newMove} </li>`);
-    fen.html(moveList.join(' '));
+    moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${newMove} </li>`);
+    pgn.html(moveList.join(' '));
 
     pgnLog.innerHTML = moveList.join(' ');
     addPgnListeners();
 }
 
 function addPgnListeners() {
-    let node = fen.children();
+    let node = pgn.children();
 
     for (let i = 0; i < node.length; i++) {
         node[i].addEventListener('click', function () {
@@ -128,7 +120,7 @@ function sendData(gameUpdate) {
 
 
 const config = {
-    orientation: gameData.white.username === me.textContent ? 'white' : 'black',
+    orientation: gameData.white === me.textContent ? 'white' : 'black',
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
@@ -153,12 +145,11 @@ function determineSize() {
         arg.style.width = newWidth + 'px';
     }
 
-    let fen = document.getElementById('fen');
-    fen.style.width = newWidth + 'px';
+    let pgn = document.getElementById('pgn');
+    pgn.style.width = newWidth + 'px';
 }
 
 function onWindowResize() {
-    console.log('window resizing');
     board.resize();
     determineSize();
 }
@@ -174,14 +165,13 @@ window.onresize = onWindowResize;
         console.log(`Logging frame: ${frame}`);
 
         stompClient.subscribe("/user/getGame", function (data) {
-            console.log("message recieved from the /user/getGame endpoint");
             console.log(JSON.stringify(data.body));
         });
 
         stompClient.subscribe('/user/queue/update', function (data) {
             let update = JSON.parse(data.body);
 
-            if (update.updateType === null || update.updateType === undefined) {
+            if (!update.updateType) {
                 throw new Error("The type of update hasn't been set for GameUpdate object");
             }
 
@@ -209,12 +199,21 @@ window.onresize = onWindowResize;
                 game.set_resign(true);
                 displayResult('Resignation');
 
+                gameData.pgn = game.moves().join(' ');
+                gameData.result = `${color} won by resignation`;
+
+                stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
+
             } else if (update.updateType === 'DRAW_OFFER') {
                 decideDrawOffer();
             } else if (update.updateType === 'ACCEPT_DRAW') {
-                console.log('draw accepted')
                 game.set_draw(true);
+
                 displayResult('Draw');
+                gameData.pgn = game.moves().join(' ');
+                gameData.result = 'Game drawn by agreement';
+                stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
+
             }
         });
     });
