@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link rel="stylesheet" th:href="@{css/profile.css}">
+    <title>ChessLive - Username</title>
+</head>
+<body>
+
+<nav class="nav">
+    <ul class="nav-links">
+        <li class="nav-link">Play</li>
+        <li class="nav-link"><a th:href="@{/analysis}">Analysis</a></li>
+        <li class="nav-link"><a th:href="@{/login}">Login</a></li>
+        <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/profile}"
+                                                                  th:text="${session.user.username}"></a></li>
+    </ul>
+</nav>
+<div class="profile-wrapper">
+    <aside class="about_me">
+        <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="" src="">
+        <p class="bio">Hi! I like to play chess</p>
+    </aside>
+
+
+    <aside class="stats"></aside>
+    <section class="games"></section>
+</div>
+
+
+</body>
+</html>

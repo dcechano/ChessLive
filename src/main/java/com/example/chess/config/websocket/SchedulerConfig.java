@@ -1,4 +1,4 @@
-package com.example.chess.websocket.config;
+package com.example.chess.config.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

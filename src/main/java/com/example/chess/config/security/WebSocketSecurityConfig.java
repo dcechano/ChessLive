@@ -1,4 +1,4 @@
-package com.example.chess.security;
+package com.example.chess.config.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;

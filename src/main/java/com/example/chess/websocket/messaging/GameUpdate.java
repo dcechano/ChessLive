@@ -1,4 +1,4 @@
-package com.example.chess.websocket.controller.messaging;
+package com.example.chess.websocket.messaging;
 
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,10 @@ public class GameUpdate {
         RESIGNATION,
         DRAW_OFFER,
         ACCEPT_DRAW,
-        DECLINE_DRAW
+        DECLINE_DRAW;
+
+        UpdateType() {
+        }
     }
 
     public GameUpdate() {

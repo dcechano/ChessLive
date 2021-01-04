@@ -12,6 +12,7 @@
         <li class="nav-link">Play</li>
         <li class="nav-link"><a th:href="@{/analysis}">Analysis</a></li>
         <li class="nav-link"><a th:href="@{/login}">Login</a></li>
+        <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/profile}" th:text="${session.user.username}"></a></li>
     </ul>
 </nav>
 <aside class="wrapper">
