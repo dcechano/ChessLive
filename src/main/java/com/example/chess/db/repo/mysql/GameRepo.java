@@ -10,6 +10,6 @@ public interface GameRepo extends AbstractRepo<Game>{
 
     List<Game> findGamesByPlayer(Player player);
 
-
+    List<Game> findGamesByUsername(String username);
 
 }

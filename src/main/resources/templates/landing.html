@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -9,10 +9,16 @@
 <body>
 <nav class="nav">
     <ul class="nav-links">
+        <li class="nav-link" sec:authorize="isAuthenticated()">
+            <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
+        </li>
         <li class="nav-link">Play</li>
-        <li class="nav-link"><a th:href="@{/analysis}">Analysis</a></li>
-        <li class="nav-link"><a th:href="@{/login}">Login</a></li>
-        <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/profile}" th:text="${session.user.username}"></a></li>
+        <li class="nav-link">
+            <a th:href="@{/analysis}">Analysis</a>
+        </li>
+        <li class="nav-link" sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Login</a>
+        </li>
     </ul>
 </nav>
 <aside class="wrapper">

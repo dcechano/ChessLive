@@ -64,6 +64,10 @@ a, a:visited {
     color: #35be35;
 }
 
+.profile-link:visited {
+    color: lightskyblue;
+}
+
 .endgame{
     cursor: pointer;
 }

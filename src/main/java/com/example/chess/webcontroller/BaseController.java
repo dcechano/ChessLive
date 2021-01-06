@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Controller
@@ -24,12 +26,16 @@ public class BaseController {
 
     private final GlobalManager globalManager;
 
-    private final GameRepo gameRepo;
+    private final com.example.chess.db.repo.mysql.GameRepo mySqlGameRepo;
+
+    private final GameRepo h2GameRepo;
 
 
-    public BaseController(GlobalManager globalManager, @Qualifier("h2GameRepo") GameRepo gameRepo) {
+    public BaseController(GlobalManager globalManager, @Qualifier("h2GameRepo") GameRepo h2GameRepo,
+                          com.example.chess.db.repo.mysql.GameRepo mySqlGameRepo) {
         this.globalManager = globalManager;
-        this.gameRepo = gameRepo;
+        this.h2GameRepo = h2GameRepo;
+        this.mySqlGameRepo = mySqlGameRepo;
         logger = Logger.getLogger(getClass().toString());
     }
 
@@ -51,7 +57,7 @@ public class BaseController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            game = gameRepo.getGameByPlayer(player);
+            game = h2GameRepo.getGameByPlayer(player);
         }
 
 
@@ -74,8 +80,13 @@ public class BaseController {
         return "chess";
     }
 
-    @GetMapping("/profile")
-    public String profile() {
+    @GetMapping("/user/{username}")
+    public String profile(@PathVariable("username") String username, Model model) {
+        List<Game> games = mySqlGameRepo.findGamesByUsername(username);
+        for (Game game : games) {
+            logger.info(game.toString());
+        }
+        model.addAttribute("games", games);
         return "profile";
     }
 
@@ -84,6 +95,7 @@ public class BaseController {
         return "analysis";
     }
 
+//    TODO remove this mapping before publication
     @GetMapping("/websocket")
     public String socket() {
         return "websocket";

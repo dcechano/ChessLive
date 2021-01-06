@@ -1,20 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{css/style.css}">
-    <link rel="stylesheet" th:href="@{css/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
     <title>ChessLive - Username</title>
 </head>
 <body>
 
+<!--TODO make this nav bar more appropriate for the page-->
 <nav class="nav">
     <ul class="nav-links">
+        <li class="nav-link" sec:authorize="isAuthenticated()">
+            <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
+        </li>
         <li class="nav-link">Play</li>
-        <li class="nav-link"><a th:href="@{/analysis}">Analysis</a></li>
-        <li class="nav-link"><a th:href="@{/login}">Login</a></li>
-        <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/profile}"
-                                                                  th:text="${session.user.username}"></a></li>
+        <li class="nav-link">
+            <a th:href="@{/analysis}">Analysis</a>
+        </li>
+        <li class="nav-link" sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Login</a>
+        </li>
     </ul>
 </nav>
 <div class="profile-wrapper">
@@ -25,7 +31,14 @@
 
 
     <aside class="stats"></aside>
-    <section class="games"></section>
+    <section class="games">
+        <div th:each="game : ${games}">
+            <h4 th:text="${game.white.username} + ' ' + ${game.black.username}"></h4>
+            <h6 th:text="${game.timeControl}"></h6>
+            <p th:text="${game.result}"></p>
+            <hr>
+        </div>
+    </section>
 </div>
 
 

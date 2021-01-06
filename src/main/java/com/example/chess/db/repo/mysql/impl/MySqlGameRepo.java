@@ -25,4 +25,18 @@ public class MySqlGameRepo extends MySqlAbstractRepo<Game> implements GameRepo {
         return query.getResultList();
     }
 
+    @Override
+    public List<Game> findGamesByUsername(String username) {
+//        TypedQuery<Game> query = this.entityManager.createQuery(
+//                "SELECT g.id, g.timeControl, g.white.username, g.black.username, g.white.id, g.black.id " +
+//                        "FROM Game g WHERE g.white.username =: username OR g.black.username =: username",
+//                Game.class);
+        TypedQuery<Game> query = this.entityManager.createQuery(
+                "SELECT g FROM Game g WHERE g.white.username =: username OR g.black.username =: username",
+                Game.class);
+        query.setParameter("username", username);
+
+        return query.getResultList();
+    }
+
 }
