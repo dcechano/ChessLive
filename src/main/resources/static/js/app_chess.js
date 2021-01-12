@@ -9,10 +9,11 @@ const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
-const color = gameData.white === me.textContent ? 'w' : 'b';
+const color = gameData.white === me.textContent ? 'white' : 'black';
 let stompClient = null;
 console.log(JSON.stringify(gameData));
 let moveList = [];
+let FENList = [];
 
 function removeGreySquares() {
     $('#board .square-55d63').css('background', '');
@@ -36,8 +37,8 @@ function onDragStart(source, piece) {
     if (game.game_over()) return false;
 
     // or if it's not that side's turn
-    let regEx = new RegExp(`^${color}`);
-    if (game.turn() !== color || piece.search(regEx) === -1) {
+    let regEx = new RegExp(`^${color[0]}`);
+    if (game.turn() !== color[0] || piece.search(regEx) === -1) {
         return false
     }
 }
@@ -189,8 +190,7 @@ window.onresize = onWindowResize;
                 } else {
                     board.position(game.fen());
                     if (game.game_over()) {
-                        // TODO definetly make this more elegant
-                        window.alert("Game over");
+                        displayResult('Checkmate');
                     }
                     updatePgn();
                 }
@@ -199,7 +199,7 @@ window.onresize = onWindowResize;
                 game.set_resign(true);
                 displayResult('Resignation');
 
-                gameData.pgn = game.moves().join(' ');
+                gameData.pgn = game.history().join(' ');
                 gameData.result = `${color} won by resignation`;
 
                 stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
@@ -210,7 +210,7 @@ window.onresize = onWindowResize;
                 game.set_draw(true);
 
                 displayResult('Draw');
-                gameData.pgn = game.moves().join(' ');
+                gameData.pgn = game.history().join(' ');
                 gameData.result = 'Game drawn by agreement';
                 stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
 

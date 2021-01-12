@@ -1,9 +1,11 @@
 package com.example.chess.websocket.controller;
 
 import com.example.chess.db.repo.PlayerRepo;
+import com.example.chess.db.repo.h2.PairedPlayersRepo;
 import com.example.chess.db.repo.mysql.GameRepo;
 import com.example.chess.model.dto.GameDTO;
 import com.example.chess.model.entity.Game;
+import com.example.chess.model.entity.Player;
 import com.example.chess.websocket.messaging.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +15,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import javax.persistence.PersistenceException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -34,6 +35,8 @@ public class WebSocketController {
 
     private PlayerRepo playerRepo;
 
+    private PairedPlayersRepo pairedPlayersRepo;
+
     public WebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
         logger = Logger.getLogger(getClass().toString());
@@ -48,25 +51,21 @@ public class WebSocketController {
 
     @MessageMapping("/gameOver")
     public void gameOver(GameDTO gameDto) {
-        logger.info("GameOver endpoint triggered");
-        logger.info(gameDto.toString());
         Optional<Game> gameOp = h2GameRepo.findById(gameDto.getGameId());
         if (gameOp.isEmpty()) {
             return;
         }
-        gameOp.ifPresent(game ->{
-            try {
-                game.setPgn(gameDto.getPgn());
-                game.setResult(gameDto.getResult());
-                game.setDate(LocalDate.now());
-                game.setWhite(playerRepo.findByUsername(gameDto.getWhite()));
-                game.setBlack(playerRepo.findByUsername(gameDto.getBlack()));
-                mySqlGameRepo.save(game);
-                h2GameRepo.delete(game);
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-            }
-        });
+        Game game = gameOp.get();
+        Player white = playerRepo.findByUsername(gameDto.getWhite());
+        pairedPlayersRepo.removePairing(white);
+        game.setPgn(gameDto.getPgn());
+        game.setResult(gameDto.getResult());
+        game.setDate(LocalDate.now());
+        game.setWhite(playerRepo.findByUsername(gameDto.getWhite()));
+        game.setBlack(playerRepo.findByUsername(gameDto.getBlack()));
+        mySqlGameRepo.save(game);
+        h2GameRepo.delete(game);
+
     }
 
     @MessageMapping("/message")
@@ -88,5 +87,10 @@ public class WebSocketController {
     @Autowired
     public void setPlayerRepo(@Qualifier("mySqlPlayerRepo") PlayerRepo playerRepo) {
         this.playerRepo = playerRepo;
+    }
+
+    @Autowired
+    public void setPairedPlayersRepo(PairedPlayersRepo pairedPlayersRepo) {
+        this.pairedPlayersRepo = pairedPlayersRepo;
     }
 }

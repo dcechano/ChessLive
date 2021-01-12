@@ -222,8 +222,8 @@ a, a:visited {
 
 #fen-long-form li {
     width: 100%;
-    border-bottom: 1px solid #676767;
-    border-left:1px solid #676767;
+    /*border-bottom: 1px solid #676767;*/
+    /*border-left:1px solid #676767;*/
     list-style: none;
     padding-top: 5px;
 
@@ -239,15 +239,9 @@ a, a:visited {
     text-align: right;
     grid-column: 2/3;
     grid-row: auto;
-    border-right:1px solid #676767;
-}
-
-#fen-long-form li:nth-of-type(1){
-    border-top: 1px solid #676767;
 }
 
 #fen-long-form li:nth-of-type(2){
-    border-top:1px solid #676767;
     padding-left: 1px;
 }
 

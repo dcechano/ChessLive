@@ -25,7 +25,8 @@ public class GameDTO {
     public GameDTO(Game game) {
         this.white = game.getWhite().getUsername();
         this.black = game.getBlack().getUsername();
-        this.gameId = game.getId().toString();
+        this.gameId = game.getId();
+        this.pgn = game.getPgn();
         this.timeControl = game.getTimeControl();
         this.result = game.getResult();
     }

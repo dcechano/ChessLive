@@ -50,8 +50,9 @@ public class Player extends AbstractEntity{
     @Override
     public String toString() {
         return "Player{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", joinDate=" + joinDate +
                 "} " + super.toString();
     }

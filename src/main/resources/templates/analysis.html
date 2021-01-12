@@ -6,10 +6,13 @@
     <link rel="stylesheet" th:href="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/theme.css}">
-    <title>Let's Play Chess</title>
+    <title>Analysis</title>
 </head>
 <body>
 
+<input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
+
+<!--TODO fix. Some links have no meaning in an analysis context-->
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link"><a href="#" class="profile-link">SirRobin95</a></li>
@@ -25,54 +28,36 @@
         </li>
     </ul>
 </nav>
-
 <main class="container">
 
     <div id="player2-info" class="user-info">
-        <div class="username" th:text="BennyJBentley"></div>
+        <div class="username" th:text="${game.black.username}"></div>
         <div id="clock1" class="black-clock clock">2:00</div>
     </div>
 
     <div id="board"></div>
 
     <div id="player1-info" class="user-info">
-        <div class="username" th:text="SirRobin95">SirRobin95</div>
+        <div class="username" th:text="${game.white.username}"></div>
         <div id="clock2" class="white-clock clock">2:00</div>
     </div>
 
-
     <nav class="logs-nav">
         <ul class="log-links">
-            <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
             <li id="FEN-link" class="widget-link" data-for="FEN-log"><span class="fa fa-chess-pawn"></span></li>
         </ul>
     </nav>
     <section class="logs">
-        <div id="notes-log" class="log">
-            <ol id="notes" class="log-window">
-                <li class="note">This is a note!</li>
-                <li class="note">This is a note!</li>
-                <li class="note">This is a note!</li>
-                <li class="note">This is a note!</li>
-            </ol>
-            <div class="input-wrap">
-                <button id="notes-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>
-                <input id="notes-input" type="text" class="input" placeholder="Observations?">
-            </div>
-        </div>
-        <div id="fen-log" class="log">
-            <ol id="fen-long-form" class="log-window">
-
-            </ol>
+        <div id="fen-log" class="log active">
+            <ol id="fen-long-form" class="log-window"></ol>
         </div>
     </section>
 </main>
 
-<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
 <script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>
 <script th:src="@{/libraries/node_modules/jquery/dist/jquery.js}"></script>
 <script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
+<script th:src="@{/js/app.js}"></script>
 <script th:src="@{/js/analysis.js}"></script>
 </body>
 </html>

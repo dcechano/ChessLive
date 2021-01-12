@@ -10,6 +10,8 @@ public interface PairedPlayersRepo extends AbstractRepo<PairedPlayer> {
 
     Player getPairedPlayer(Player player);
 
+    void removePairing(Player player);
+
     boolean isPaired(Player player);
 
 }

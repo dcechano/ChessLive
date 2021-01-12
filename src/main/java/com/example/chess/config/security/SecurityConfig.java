@@ -27,10 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/game/img/**", "/libraries/**",
+        web.ignoring().antMatchers("/img/**", "/libraries/**",
                 "/css/**", "/js/**", "/webjars/**");
     }
 
+//    TODO remove and clean up the /secured/* endpoints. These aren't used anymore
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -39,7 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/secured/success",
                         "/secured/socket",
                         "/").authenticated()
-                .antMatchers("/")
+                .antMatchers("/",
+                        "/user/**",
+                        "/archive/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()

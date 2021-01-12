@@ -14,7 +14,7 @@ class GameUpdate {
             to: this.to,
             newMove: this.newMove,
             newPosition: this.newPosition,
-            updateType: this.updateType
+            updateType: this.updateType,
         };
     }
 

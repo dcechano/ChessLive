@@ -32,11 +32,12 @@
 
     <aside class="stats"></aside>
     <section class="games">
-        <div th:each="game : ${games}">
-            <h4 th:text="${game.white.username} + ' ' + ${game.black.username}"></h4>
-            <h6 th:text="${game.timeControl}"></h6>
-            <p th:text="${game.result}"></p>
-            <hr>
+        <div class="game" th:each="game : ${games}">
+            <a class="game_info player_summary" th:href="@{'/archive/' + ${game.id}}"
+               th:text="${game.white.username} + ' v. ' + ${game.black.username}"></a>
+            <a class="game_info" th:text="${game.timeControl.prettyCode()}"
+               th:href="@{'/archive/' + ${game.id}}"></a>
+            <p class="game_info result" th:text="${game.result}" th:href="@{'/archive/' + ${game.id}}"></p>
         </div>
     </section>
 </div>

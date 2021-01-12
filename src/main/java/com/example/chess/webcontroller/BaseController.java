@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Controller
 public class BaseController {
 
-    Logger logger;
+    private Logger logger;
 
     private final GlobalManager globalManager;
 
@@ -60,8 +61,7 @@ public class BaseController {
             game = h2GameRepo.getGameByPlayer(player);
         }
 
-
-        String gameId = game.getId().toString();
+        String gameId = game.getId();
         httpSession.setAttribute("currentGame", game);
 
         return "redirect:/game/" + gameId;
@@ -70,10 +70,8 @@ public class BaseController {
     @GetMapping("/game/{gameId}")
     public String game(Model model, @SessionAttribute("currentGame") Game game,
                        @SessionAttribute("user") Player player) throws JsonProcessingException {
-
         model.addAttribute("user", player);
         model.addAttribute("game", game);
-
         model.addAttribute("gameAsJSON", new ObjectMapper()
                 .writeValueAsString(new GameDTO(game)));
 
@@ -81,13 +79,25 @@ public class BaseController {
     }
 
     @GetMapping("/user/{username}")
-    public String profile(@PathVariable("username") String username, Model model) {
+    public String profile(@PathVariable String username, Model model) {
         List<Game> games = mySqlGameRepo.findGamesByUsername(username);
-        for (Game game : games) {
-            logger.info(game.toString());
-        }
         model.addAttribute("games", games);
         return "profile";
+    }
+
+    @GetMapping("/archive/{gameId}")
+    public String archivedGame(@PathVariable String gameId, Model model) throws JsonProcessingException {
+
+        Optional<Game> optional = mySqlGameRepo.findById(gameId);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Server error. Game with id: " + gameId +
+                    " could not be found");
+        }
+        Game game = optional.get();
+        GameDTO dto = new GameDTO(game);
+        model.addAttribute("gameAsJSON", new ObjectMapper().writeValueAsString(dto));
+        model.addAttribute("game", game);
+        return "analysis";
     }
 
     @GetMapping("/analysis")

@@ -6,7 +6,9 @@ import com.example.chess.model.entity.Player;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -38,6 +40,22 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
     }
 
     @Override
+    public void removePairing(Player player) {
+//        logger.info("Printing the state of the PairedPlayer DB before removal");
+//        for (PairedPlayer p : this.findAll()) {
+//            logger.info(p.toString());
+//        }
+        Query query = this.entityManager.createQuery(
+                "DELETE FROM PairedPlayer p WHERE p.white =: player OR p.black =: player");
+        query.setParameter("player", player);
+        query.executeUpdate();
+//        logger.info("Printing state of DB after PairedPlayer removal");
+//        for (PairedPlayer p : this.findAll()) {
+//            logger.info(p.toString());
+//        }
+    }
+
+    @Override
     public boolean isPaired(Player player) {
 
         TypedQuery<Long> query = this.entityManager.createQuery(
@@ -45,4 +63,11 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
         query.setParameter("player", player);
         return query.getSingleResult() > 0;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<PairedPlayer> findAll() {
+        return this.entityManager.createQuery("SELECT p FROM PairedPlayer p").getResultList();
+    }
+
+
 }

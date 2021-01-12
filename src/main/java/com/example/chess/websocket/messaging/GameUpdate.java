@@ -1,8 +1,6 @@
 package com.example.chess.websocket.messaging;
 
-import org.springframework.stereotype.Component;
 
-@Component
 public class GameUpdate {
 
     private String from;
@@ -77,7 +75,7 @@ public class GameUpdate {
                 ", to='" + to + '\'' +
                 ", newMove='" + newMove + '\'' +
                 ", newPosition='" + newPosition + '\'' +
-                ", type=" + updateType +
+                ", updateType=" + updateType +
                 '}';
     }
 }

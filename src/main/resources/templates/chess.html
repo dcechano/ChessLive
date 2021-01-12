@@ -9,7 +9,6 @@
     <title>Let's Play Chess</title>
 </head>
 <body>
-<!--TODO fix this so that less info is sent over-->
 <input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
 
 <nav class="nav">
@@ -98,6 +97,6 @@
 <script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
 <script th:src="@{/js/GameUpdate.js}"></script>
 <script th:src="@{/js/app_chess.js}"></script>
-<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/chess_dom_init.js}"></script>
 </body>
 </html>
