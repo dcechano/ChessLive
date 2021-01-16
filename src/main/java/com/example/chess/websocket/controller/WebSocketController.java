@@ -44,13 +44,12 @@ public class WebSocketController {
 
     @MessageMapping("/updateOpponent")
     public void sendToUser(@Payload GameUpdate gameUpdate, Principal principal) {
-        logger.info("/sendToUser endpoint hit by " + principal.getName());
         logger.info("Printing the GameUpdate object: " + gameUpdate.toString());
         messagingTemplate.convertAndSendToUser(gameUpdate.getTo(), "/queue/update", gameUpdate);
     }
 
     @MessageMapping("/gameOver")
-    public void gameOver(GameDTO gameDto) {
+    public void gameOver(@Payload GameDTO gameDto) {
         Optional<Game> gameOp = h2GameRepo.findById(gameDto.getGameId());
         if (gameOp.isEmpty()) {
             return;

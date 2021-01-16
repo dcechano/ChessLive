@@ -140,10 +140,9 @@ function onWindowResize() {
 (function () {
     for (let m of gameData.pgn.split(' ')) {
         game.move(m);
-        console.log(game.ascii());
         moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${m} </li>`);
-
     }
+
     board.position(game.fen());
     // let moves = game.pgn().split(/(?<!\d\.) /);
     // for (let m of moves) {

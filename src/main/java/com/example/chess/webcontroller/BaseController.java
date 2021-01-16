@@ -82,6 +82,7 @@ public class BaseController {
     public String profile(@PathVariable String username, Model model) {
         List<Game> games = mySqlGameRepo.findGamesByUsername(username);
         model.addAttribute("games", games);
+        model.addAttribute("username", username);
         return "profile";
     }
 

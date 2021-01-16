@@ -13,6 +13,7 @@ public class GameUpdate {
 
     private UpdateType updateType;
 
+    private int seconds;
 
     public enum UpdateType {
         NEW_MOVE,
@@ -68,6 +69,14 @@ public class GameUpdate {
         this.updateType = updateType;
     }
 
+    public int getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+
     @Override
     public String toString() {
         return "GameUpdate{" +
@@ -76,6 +85,7 @@ public class GameUpdate {
                 ", newMove='" + newMove + '\'' +
                 ", newPosition='" + newPosition + '\'' +
                 ", updateType=" + updateType +
+                ", seconds=" + seconds +
                 '}';
     }
 }
