@@ -1,11 +1,12 @@
 class GameUpdate {
 
-    constructor(from, to, newMove, newPosition) {
+    constructor(from, to, newMove, newPosition, seconds) {
         this.from = from;
         this.to = to;
         this.newMove = newMove;
         this.newPosition = newPosition;
         this.updateType = 'NEW_MOVE';
+        this.seconds = seconds;
     }
 
     getObj() {
@@ -14,6 +15,7 @@ class GameUpdate {
             to: this.to,
             newMove: this.newMove,
             newPosition: this.newPosition,
+            seconds: this.seconds,
             updateType: this.updateType,
         };
     }

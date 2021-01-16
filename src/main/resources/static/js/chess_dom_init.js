@@ -47,7 +47,8 @@ resign.addEventListener('click', function (e) {
     e.stopPropagation();
     closeWindow();
     game.set_resign(true);
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    stopClocks();
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null, myClock.seconds);
     gameUpdate.resign();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
     displayResult('Resignation');
@@ -67,6 +68,8 @@ let accept = document.getElementById('accept');
 accept.addEventListener('click', function () {
     displayResult('draw agreement');
     afterDrawDecision();
+    displayResult('Draw');
+    stopClocks();
     game.set_draw(true);
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
     gameUpdate.acceptDraw();

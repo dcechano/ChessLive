@@ -83,7 +83,11 @@ function onMouseoutSquare(square, piece) {
 
 function onSnapEnd(source, target, piece) {
     updatePgn();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, `${source}-${target}`, game.fen());
+    myClock.pause();
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent,
+        `${source}-${target}`, game.fen(), myClock.seconds);
+    console.log(gameUpdate);
+    opponentClock.resume();
     sendData(gameUpdate);
 }
 
@@ -118,7 +122,6 @@ function addPgnListeners() {
 function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
 }
-
 
 const config = {
     orientation: gameData.white === me.textContent ? 'white' : 'black',
@@ -170,14 +173,18 @@ window.onresize = onWindowResize;
         });
 
         stompClient.subscribe('/user/queue/update', function (data) {
-            let update = JSON.parse(data.body);
+            let gameUpdate = JSON.parse(data.body);
 
-            if (!update.updateType) {
+            if (!gameUpdate.updateType) {
                 throw new Error("The type of update hasn't been set for GameUpdate object");
             }
 
-            if (update.updateType === 'NEW_MOVE') {
-                let from_to = update.newMove.split('-');
+            if (gameUpdate.updateType === 'NEW_MOVE') {
+                opponentClock.pause();
+                opponentClock.seconds = gameUpdate.seconds;
+                opponentClock.updateDisplay();
+                myClock.resume();
+                let from_to = gameUpdate.newMove.split('-');
 
                 let move = game.move({
                     from: from_to[0],
@@ -194,8 +201,8 @@ window.onresize = onWindowResize;
                     }
                     updatePgn();
                 }
-            //    TODO figure out what to do here
-            } else if(update.updateType === 'RESIGNATION') {
+            } else if(gameUpdate.updateType === 'RESIGNATION') {
+                stopClocks();
                 game.set_resign(true);
                 displayResult('Resignation');
 
@@ -204,9 +211,10 @@ window.onresize = onWindowResize;
 
                 stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
 
-            } else if (update.updateType === 'DRAW_OFFER') {
+            } else if (gameUpdate.updateType === 'DRAW_OFFER') {
                 decideDrawOffer();
-            } else if (update.updateType === 'ACCEPT_DRAW') {
+            } else if (gameUpdate.updateType === 'ACCEPT_DRAW') {
+                stopClocks();
                 game.set_draw(true);
 
                 displayResult('Draw');
@@ -218,6 +226,10 @@ window.onresize = onWindowResize;
         });
     });
 
+})();
+
+(function () {
+    (color === 'white') ? myClock.resume() : opponentClock.resume();
 })();
 
 function displayResult(result) {
@@ -234,4 +246,9 @@ function decideDrawOffer() {
     let currActive = document.getElementsByClassName('active')[0];
     currActive.classList.toggle('active');
     draw_decision.classList.toggle('active');
+}
+
+function stopClocks() {
+    myClock.stop();
+    opponentClock.stop();
 }
