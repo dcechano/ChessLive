@@ -2,6 +2,7 @@ package com.example.chess.db.repo.h2.impl;
 
 import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.model.entity.Player;
+import com.example.chess.model.entity.Statistics;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,4 +27,9 @@ public class H2PlayerRepo extends H2AbstractRepoImpl<Player> implements PlayerRe
         return query.getSingleResult();
     }
 
+    @Override
+    public Statistics findStatsByUsername(String username) {
+//        No implementation for H2 database. Here as a matter of compilation
+        return null;
+    }
 }
