@@ -6,6 +6,7 @@ import com.example.chess.db.repo.mysql.GameRepo;
 import com.example.chess.model.dto.GameDTO;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
+import com.example.chess.model.utils.StatisticsUtils;
 import com.example.chess.websocket.messaging.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,6 +38,7 @@ public class WebSocketController {
 
     private PairedPlayersRepo pairedPlayersRepo;
 
+
     public WebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
         logger = Logger.getLogger(getClass().toString());
@@ -50,11 +52,15 @@ public class WebSocketController {
 
     @MessageMapping("/gameOver")
     public void gameOver(@Payload GameDTO gameDto) {
+        StatisticsUtils.updateStats(gameDto);
+
         Optional<Game> gameOp = h2GameRepo.findById(gameDto.getGameId());
         if (gameOp.isEmpty()) {
             return;
         }
+
         Game game = gameOp.get();
+
         Player white = playerRepo.findByUsername(gameDto.getWhite());
         pairedPlayersRepo.removePairing(white);
         game.setPgn(gameDto.getPgn());
@@ -64,7 +70,6 @@ public class WebSocketController {
         game.setBlack(playerRepo.findByUsername(gameDto.getBlack()));
         mySqlGameRepo.save(game);
         h2GameRepo.delete(game);
-
     }
 
     @MessageMapping("/message")
@@ -92,4 +97,5 @@ public class WebSocketController {
     public void setPairedPlayersRepo(PairedPlayersRepo pairedPlayersRepo) {
         this.pairedPlayersRepo = pairedPlayersRepo;
     }
+
 }
