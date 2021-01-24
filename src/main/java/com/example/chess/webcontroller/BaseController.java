@@ -1,12 +1,14 @@
 package com.example.chess.webcontroller;
 
 import com.example.chess.db.repo.h2.GameRepo;
+import com.example.chess.db.repo.mysql.StatsRepo;
 import com.example.chess.model.GlobalManager;
 import com.example.chess.model.dto.GameDTO;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -30,6 +31,8 @@ public class BaseController {
     private final com.example.chess.db.repo.mysql.GameRepo mySqlGameRepo;
 
     private final GameRepo h2GameRepo;
+
+    private StatsRepo statsRepo;
 
 
     public BaseController(GlobalManager globalManager, @Qualifier("h2GameRepo") GameRepo h2GameRepo,
@@ -80,9 +83,10 @@ public class BaseController {
 
     @GetMapping("/user/{username}")
     public String profile(@PathVariable String username, Model model) {
-        List<Game> games = mySqlGameRepo.findGamesByUsername(username);
-        model.addAttribute("games", games);
+
+        model.addAttribute("games", mySqlGameRepo.findGamesByUsername(username));
         model.addAttribute("username", username);
+        model.addAttribute("stats", statsRepo.getStatsByUsername(username));
         return "profile";
     }
 
@@ -110,5 +114,10 @@ public class BaseController {
     @GetMapping("/websocket")
     public String socket() {
         return "websocket";
+    }
+
+    @Autowired
+    public void setStatsRepo(StatsRepo statsRepo) {
+        this.statsRepo = statsRepo;
     }
 }

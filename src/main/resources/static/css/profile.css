@@ -1,0 +1,71 @@
+.profile-wrapper{
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	grid-template-rows: 1fr auto;
+	grid-template-areas: "about_me stats"
+    "games games";
+	gap: 10px;
+}
+
+.font{
+	color: white;
+	font-family: var(--roboto);
+}
+
+img{
+	display: inline;
+	width: 100px;
+}
+
+.about_me{
+	background-color: var(--secondaryColor);
+	border: 2px solid black;
+	padding: 0 10px;
+}
+
+.stats{
+	background-color: var(--secondaryColor);
+	border: 2px solid black;
+	grid-area: stats;
+}
+
+.stat {
+	margin: 10px;
+}
+
+.stat_wrapper{
+	margin: 30px 10px;
+}
+
+.games {
+	grid-area: games;
+	border: 2px solid black;
+	height: auto;
+	color: white;
+	padding: 10px;
+}
+
+.game {
+	background-color: var(--secondaryColor);
+	border: 1px solid black;
+	height: auto;
+	box-sizing: border-box;
+	margin: 5px auto;
+	padding: 5px;
+
+}
+
+a.game_info {
+	display: block;
+	text-align: center;
+}
+
+.game_info {
+	text-align: center;
+	margin: 16px 0;
+}
+
+.player_summary {
+	letter-spacing: 1.5px;
+	font-weight: 400;
+}
