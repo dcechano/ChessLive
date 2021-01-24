@@ -26,11 +26,39 @@
 <div class="profile-wrapper">
     <aside class="about_me">
         <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="" src="">
-        <p class="bio">Hi! I like to play chess</p>
+        <p class="font">Hi! I like to play chess</p>
     </aside>
 
+    <aside class="stats">
+        <div id="twoP1Stats" class="stat_wrapper">
+            <h5 class="font stat" th:text="${'2 + 1 Stats'}"></h5>
+            <p class="font stat" th:text="${stats.twoPlus1Wins + ' Wins'}"></p>
+            <p class="font stat"  th:text="${stats.twoPlus1Losses + ' Losses'}"></p>
+            <p class="font stat" th:text="${stats.twoPlus1Draws + ' Draws'}"></p>
+        </div>
 
-    <aside class="stats"></aside>
+        <div id="fiveP0Stats" class="stat_wrapper">
+            <h5 class="font stat" th:text="${'5 + 0 Stats'}"></h5>
+            <p  class="font stat" th:text="${stats.fivePlus0Wins + ' Wins'}"></p>
+            <p  class="font stat" th:text="${stats.fivePlus0Losses + ' Losses'}"></p>
+            <p  class="font stat" th:text="${stats.fivePlus0Draws + ' Draws'}"></p>
+        </div>
+
+        <div id="fiveP5Stats" class="stat_wrapper">
+            <h5 class="font stat" th:text="${'5 + 5 Stats'}"></h5>
+            <p  class="font stat" th:text="${stats.fivePlus5Wins + ' Wins'}"></p>
+            <p  class="font stat" th:text="${stats.fivePlus5Losses + ' Losses'}"></p>
+            <p  class="font stat" th:text="${stats.fivePlus5Draws + ' Draws'}"></p>
+        </div>
+
+        <div id="tenP10Stats" class="stat_wrapper">
+            <h5 class="font stat" th:text="${'10 + 10 Stats'}"></h5>
+            <p  class="font stat" th:text="${stats.tenPlus10Wins + ' Wins'}"></p>
+            <p  class="font stat" th:text="${stats.tenPlus10Losses + ' Losses'}"></p>
+            <p  class="font stat" th:text="${stats.tenPlus10Draws + ' Draws'}"></p>
+        </div>
+    </aside>
+
     <section class="games">
         <div class="game" th:each="game : ${games}">
             <a class="game_info player_summary" th:href="@{'/archive/' + ${game.id}}"

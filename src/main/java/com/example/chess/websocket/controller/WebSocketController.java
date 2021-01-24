@@ -17,7 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -65,7 +65,7 @@ public class WebSocketController {
         pairedPlayersRepo.removePairing(white);
         game.setPgn(gameDto.getPgn());
         game.setResult(gameDto.getResult());
-        game.setDate(LocalDate.now());
+        game.setDate(LocalDateTime.now());
         game.setWhite(playerRepo.findByUsername(gameDto.getWhite()));
         game.setBlack(playerRepo.findByUsername(gameDto.getBlack()));
         mySqlGameRepo.save(game);
