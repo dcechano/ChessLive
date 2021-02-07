@@ -1,0 +1,34 @@
+{
+  "name": "chesslive",
+  "version": "1.0.0",
+  "description": "A lightweight chess site",
+  "main": "landing.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcechano/ChessLive.git"
+  },
+  "keywords": [
+    "chess",
+    "chesslive",
+    "chessground"
+  ],
+  "author": "Dylan Cechanowicz",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dcechano/ChessLive/issues"
+  },
+  "homepage": "https://github.com/dcechano/ChessLive#readme",
+  "dependencies": {
+    "@types/chess.js": "^0.10.1",
+    "chess.js": "^0.11.0",
+    "chessground": "^7.9.3",
+    "jquery": "^3.5.1"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "watchify": "^4.0.0"
+  }
+}
