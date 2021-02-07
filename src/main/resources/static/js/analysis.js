@@ -2,7 +2,7 @@ let board = null;
 const game = new Chess();
 const whiteSquareGrey = '#a9a9a9';
 const blackSquareGrey = '#696969';
-const pgn = $('#pgn');
+// const pgn = $('#pgn');
 const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const opponent = document.getElementById('opponent');
@@ -74,36 +74,36 @@ function onMouseoutSquare(square, piece) {
 }
 
 function onSnapEnd(source, target, piece) {
-    updatePgn();
+    // updatePgn();
 }
 
-function updatePgn() {
-    let newMove = game.pgn().split(/(?<!\d\.) /).pop();
-    moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${newMove} </li>`);
-    pgn.html(moveList.join(' '));
+// function updatePgn() {
+//     let newMove = game.pgn().split(/(?<!\d\.) /).pop();
+//     moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${newMove} </li>`);
+//     // pgn.html(moveList.join(' '));
+//
+//     pgnLog.innerHTML = moveList.join(' ');
+//     addPgnListeners();
+// }
 
-    pgnLog.innerHTML = moveList.join(' ');
-    addPgnListeners();
-}
-
-function addPgnListeners() {
-    let node = pgn.children();
-
-    for (let i = 0; i < node.length; i++) {
-        node[i].addEventListener('click', function () {
-            let pos = node[i].dataset.fen;
-            board.position(pos);
-        });
-    }
-
-    let longform = $('#fen-long-form').children();
-    for (let i = 0; i < longform.length; i++) {
-        longform[i].addEventListener('click', function () {
-            let pos = longform[i].dataset.fen;
-            board.position(pos);
-        });
-    }
-}
+// function addPgnListeners() {
+//     let node = pgn.children();
+//
+//     for (let i = 0; i < node.length; i++) {
+//         node[i].addEventListener('click', function () {
+//             let pos = node[i].dataset.fen;
+//             board.position(pos);
+//         });
+//     }
+//
+//     let longform = $('#fen-long-form').children();
+//     for (let i = 0; i < longform.length; i++) {
+//         longform[i].addEventListener('click', function () {
+//             let pos = longform[i].dataset.fen;
+//             board.position(pos);
+//         });
+//     }
+// }
 
 const config = {
     draggable: true,
@@ -149,7 +149,7 @@ function onWindowResize() {
     //     // TODO fix. game.fen() returns the final position not current pos of ${m}.
     //     moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${m} </li>`);
     // }
-    pgn.html(moveList.join(' '));
+    // pgn.html(moveList.join(' '));
 
     pgnLog.innerHTML = moveList.join(' ');
     addPgnListeners();

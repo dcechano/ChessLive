@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.css}">
+    <link rel="stylesheet" th:href="@{/js/lib/chessboardjs-fork/lib/chessboard.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground2.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground3.css}">
     <title>Let's Play Chess</title>
     </head>
 <body>
@@ -93,13 +96,13 @@
 
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
-<script th:src="@{/libraries/node_modules/chess.js/chess.js}"></script>
-<script th:src="@{/libraries/node_modules/jquery/dist/jquery.js}"></script>
-<script th:src="@{/libraries/node_modules/chrisoakman/chessboardjs/dist/chessboard-1.0.0.js}"></script>
+<script th:src="@{/js/node_modules/chess.js/chess.js}"></script>
+<script th:src="@{/js/node_modules/jquery/dist/jquery.js}"></script>
 <script th:src="@{/js/Clock.js}"></script>
 <script th:src="@{/js/timekeeper.js}"></script>
 <script th:src="@{/js/GameUpdate.js}"></script>
-<script th:src="@{/js/app_chess.js}"></script>
+<!--<script th:src="@{/js/app_chess.js}"></script>-->
+<script th:src="@{/js/bundle.js}"></script>
 <script th:src="@{/js/chess_dom_init.js}"></script>
 </body>
 </html>

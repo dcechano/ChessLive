@@ -47,7 +47,6 @@ public abstract class MySqlAbstractRepo<T extends AbstractEntity> implements Abs
 
     @Override
     public Optional<T> findById(Object id) {
-        System.out.println(id.toString());
         return Optional.ofNullable(entityManager.find(clazz, id));
     }
 
