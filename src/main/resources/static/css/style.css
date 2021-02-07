@@ -141,7 +141,9 @@ a, a:visited {
 
 #board {
     width: inherit;
-    margin:auto;
+    margin: auto;
+    height: 450px;
+    position: relative;
 }
 
 .board-b72b1 {

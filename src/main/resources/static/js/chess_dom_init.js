@@ -46,7 +46,7 @@ let resign = document.getElementById('resign');
 resign.addEventListener('click', function (e) {
     e.stopPropagation();
     closeWindow();
-    game.set_resign(true);
+    chess.set_resign(true);
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null, myClock.seconds);
     gameUpdate.resign();
@@ -70,7 +70,7 @@ accept.addEventListener('click', function () {
     afterDrawDecision();
     displayResult('Draw');
     stopClocks();
-    game.set_draw(true);
+    chess.set_draw(true);
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
     gameUpdate.acceptDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
@@ -99,4 +99,3 @@ function afterDrawDecision() {
     let ref = document.getElementById(dataSet);
     ref.classList.toggle('active');
 }
-

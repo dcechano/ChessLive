@@ -32,3 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 /bin/
+
+### npm ###
+"node_modules/"
+"node_modules/**"
+"/node_modules/"
