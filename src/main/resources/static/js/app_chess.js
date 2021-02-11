@@ -1,7 +1,6 @@
 // NOTE: this example uses the chess.js library:
 // https://github.com/jhlywa/chess.js
 const chess = new Chess();
-const pgn = $('#pgn');
 const Chessground = require('chessground').Chessground;
 const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
@@ -9,7 +8,6 @@ const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
 const color = gameData.white === me.textContent ? 'white' : 'black';
 let stompClient = null;
-console.log(JSON.stringify(gameData));
 let moveList = [];
 let FENList = [];
 
@@ -20,8 +18,7 @@ let config ={
     animation: {
         enabled: true,
         duration: 500
-    },
-    highlight: {
+    }, highlight: {
         lastMove: true,
         check: true
     },
@@ -35,17 +32,14 @@ let config ={
     },
     events: {
         move: function (orig, dest) {
-            console.log("orig: " + orig + " dest: " + dest);
             chess.move({from: orig, to: dest});
-            console.log(chess.ascii());
             let config = {
                 turnColor: sideToMove(chess),
                 movable: {
-                    dest: getValidMoves(chess)
+                    dests: getValidMoves(chess)
                 }
             }
             board.set(config);
-            console.log(board.state);
             if (!(chess.turn() === color.charAt(0))) {
                 let gameUpdate = new GameUpdate(me.textContent,
                     opponent.textContent,
@@ -56,14 +50,10 @@ let config ={
                 sendData(gameUpdate);
             }
         }
-    },
-    premovable: {
-        enabled: true
     }
 };
 
-board = new Chessground(document.getElementById('board'), config);
-
+const board = new Chessground(document.getElementById('board'), config);
 function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
@@ -112,52 +102,25 @@ window.onresize = onWindowResize;
                 throw new Error("The type of update hasn't been set for GameUpdate object");
             }
 
-            if (gameUpdate.updateType === 'NEW_MOVE') {
-                console.log('new move received');
-                opponentClock.pause();
-                opponentClock.seconds = gameUpdate.seconds;
-                opponentClock.updateDisplay();
-                myClock.resume();
-                let from_to = gameUpdate.newMove.split('-');
+            switch (gameUpdate.updateType) {
+                case "NEW_MOVE":
+                    processNewMove(gameUpdate);
+                    break;
 
-                let move = chess.move({
-                    from: from_to[0],
-                    to: from_to[1],
-                    promotion: 'q'
-                });
+                case "RESIGNATION":
+                    processResignation();
+                    break;
 
-                if (move === null || move === undefined) {
-                    window.alert("A invalid move was sent from the server. Game out of sync.");
-                } else {
+                case "DRAW_OFFER":
+                    decideDrawOffer();
+                    break;
 
-                    board.move(from_to[0], from_to[1]);
-                    if (chess.game_over()) {
-                        displayResult('Checkmate');
-                    }
-                    updatePgn();
-                }
-            } else if(gameUpdate.updateType === 'RESIGNATION') {
-                stopClocks();
-                chess.set_resign(true);
-                displayResult('Resignation');
-
-                gameData.pgn = chess.history().join(' ');
-                gameData.result = `${color} won by resignation`;
-
-                stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
-
-            } else if (gameUpdate.updateType === 'DRAW_OFFER') {
-                decideDrawOffer();
-            } else if (gameUpdate.updateType === 'ACCEPT_DRAW') {
-                stopClocks();
-                chess.set_draw(true);
-
-                displayResult('Draw');
-                gameData.pgn = chess.history().join(' ');
-                gameData.result = 'Game drawn by agreement';
-                stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
-
+                case "ACCEPT_DRAW":
+                    acceptDrawOffer();
+                    break;
             }
+
+
         });
     });
 
@@ -166,6 +129,56 @@ window.onresize = onWindowResize;
 (function () {
     (color === 'white') ? myClock.resume() : opponentClock.resume();
 })();
+
+function processNewMove(gameUpdate) {
+    opponentClock.pause();
+    opponentClock.seconds = gameUpdate.seconds;
+    opponentClock.updateDisplay();
+    myClock.resume();
+    let from_to = gameUpdate.newMove.split('-');
+
+    let move = chess.move({
+        from: from_to[0],
+        to: from_to[1],
+        promotion: 'q'
+    });
+
+    if (move === null || move === undefined) {
+        window.alert("A invalid move was sent from the server. Game out of sync.");
+    } else {
+
+        board.move(from_to[0], from_to[1]);
+        if (chess.game_over()) {
+            displayResult('Checkmate');
+        }
+        // updatePgn();
+    }
+
+}
+
+function processResignation() {
+    stopClocks();
+    chess.set_resign(true);
+    board.set({viewOnly: true});
+    displayResult('Resignation');
+
+    gameData.pgn = chess.history().join(' ');
+    gameData.result = `${color} won by resignation`;
+
+    stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
+
+}
+
+function acceptDrawOffer(){
+    stopClocks();
+    chess.set_draw(true);
+    board.set({viewOnly: true});
+    displayResult('Draw');
+    gameData.pgn = chess.history().join(' ');
+    gameData.result = 'Game drawn by agreement';
+    stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
+
+}
 
 function getValidMoves(chess) {
     var dests = new Map();
@@ -200,4 +213,14 @@ function decideDrawOffer() {
 function stopClocks() {
     myClock.stop();
     opponentClock.stop();
+}
+
+module.exports = {
+    stompClient: stompClient,
+    board: board,
+    chess: chess,
+    me: me,
+    stopClocks: stopClocks,
+    displayResult: displayResult,
+
 }

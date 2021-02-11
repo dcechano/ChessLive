@@ -1,6 +1,14 @@
+const app = require('./app_chess');
+const stompClient = app.stompClient,
+    chess = app.chess,
+    board = app.board,
+    me = app.me,
+    stopClocks = app.stopClocks,
+    displayResult = app.displayResult;
+
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
-    link.addEventListener('click', function () {
+    link.addEventListener('click', () =>  {
         let currSelected = document.getElementsByClassName('selected')[0];
         currSelected.classList.toggle('selected');
         link.classList.toggle('selected');
@@ -14,7 +22,7 @@ for (let link of links) {
 }
 
 let chatButton = document.getElementById('chat-button');
-chatButton.addEventListener('click', function () {
+chatButton.addEventListener('click', () => {
 
     let input = document.getElementById('chat-input');
     let chatLog = document.getElementById('chat-messages');
@@ -23,7 +31,7 @@ chatButton.addEventListener('click', function () {
 });
 
 let noteButton = document.getElementById('notes-button');
-noteButton.addEventListener('click', function () {
+noteButton.addEventListener('click', () => {
     let input = document.getElementById('notes-input');
     let notesLog = document.getElementById('notes');
     notesLog.innerHTML += `<li class="note">${input.value}</li> `
@@ -31,22 +39,23 @@ noteButton.addEventListener('click', function () {
 });
 
 let endGame = document.getElementsByClassName('endgame')[0];
-endGame.addEventListener('click', function () {
+endGame.addEventListener('click', () => {
     let btns = document.getElementsByClassName('end-buttons')[0];
     btns.style.display = 'flex';
 });
 
 let close = document.getElementsByClassName('window-close')[0];
-close.addEventListener('click', function(e){
+close.addEventListener('click', (e) => {
     e.stopPropagation();
     closeWindow();
 });
 
 let resign = document.getElementById('resign');
-resign.addEventListener('click', function (e) {
+resign.addEventListener('click', (e) => {
     e.stopPropagation();
     closeWindow();
     chess.set_resign(true);
+    board.set({viewOnly: true});
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null, myClock.seconds);
     gameUpdate.resign();
@@ -56,7 +65,7 @@ resign.addEventListener('click', function (e) {
 });
 
 let draw = document.getElementById('offer_draw');
-draw.addEventListener('click', function (e) {
+draw.addEventListener('click', (e) => {
     e.stopPropagation();
     closeWindow();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
@@ -65,19 +74,20 @@ draw.addEventListener('click', function (e) {
 });
 
 let accept = document.getElementById('accept');
-accept.addEventListener('click', function () {
+accept.addEventListener('click', () =>  {
+    chess.set_draw(true);
+    board.set({viewOnly: true});
     displayResult('draw agreement');
     afterDrawDecision();
     displayResult('Draw');
     stopClocks();
-    chess.set_draw(true);
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
     gameUpdate.acceptDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
 });
 
 let decline = document.getElementById('decline');
-decline.addEventListener('click', function () {
+decline.addEventListener('click', () => {
     afterDrawDecision();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
     gameUpdate.declineDraw();
@@ -93,7 +103,7 @@ function closeWindow() {
 function afterDrawDecision() {
     let currActive = document.getElementsByClassName('active')[0];
     currActive.classList.toggle('active');
-    currSelected = document.getElementsByClassName('selected')[0]
+    let currSelected = document.getElementsByClassName('selected')[0]
 
     let dataSet = currSelected.dataset.for;
     let ref = document.getElementById(dataSet);

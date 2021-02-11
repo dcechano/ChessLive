@@ -15,6 +15,7 @@ public class StatisticsUtils {
     private static final String DRAWN_RESULT = "Game drawn";
     private static final String WHITE_WON = "white won";
     private static final String BLACK_WON = "black won";
+    private static final String SPLITTER = " by";
 
     private static StatsRepo statsRepo;
 
@@ -27,7 +28,7 @@ public class StatisticsUtils {
             Field whiteField;
             Field blackField;
 
-            switch (gameDTO.getResult().split(" by")[0]) {
+            switch (gameDTO.getResult().split(SPLITTER)[0]) {
                 case DRAWN_RESULT:
                     whiteField = Statistics.class.getDeclaredField(camelCase(timeControl) + DRAWS);
                     blackField = Statistics.class.getDeclaredField(camelCase(timeControl) + DRAWS);
@@ -74,10 +75,7 @@ public class StatisticsUtils {
         return first + second + s[2];
     }
 
-
-
     public static void setStatsRepo(StatsRepo repo) {
         statsRepo = repo;
     }
-
 }
