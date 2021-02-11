@@ -3,6 +3,7 @@ const stompClient = app.stompClient,
     chess = app.chess,
     board = app.board,
     me = app.me,
+    opponent = app.opponent,
     stopClocks = app.stopClocks,
     displayResult = app.displayResult;
 

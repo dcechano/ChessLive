@@ -220,6 +220,7 @@ module.exports = {
     board: board,
     chess: chess,
     me: me,
+    opponent: opponent,
     stopClocks: stopClocks,
     displayResult: displayResult,
 
