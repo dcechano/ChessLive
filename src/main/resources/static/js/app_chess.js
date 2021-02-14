@@ -95,7 +95,7 @@ window.onresize = onWindowResize;
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
-    stompClient.debug = (str) => {};
+    // stompClient.debug = (str) => {};
 
     stompClient.connect({},  (frame) => {
 
@@ -128,6 +128,12 @@ window.onresize = onWindowResize;
                     break;
             }
 
+        });
+
+        stompClient.subscribe('/user/queue/message', (data) => {
+            let msg = JSON.parse(data.body).message;
+            let chatLog = document.getElementById('chat-messages');
+            chatLog.innerHTML += `<li class="opponent_message">${msg}</li>`;
         });
     });
 
@@ -222,11 +228,8 @@ function stopClocks() {
 }
 
 function updatePgnLog() {
-    let iTag = document.createElement('i');
-    iTag.classList.add('pgn-link');
     let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    iTag.innerText = `${ply}${moveList[moveList.length - 1]}`;
-    pgnLog.appendChild(iTag);
+    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
 }
 
 module.exports = {
