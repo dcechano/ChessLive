@@ -7,6 +7,8 @@ const stompClient = app.stompClient,
     stopClocks = app.stopClocks,
     displayResult = app.displayResult;
 
+
+
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
     link.addEventListener('click', () =>  {
@@ -58,7 +60,7 @@ resign.addEventListener('click', (e) => {
     chess.set_resign(true);
     board.set({viewOnly: true});
     stopClocks();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null, myClock.seconds);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.resign();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
     displayResult('Resignation');
@@ -69,7 +71,7 @@ let draw = document.getElementById('offer_draw');
 draw.addEventListener('click', (e) => {
     e.stopPropagation();
     closeWindow();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.offerDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
 });
@@ -82,7 +84,7 @@ accept.addEventListener('click', () =>  {
     afterDrawDecision();
     displayResult('Draw');
     stopClocks();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.acceptDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
 });
@@ -90,7 +92,7 @@ accept.addEventListener('click', () =>  {
 let decline = document.getElementById('decline');
 decline.addEventListener('click', () => {
     afterDrawDecision();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent, null, null);
+    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.declineDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
 

@@ -1,7 +1,7 @@
-// NOTE: this example uses the chess.js library:
-// https://github.com/jhlywa/chess.js
+
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
+const clocks = require('./timekeeper'), myClock = clocks.myClock, opponentClock = clocks.opponentClock;
 const pgnLog = document.getElementById('fen-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
@@ -32,7 +32,12 @@ let config ={
     },
     events: {
         move: function (orig, dest) {
-            chess.move({from: orig, to: dest});
+            let moveObj = chess.move({from: orig, to: dest});
+            if (chess.game_over()) {
+                processGameOver();
+            }
+
+
             let config = {
                 turnColor: sideToMove(chess),
                 movable: {
@@ -41,14 +46,18 @@ let config ={
             }
             board.set(config);
             if (!(chess.turn() === color.charAt(0))) {
+                myClock.pause();
+                opponentClock.resume();
                 let gameUpdate = new GameUpdate(me.textContent,
                     opponent.textContent,
                     `${orig}-${dest}`,
                     chess.fen(),
-                    90);
+                    myClock.seconds);
 
                 sendData(gameUpdate);
             }
+            moveList.push(moveObj.san);
+            updatePgnLog();
         }
     }
 };
@@ -57,7 +66,6 @@ const board = new Chessground(document.getElementById('board'), config);
 function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
-
 
 function determineSize() {
 
@@ -87,15 +95,15 @@ window.onresize = onWindowResize;
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
+    stompClient.debug = (str) => {};
 
-    stompClient.connect({}, function (frame) {
-        console.log(`Logging frame: ${frame}`);
+    stompClient.connect({},  (frame) => {
 
-        stompClient.subscribe("/user/getGame", function (data) {
+        stompClient.subscribe('/user/getGame', (data) => {
             console.log(JSON.stringify(data.body));
         });
 
-        stompClient.subscribe('/user/queue/update', function (data) {
+        stompClient.subscribe('/user/queue/update', (data) => {
             let gameUpdate = JSON.parse(data.body);
 
             if (!gameUpdate.updateType) {
@@ -103,23 +111,22 @@ window.onresize = onWindowResize;
             }
 
             switch (gameUpdate.updateType) {
-                case "NEW_MOVE":
+                case 'NEW_MOVE':
                     processNewMove(gameUpdate);
                     break;
 
-                case "RESIGNATION":
+                case 'RESIGNATION':
                     processResignation();
                     break;
 
-                case "DRAW_OFFER":
+                case 'DRAW_OFFER':
                     decideDrawOffer();
                     break;
 
-                case "ACCEPT_DRAW":
+                case 'ACCEPT_DRAW':
                     acceptDrawOffer();
                     break;
             }
-
 
         });
     });
@@ -137,23 +144,22 @@ function processNewMove(gameUpdate) {
     myClock.resume();
     let from_to = gameUpdate.newMove.split('-');
 
-    let move = chess.move({
-        from: from_to[0],
-        to: from_to[1],
-        promotion: 'q'
-    });
+    board.move(from_to[0], from_to[1]);
+}
 
-    if (move === null || move === undefined) {
-        window.alert("A invalid move was sent from the server. Game out of sync.");
-    } else {
+function processGameOver() {
 
-        board.move(from_to[0], from_to[1]);
-        if (chess.game_over()) {
-            displayResult('Checkmate');
-        }
-        // updatePgn();
+    let result;
+    if (chess.in_checkmate()) {
+        result = 'checkmate';
+    } else if (chess.in_threefold_repetition()) {
+        result = 'threefold repetition';
+    } else if (chess.in_stalemate()) {
+        result = 'stalemate';
+    } else if (chess.insufficient_material()) {
+        result = 'draw due to insufficient material'
     }
-
+    displayResult(result);
 }
 
 function processResignation() {
@@ -200,7 +206,7 @@ function displayResult(result) {
     currActive.classList.toggle('active');
     game_result.classList.toggle('active');
     let resultLabel = document.getElementById('result');
-    resultLabel.textContent = `Game finished by ${result}`
+    resultLabel.textContent = `Game finished by ${result}.`
 }
 
 function decideDrawOffer() {
@@ -213,6 +219,14 @@ function decideDrawOffer() {
 function stopClocks() {
     myClock.stop();
     opponentClock.stop();
+}
+
+function updatePgnLog() {
+    let iTag = document.createElement('i');
+    iTag.classList.add('pgn-link');
+    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
+    iTag.innerText = `${ply}${moveList[moveList.length - 1]}`;
+    pgnLog.appendChild(iTag);
 }
 
 module.exports = {

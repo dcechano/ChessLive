@@ -222,36 +222,6 @@ a, a:visited {
     height: 100%;
 }
 
-#fen-long-form li {
-    width: 100%;
-    /*border-bottom: 1px solid #676767;*/
-    /*border-left:1px solid #676767;*/
-    list-style: none;
-    padding-top: 5px;
-
-}
-
-#fen-long-form li:nth-of-type(2n + 1) {
-    text-align: left;
-    grid-column: 1/2;
-    grid-row: auto;
-}
-
-#fen-long-form li:nth-of-type(2n) {
-    text-align: right;
-    grid-column: 2/3;
-    grid-row: auto;
-}
-
-#fen-long-form li:nth-of-type(2){
-    padding-left: 1px;
-}
-
-#fen-long-form li:hover{
-    background-color: lightskyblue;
-    color: black;
-}
-
 .logs {
     position: relative;
     width: inherit;

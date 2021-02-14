@@ -1,15 +1,15 @@
 class Clock {
     constructor(timeControl, domDisplay) {
-        let arr = timeControl.split("_");
-        this.inc = Number(arr.pop());
+        let arr = timeControl.split('_');
+        this.inc = +arr.pop();
         switch (arr[0]) {
-            case "TWO":
+            case 'TWO':
                 this.seconds = 2*60;
                 break;
-            case "FIVE":
+            case 'FIVE':
                 this.seconds = 5*60;
                 break;
-            case "TEN":
+            case 'TEN':
                 this.seconds = 10*60;
                 break;
         }
@@ -41,12 +41,14 @@ class Clock {
     updateDisplay() {
         if (this.seconds === 0) {
             this.display.style.color = 'red';
-            this.display.textContent = "00:00";
+            this.display.textContent = '00:00';
             this.on = false;
             return;
         }
-        let mins = parseInt(this.seconds / 60);
-        let seconds = (this.seconds % 60);
-        this.display.textContent = `${mins}:${(seconds < 10) ? ("0" + seconds): seconds}`;
+        let mins = Math.floor(this.seconds / 60);
+        let seconds = this.seconds % 60;
+        this.display.textContent = `${mins}:${(seconds < 10) ? ('0' + seconds): seconds}`;
     }
 }
+
+module.exports = Clock;
