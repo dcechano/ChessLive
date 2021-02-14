@@ -7,6 +7,7 @@ import com.example.chess.model.dto.GameDTO;
 import com.example.chess.model.entity.Game;
 import com.example.chess.model.entity.Player;
 import com.example.chess.model.utils.StatisticsUtils;
+import com.example.chess.websocket.messaging.ChatMessage;
 import com.example.chess.websocket.messaging.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +47,6 @@ public class WebSocketController {
 
     @MessageMapping("/updateOpponent")
     public void sendToUser(@Payload GameUpdate gameUpdate, Principal principal) {
-        logger.info("Printing the GameUpdate object: " + gameUpdate.toString());
         messagingTemplate.convertAndSendToUser(gameUpdate.getTo(), "/queue/update", gameUpdate);
     }
 
@@ -73,9 +73,10 @@ public class WebSocketController {
     }
 
     @MessageMapping("/message")
-    @SendTo("/topic")
-    public GameUpdate send(@Payload GameUpdate gameUpdate) {
-        return gameUpdate;
+    public void send(@Payload ChatMessage chatMessage) {
+        logger.info("Logging chat message: " + chatMessage.toString());
+
+        messagingTemplate.convertAndSendToUser(chatMessage.getTo(), "/queue/message", chatMessage);
     }
 
     @Autowired

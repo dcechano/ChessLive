@@ -6,8 +6,9 @@ const stompClient = app.stompClient,
     opponent = app.opponent,
     stopClocks = app.stopClocks,
     displayResult = app.displayResult;
+const ChatMessage = require('./ChatMessage');
 
-
+// Log related listeners
 
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
@@ -24,22 +25,37 @@ for (let link of links) {
     });
 }
 
+let chatInput = document.getElementById('chat-input');
+chatInput.addEventListener('keyup', (e) => {
+    if(e.key === 'Enter') chatButton.click();
+});
+
+
 let chatButton = document.getElementById('chat-button');
 chatButton.addEventListener('click', () => {
 
-    let input = document.getElementById('chat-input');
     let chatLog = document.getElementById('chat-messages');
-    chatLog.innerHTML += `<li class="user-message">${input.value}</li>`;
-    input.value = null;
+    let msg = chatInput.value;
+    chatLog.innerHTML += `<li class="user-message">${msg}</li>`;
+    chatInput.value = null;
+    let chatMsg = new ChatMessage(me.textContent, opponent.textContent, msg);
+    stompClient.send('/app/message', {}, JSON.stringify(chatMsg));
+});
+
+let notesInput = document.getElementById('notes-input');
+notesInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') noteButton.click();
 });
 
 let noteButton = document.getElementById('notes-button');
 noteButton.addEventListener('click', () => {
-    let input = document.getElementById('notes-input');
     let notesLog = document.getElementById('notes');
-    notesLog.innerHTML += `<li class="note">${input.value}</li> `
-    input.value = null;
+    notesLog.innerHTML += `<li class="note">${notesInput.value}</li> `
+    notesInput.value = null;
 });
+
+
+// Game control listeners
 
 let endGame = document.getElementsByClassName('endgame')[0];
 endGame.addEventListener('click', () => {
@@ -62,7 +78,7 @@ resign.addEventListener('click', (e) => {
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.resign();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
     displayResult('Resignation');
 
 });
@@ -73,7 +89,7 @@ draw.addEventListener('click', (e) => {
     closeWindow();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.offerDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 });
 
 let accept = document.getElementById('accept');
@@ -86,7 +102,7 @@ accept.addEventListener('click', () =>  {
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.acceptDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 });
 
 let decline = document.getElementById('decline');
@@ -94,9 +110,11 @@ decline.addEventListener('click', () => {
     afterDrawDecision();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.declineDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 
 });
+
+// Util functions
 
 function closeWindow() {
     let btns = document.getElementsByClassName('end-buttons')[0];

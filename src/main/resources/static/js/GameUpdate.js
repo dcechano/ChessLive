@@ -4,20 +4,8 @@ class GameUpdate {
         this.from = from;
         this.to = to;
         this.newMove = newMove;
-        this.newPosition = newPosition;
         this.updateType = 'NEW_MOVE';
         this.seconds = seconds;
-    }
-
-    getObj() {
-        return {
-            from: this.from,
-            to: this.to,
-            newMove: this.newMove,
-            newPosition: this.newPosition,
-            seconds: this.seconds,
-            updateType: this.updateType,
-        };
     }
 
     resign() {

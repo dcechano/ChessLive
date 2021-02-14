@@ -14,8 +14,8 @@
 
 <nav class="nav">
     <ul class="nav-links">
-        <li class="nav-link"><a href="#" class="profile-link">SirRobin95</a></li>
-        <li id="newGame" class="nav-link">New Game</li>
+        <li class="nav-link"><a th:href="@{'/user/' + ${session.user.username}}" class="profile-link">SirRobin95</a></li>
+        <li class="nav-link"><a th:href="@{/}">Home</a></li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
                 <a id="offer_draw" href="#" class="draw">Offer Draw</a>
@@ -45,6 +45,7 @@
         <div id="you" class="username" th:text="${user.username}">SirRobin95</div>
         <div id="clock2" class="white-clock clock" th:text="${game.timeControl.minutes + ':00'}"></div>
     </div>
+    <!--TODO figure out what to do with this-->
     <ol id="pgn">Waiting for the first move!</ol>
 
 <nav class="logs-nav">
@@ -66,7 +67,6 @@
     </div>
     <div id="notes-log" class="log">
         <ol id="notes" class="log-window">
-            <li class="note">This is a note!</li>
         </ol>
         <div class="input-wrap">
         <button id="notes-button" class="send-button" type="submit"><span class="fa fa-paper-plane"></span></button>

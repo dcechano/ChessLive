@@ -1,4 +1,14 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+class ChatMessage{
+    constructor(from, to, message) {
+        this.from = from;
+        this.to = to;
+        this.message = message;
+    }
+}
+
+module.exports = ChatMessage;
+},{}],2:[function(require,module,exports){
 class Clock {
     constructor(timeControl, domDisplay) {
         let arr = timeControl.split('_');
@@ -53,7 +63,7 @@ class Clock {
 }
 
 module.exports = Clock;
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
@@ -151,7 +161,7 @@ window.onresize = onWindowResize;
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
-    stompClient.debug = (str) => {};
+    // stompClient.debug = (str) => {};
 
     stompClient.connect({},  (frame) => {
 
@@ -184,6 +194,12 @@ window.onresize = onWindowResize;
                     break;
             }
 
+        });
+
+        stompClient.subscribe('/user/queue/message', (data) => {
+            let msg = JSON.parse(data.body).message;
+            let chatLog = document.getElementById('chat-messages');
+            chatLog.innerHTML += `<li class="opponent_message">${msg}</li>`;
         });
     });
 
@@ -278,17 +294,8 @@ function stopClocks() {
 }
 
 function updatePgnLog() {
-    let iTag = document.createElement('i');
-    iTag.classList.add('pgn-link');
-    iTag.dataset.fen = chess.fen();
-    iTag.addEventListener('click', (e) => {
-        e.preventDefault();
-        board.set({fen: iTag.dataset.fen});
-
-    })
     let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    iTag.innerText = `${ply}${moveList[moveList.length - 1]}`;
-    pgnLog.appendChild(iTag);
+    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
 }
 
 module.exports = {
@@ -301,7 +308,7 @@ module.exports = {
     displayResult: displayResult,
 
 }
-},{"./timekeeper":22,"chessground":7}],3:[function(require,module,exports){
+},{"./timekeeper":23,"chessground":8}],4:[function(require,module,exports){
 const app = require('./app_chess');
 const stompClient = app.stompClient,
     chess = app.chess,
@@ -310,8 +317,9 @@ const stompClient = app.stompClient,
     opponent = app.opponent,
     stopClocks = app.stopClocks,
     displayResult = app.displayResult;
+const ChatMessage = require('./ChatMessage');
 
-
+// Log related listeners
 
 let links = document.getElementsByClassName('widget-link');
 for (let link of links) {
@@ -328,22 +336,37 @@ for (let link of links) {
     });
 }
 
+let chatInput = document.getElementById('chat-input');
+chatInput.addEventListener('keyup', (e) => {
+    if(e.key === 'Enter') chatButton.click();
+});
+
+
 let chatButton = document.getElementById('chat-button');
 chatButton.addEventListener('click', () => {
 
-    let input = document.getElementById('chat-input');
     let chatLog = document.getElementById('chat-messages');
-    chatLog.innerHTML += `<li class="user-message">${input.value}</li>`;
-    input.value = null;
+    let msg = chatInput.value;
+    chatLog.innerHTML += `<li class="user-message">${msg}</li>`;
+    chatInput.value = null;
+    let chatMsg = new ChatMessage(me.textContent, opponent.textContent, msg);
+    stompClient.send('/app/message', {}, JSON.stringify(chatMsg));
+});
+
+let notesInput = document.getElementById('notes-input');
+notesInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') noteButton.click();
 });
 
 let noteButton = document.getElementById('notes-button');
 noteButton.addEventListener('click', () => {
-    let input = document.getElementById('notes-input');
     let notesLog = document.getElementById('notes');
-    notesLog.innerHTML += `<li class="note">${input.value}</li> `
-    input.value = null;
+    notesLog.innerHTML += `<li class="note">${notesInput.value}</li> `
+    notesInput.value = null;
 });
+
+
+// Game control listeners
 
 let endGame = document.getElementsByClassName('endgame')[0];
 endGame.addEventListener('click', () => {
@@ -366,7 +389,7 @@ resign.addEventListener('click', (e) => {
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.resign();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
     displayResult('Resignation');
 
 });
@@ -377,7 +400,7 @@ draw.addEventListener('click', (e) => {
     closeWindow();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.offerDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 });
 
 let accept = document.getElementById('accept');
@@ -390,7 +413,7 @@ accept.addEventListener('click', () =>  {
     stopClocks();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.acceptDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 });
 
 let decline = document.getElementById('decline');
@@ -398,9 +421,11 @@ decline.addEventListener('click', () => {
     afterDrawDecision();
     let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
     gameUpdate.declineDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate.getObj()));
+    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 
 });
+
+// Util functions
 
 function closeWindow() {
     let btns = document.getElementsByClassName('end-buttons')[0];
@@ -416,7 +441,7 @@ function afterDrawDecision() {
     let ref = document.getElementById(dataSet);
     ref.classList.toggle('active');
 }
-},{"./app_chess":2}],4:[function(require,module,exports){
+},{"./ChatMessage":1,"./app_chess":3}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = exports.anim = void 0;
@@ -527,7 +552,7 @@ function easing(t) {
     return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 
-},{"./util":20}],5:[function(require,module,exports){
+},{"./util":21}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = void 0;
@@ -621,7 +646,7 @@ function start(state, redrawAll) {
 }
 exports.start = start;
 
-},{"./anim":4,"./board":6,"./config":8,"./drag":9,"./explosion":13,"./fen":14}],6:[function(require,module,exports){
+},{"./anim":5,"./board":7,"./config":9,"./drag":10,"./explosion":14,"./fen":15}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.whitePov = exports.getSnappedKeyAtDomPos = exports.getKeyAtDomPos = exports.stop = exports.cancelMove = exports.playPredrop = exports.playPremove = exports.isDraggable = exports.canMove = exports.unselect = exports.setSelected = exports.selectSquare = exports.dropNewPiece = exports.userMove = exports.baseNewPiece = exports.baseMove = exports.unsetPredrop = exports.unsetPremove = exports.setCheck = exports.setPieces = exports.reset = exports.toggleOrientation = exports.callUserFunction = void 0;
@@ -972,7 +997,7 @@ function whitePov(s) {
 }
 exports.whitePov = whitePov;
 
-},{"./premove":15,"./util":20}],7:[function(require,module,exports){
+},{"./premove":16,"./util":21}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Chessground = void 0;
@@ -1032,7 +1057,7 @@ function debounceRedraw(redrawNow) {
     };
 }
 
-},{"./api":5,"./config":8,"./events":12,"./render":16,"./state":17,"./svg":18,"./util":20,"./wrap":21}],8:[function(require,module,exports){
+},{"./api":6,"./config":9,"./events":13,"./render":17,"./state":18,"./svg":19,"./util":21,"./wrap":22}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configure = void 0;
@@ -1078,7 +1103,7 @@ function isObject(o) {
     return typeof o === 'object';
 }
 
-},{"./board":6,"./fen":14}],9:[function(require,module,exports){
+},{"./board":7,"./fen":15}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cancel = exports.end = exports.move = exports.dragNewPiece = exports.start = void 0;
@@ -1275,7 +1300,7 @@ function pieceElementByKey(s, key) {
     return;
 }
 
-},{"./anim":4,"./board":6,"./draw":10,"./util":20}],10:[function(require,module,exports){
+},{"./anim":5,"./board":7,"./draw":11,"./util":21}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clear = exports.cancel = exports.end = exports.move = exports.processDraw = exports.start = void 0;
@@ -1370,7 +1395,7 @@ function onChange(drawable) {
         drawable.onChange(drawable.shapes);
 }
 
-},{"./board":6,"./util":20}],11:[function(require,module,exports){
+},{"./board":7,"./util":21}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.drop = exports.cancelDropMode = exports.setDropMode = void 0;
@@ -1408,7 +1433,7 @@ function drop(s, e) {
 }
 exports.drop = drop;
 
-},{"./board":6,"./drag":9,"./util":20}],12:[function(require,module,exports){
+},{"./board":7,"./drag":10,"./util":21}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bindDocument = exports.bindBoard = void 0;
@@ -1484,7 +1509,7 @@ function dragOrDraw(s, withDrag, withDraw) {
     };
 }
 
-},{"./drag":9,"./draw":10,"./drop":11,"./util":20}],13:[function(require,module,exports){
+},{"./drag":10,"./draw":11,"./drop":12,"./util":21}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.explosion = void 0;
@@ -1507,7 +1532,7 @@ function setStage(state, stage) {
     }
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.write = exports.read = exports.initial = void 0;
@@ -1565,7 +1590,7 @@ function write(pieces) {
 }
 exports.write = write;
 
-},{"./types":19,"./util":20}],15:[function(require,module,exports){
+},{"./types":20,"./util":21}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.premove = exports.queen = exports.knight = void 0;
@@ -1613,7 +1638,7 @@ function premove(pieces, key, canCastle) {
 }
 exports.premove = premove;
 
-},{"./util":20}],16:[function(require,module,exports){
+},{"./util":21}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateBounds = exports.render = void 0;
@@ -1825,7 +1850,7 @@ function appendValue(map, key, value) {
         map.set(key, [value]);
 }
 
-},{"./board":6,"./util":20}],17:[function(require,module,exports){
+},{"./board":7,"./util":21}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaults = void 0;
@@ -1912,7 +1937,7 @@ function defaults() {
 }
 exports.defaults = defaults;
 
-},{"./fen":14,"./util":20}],18:[function(require,module,exports){
+},{"./fen":15,"./util":21}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderSvg = exports.createElement = void 0;
@@ -2107,7 +2132,7 @@ function pos2px(pos, bounds) {
     return [(pos[0] + 0.5) * bounds.width / 8, (7.5 - pos[1]) * bounds.height / 8];
 }
 
-},{"./util":20}],19:[function(require,module,exports){
+},{"./util":21}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ranks = exports.files = exports.colors = void 0;
@@ -2115,7 +2140,7 @@ exports.colors = ['white', 'black'];
 exports.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 exports.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.computeSquareCenter = exports.createEl = exports.isRightButton = exports.eventPosition = exports.setVisible = exports.translateRel = exports.translateAbs = exports.posToTranslateRel = exports.posToTranslateAbs = exports.samePiece = exports.distanceSq = exports.opposite = exports.timer = exports.memo = exports.allPos = exports.key2pos = exports.pos2key = exports.allKeys = exports.invRanks = void 0;
@@ -2202,7 +2227,7 @@ function computeSquareCenter(key, asWhite, bounds) {
 }
 exports.computeSquareCenter = computeSquareCenter;
 
-},{"./types":19}],21:[function(require,module,exports){
+},{"./types":20}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderWrap = void 0;
@@ -2257,7 +2282,7 @@ function renderCoords(elems, className) {
     return el;
 }
 
-},{"./svg":18,"./types":19,"./util":20}],22:[function(require,module,exports){
+},{"./svg":19,"./types":20,"./util":21}],23:[function(require,module,exports){
 const Clock = require("./Clock")
 const timeControl = JSON.parse(document.getElementById('gameAsJSON').value).timeControl;
 
@@ -2275,4 +2300,4 @@ module.exports = {
 };
 
 
-},{"./Clock":1}]},{},[2,22,1,3]);
+},{"./Clock":2}]},{},[3,23,2,1,4]);
