@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/js/lib/chessboardjs-fork/lib/chessboard.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/chessground.css}">
     <link rel="stylesheet" th:href="@{/css/chessground2.css}">
     <link rel="stylesheet" th:href="@{/css/chessground3.css}">
@@ -18,29 +16,23 @@
 <!--TODO fix. Some links have no meaning in an analysis context-->
 <nav class="nav">
     <ul class="nav-links">
-        <li class="nav-link"><a href="#" class="profile-link">SirRobin95</a></li>
-        <li id="newGame" class="nav-link">New Game</li>
-        <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
-            <div class="end-buttons">
-                <a href="#" class="draw">Offer Draw</a>
-                <a href="#" class="resign">Resign</a>
-                <div class="window-close">
-                    <span class="fa fa-window-close"></span>
-                </div>
-            </div>
+        <li class="nav-link" sec:authorize="isAuthenticated()">
+            <a class="profile-link" th:href="@{'/user/' + session.user.username}" th:text="${session.user.username}"></a>
         </li>
+        <li class="nav-link"><a th:href="@{/}">Home</a></li>
     </ul>
 </nav>
 <main class="container">
 
+    <!--TODO align usernames with board-->
     <div id="player2-info" class="user-info">
-        <div class="username" th:text="${game.black.username}"></div>
+        <div id="opponent" class="username" th:text="${game.black.username}"></div>
     </div>
 
-    <div id="board" style="border: 1px solid red"></div>
+    <div id="board"></div>
 
     <div id="player1-info" class="user-info">
-        <div class="username" th:text="${game.white.username}"></div>
+        <div id="you" class="username" th:text="${game.white.username}"></div>
     </div>
 
     <nav class="logs-nav">
@@ -49,19 +41,15 @@
         </ul>
     </nav>
     <section class="logs">
-        <div id="fen-log" class="log active">
-            <ol id="fen-long-form" class="log-window"></ol>
+        <div id="pgn-log" class="log active">
+            <ol id="pgn-long-form" class="log-window"></ol>
         </div>
     </section>
 </main>
 
 <script th:src="@{/js/node_modules/chess.js/chess.js}"></script>
 <script th:src="@{/js/node_modules/jquery/dist/jquery.js}"></script>
-<!--<script th:src="@{/js/lib/chessboardjs-fork/lib/chessboard.js}"></script>-->
-<script th:src="@{/js/Clock.js}"></script>
-<script th:src="@{/js/timekeeper.js}"></script>
-<script th:src="@{/js/bundle.js}"></script>
-<script th:src="@{/js/analysis.js}"></script>
+<script th:src="@{/js/analysis_bundle.js}"></script>
 
 </body>
 </html>

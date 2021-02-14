@@ -1,122 +1,66 @@
-let board = null;
-const game = new Chess();
-const whiteSquareGrey = '#a9a9a9';
-const blackSquareGrey = '#696969';
-// const pgn = $('#pgn');
-const pgnLog = document.getElementById('fen-long-form');
+
+const chess = new Chess();
+const Chessground = require('chessground').Chessground;
+const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
+const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
+const color = gameData.white === me.textContent ? 'white' : 'black';
+let stompClient = null;
 let moveList = [];
 
-function removeGreySquares() {
-    $('#board .square-55d63').css('background', '');
-}
-
-function greySquare(square) {
-    if (!game.game_over()) {
-        let $square = $('#board .square-' + square)
-
-        let background = whiteSquareGrey
-        if ($square.hasClass('black-3c85d')) {
-            background = blackSquareGrey
-        }
-
-        $square.css('background', background)
+let config ={
+    orientation: 'white',
+    turnColor: 'white',
+    autoCastle: true,
+    animation: {
+        enabled: true,
+        duration: 250
+    }, highlight: {
+        lastMove: true,
+        check: true
+    },
+    movable: {
+        free: false,
+        color: 'both',
+        rookCastle: true,
+        dests: getValidMoves(chess),
+        showDests: true,
+        events: {}
+    },
+    events: {
+        // move: function (orig, dest) {
+        //     let moveObj = chess.move({from: orig, to: dest});
+        //     if (chess.game_over()) {
+        //         processGameOver();
+        //     }
+        //
+        //
+        //     let config = {
+        //         turnColor: sideToMove(chess),
+        //         movable: {
+        //             dests: getValidMoves(chess)
+        //         }
+        //     }
+        //     board.set(config);
+        //     if (!(chess.turn() === color.charAt(0))) {
+        //         myClock.pause();
+        //         opponentClock.resume();
+        //         let gameUpdate = new GameUpdate(me.textContent,
+        //             opponent.textContent,
+        //             `${orig}-${dest}`,
+        //             chess.fen(),
+        //             myClock.seconds);
+        //
+        //         sendData(gameUpdate);
+        //     }
+        //     moveList.push(moveObj.san);
+        //     updatePgnLog();
+        // }
     }
-}
-function onDragStart(source, piece) {
-    // do not pick up pieces if the game is over
-    if (game.game_over()) return false;
+};
 
-    // or if it's not that side's turn
-    if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-        return false
-    }
-}
-
-function onDrop(source, target) {
-    removeGreySquares()
-    // see if the move is legal
-    let move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    })
-
-    // illegal move
-    if (move === null) {
-        return 'snapback';
-    }
-}
-
-function onMouseoverSquare(square, piece) {
-    // get list of possible moves for this square
-    let moves = game.moves({
-        square: square,
-        verbose: true
-    })
-
-    // exit if there are no moves available for this square
-    if (moves.length === 0) return
-
-    // highlight the square they moused over
-    greySquare(square)
-
-    // highlight the possible squares for this piece
-    for (let i = 0; i < moves.length; i++) {
-        greySquare(moves[i].to)
-    }
-}
-
-function onMouseoutSquare(square, piece) {
-    removeGreySquares()
-}
-
-function onSnapEnd(source, target, piece) {
-    // updatePgn();
-}
-
-// function updatePgn() {
-//     let newMove = game.pgn().split(/(?<!\d\.) /).pop();
-//     moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${newMove} </li>`);
-//     // pgn.html(moveList.join(' '));
-//
-//     pgnLog.innerHTML = moveList.join(' ');
-//     addPgnListeners();
-// }
-
-// function addPgnListeners() {
-//     let node = pgn.children();
-//
-//     for (let i = 0; i < node.length; i++) {
-//         node[i].addEventListener('click', function () {
-//             let pos = node[i].dataset.fen;
-//             board.position(pos);
-//         });
-//     }
-//
-//     let longform = $('#fen-long-form').children();
-//     for (let i = 0; i < longform.length; i++) {
-//         longform[i].addEventListener('click', function () {
-//             let pos = longform[i].dataset.fen;
-//             board.position(pos);
-//         });
-//     }
-// }
-
-const config = {
-    draggable: true,
-    position: 'start',
-    onDragStart: onDragStart,
-    onDrop: onDrop,
-    onMouseoutSquare: onMouseoutSquare,
-    onMouseoverSquare: onMouseoverSquare,
-    onSnapEnd: onSnapEnd,
-}
-
-board = Chessboard('board', config);
-
+const board = new Chessground(document.getElementById('board'), config);
 
 function determineSize() {
 
@@ -130,30 +74,65 @@ function determineSize() {
     for (let arg of info) {
         arg.style.width = newWidth + 'px';
     }
+
+    let pgn = document.getElementById('pgn');
+    pgn.style.width = newWidth + 'px';
 }
 
 function onWindowResize() {
-    board.resize();
-    determineSize();
+    // board.resize();
+    // determineSize();
 }
 
+// determineSize();
+window.onresize = onWindowResize;
+
 (function () {
-    for (let m of gameData.pgn.split(' ')) {
-        game.move(m);
-        moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${m} </li>`);
+    gameData.pgn.split(' ').forEach(move => {
+        let moveObj = chess.move(move);
+        console.log(moveObj);
+        moveList.push(move);
+        updatePgnLog();
+    });
+
+    let pgnNodes = document.getElementsByClassName('pgn-link');
+    for (let node of pgnNodes) {
+        node.addEventListener('click', (e) => {
+            e.preventDefault();
+            board.set({fen: node.dataset.fen})
+        });
     }
 
-    board.position(game.fen());
-    // let moves = game.pgn().split(/(?<!\d\.) /);
-    // for (let m of moves) {
-    //     // TODO fix. game.fen() returns the final position not current pos of ${m}.
-    //     moveList.push(`<li class="pgn-link" data-fen="${game.fen()}">${m} </li>`);
-    // }
-    // pgn.html(moveList.join(' '));
-
-    pgnLog.innerHTML = moveList.join(' ');
-    addPgnListeners();
-    determineSize();
-    window.onresize = onWindowResize;
-
 })();
+
+(function () {
+    let list = [];
+    let output = [];
+    for (let i = 0; i < 50; i++) {
+        list.push(i);
+    }
+    output = list.map(num => {
+        return num * 2;
+    });
+    console.log(`printing the original list ${list}`);
+    console.log(`printing the mapped list ${output}`);
+})();
+
+function getValidMoves(chess) {
+    var dests = new Map();
+    chess.SQUARES.forEach(function (s) {
+        var ms = chess.moves({ square: s, verbose: true });
+        if (ms.length)
+            dests.set(s, ms.map(function (m) { return m.to; }));
+    });
+    return dests;
+}
+
+function sideToMove(chess) {
+    return (chess.turn() === 'w') ? 'white' : 'black';
+}
+
+function updatePgnLog() {
+    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
+    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
+}
