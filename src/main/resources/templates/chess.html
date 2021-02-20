@@ -14,7 +14,7 @@
 
 <nav class="nav">
     <ul class="nav-links">
-        <li class="nav-link"><a th:href="@{'/user/' + ${session.user.username}}" class="profile-link">SirRobin95</a></li>
+        <li class="nav-link"><a th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}" class="profile-link"></a></li>
         <li class="nav-link"><a th:href="@{/}">Home</a></li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
@@ -56,7 +56,6 @@
     </ul>
 </nav>
 <section class="logs">
-    <!--TODO facilitate the sending of chat messages-->
     <div id="chat-log" class="log active">
         <ol id="chat-messages" class="log-window">
         </ol>
@@ -73,8 +72,8 @@
             <input id="notes-input" type="text" class="input" placeholder="Observations?">
         </div>
     </div>
-    <div id="fen-log" class="log">
-        <ol id="fen-long-form" class="log-window">
+    <div id="pgn-log" class="log">
+        <ol id="pgn-long-form" class="log-window">
 
         </ol>
     </div>

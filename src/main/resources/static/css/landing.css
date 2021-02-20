@@ -1,24 +1,49 @@
+body {
+    background-image: url("../images/piotr-makowski-27LH_0jXKYI-unsplash.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+#chessLive{
+    color: var(--white);
+    width: 250px;
+    word-wrap: break-word;
+    font-size: 5rem;
+    display: inline-block;
+    font-family: var(--thin);
+    font-weight: 100;
+    margin-left: 20px
+}
+
 .wrapper {
-    display: flex;
+    position: absolute;
+    right: 50px;
+    display: inline-flex;
     flex-direction: column;
-    margin: auto;
-    justify-content: space-around;
-    align-items: center;
+    gap: 35px;
+    margin-top: 60px;
 }
 
 .time-control {
     box-sizing: border-box;
-    width: 300px;
-    height: 100px;
+    /*     width: 300px; */
+    width: 150px;
+    /*     height: 100px; */
+    height: 60px;
     padding: 20px;
-    background-color: var(--secondaryColor);
+    /*     margin: 10px 0; */
+    /*     background-color: var(--secondaryColor); */
+
+    border: 2px solid var(--secondaryColor);
+    border-radius: 30px;
     text-align: center;
 }
 
 .time-control:hover {
     cursor: pointer;
-    border: 3px solid white;
-    border-radius: 10px;
+    /*     border: 3px solid white; */
+    border: 2px solid #861657;
+    /*     border-radius: 10px; */
 }
 
 .time-control a {

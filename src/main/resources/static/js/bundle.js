@@ -68,7 +68,7 @@ module.exports = Clock;
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
 const clocks = require('./timekeeper'), myClock = clocks.myClock, opponentClock = clocks.opponentClock;
-const pgnLog = document.getElementById('fen-long-form');
+const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
@@ -2300,4 +2300,4 @@ module.exports = {
 };
 
 
-},{"./Clock":2}]},{},[3,23,2,1,4]);
+},{"./Clock":2}]},{},[3,4,2,1,23]);

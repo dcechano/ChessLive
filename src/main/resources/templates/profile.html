@@ -25,6 +25,7 @@
 </nav>
 <div class="profile-wrapper">
     <aside class="about_me">
+        <!--TODO Find new image to put here-->
         <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="" src="">
         <p class="font">Hi! I like to play chess</p>
     </aside>
@@ -52,10 +53,10 @@
         </div>
 
         <div id="tenP10Stats" class="stat_wrapper">
-            <h5 class="font stat" th:text="${'10 + 10 Stats'}"></h5>
-            <p  class="font stat" th:text="${stats.tenPlus10Wins + ' Wins'}"></p>
-            <p  class="font stat" th:text="${stats.tenPlus10Losses + ' Losses'}"></p>
-            <p  class="font stat" th:text="${stats.tenPlus10Draws + ' Draws'}"></p>
+            <h5 class="stat" th:text="${'10 + 10 Stats'}"></h5>
+            <p  class="stat" th:text="${stats.tenPlus10Wins + ' Wins'}"></p>
+            <p  class="stat" th:text="${stats.tenPlus10Losses + ' Losses'}"></p>
+            <p  class="stat" th:text="${stats.tenPlus10Draws + ' Draws'}"></p>
         </div>
     </aside>
 
@@ -65,11 +66,9 @@
                th:text="${game.white.username} + ' v. ' + ${game.black.username}"></a>
             <a class="game_info" th:text="${game.timeControl.prettyCode()}"
                th:href="@{'/archive/' + ${game.id}}"></a>
-            <p class="game_info result" th:text="${game.result}" th:href="@{'/archive/' + ${game.id}}"></p>
+            <p class="game_info result" th:text="${game.result}"></p>
         </div>
     </section>
 </div>
-
-
 </body>
 </html>

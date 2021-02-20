@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200&display=swap');
+
 :root {
-    --roboto: 'Roboto', sans-serif;
-    --backgroundColor: rgba(31, 31, 31, 0.94);
-    --secondaryColor: rgba(64, 64, 64, 1);
+    --thin:'Work Sans', sans-serif;
+    /*     --backgroundColor: rgba(31, 31, 31, 0.94);
+        --secondaryColor: rgb(64, 64, 64); */
+    --backgroundColor: #254e70;
+    --secondaryColor: #2c578a;
     --border: 1px solid rgba(255, 255, 255, 0.25);
     font-size: 30px;
-    font-family: var(--roboto);
+    font-family: var(--thin);
     letter-spacing: 1.5px;
 
 }

@@ -10,7 +10,8 @@
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link" sec:authorize="isAuthenticated()">
-            <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a></li>
+            <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
+        </li>
         <li class="nav-link">Play</li>
         <li class="nav-link">
             <a th:href="@{/analysis}">Analysis</a>
@@ -20,11 +21,11 @@
         </li>
     </ul>
 </nav>
-<aside class="wrapper">
-    <div class="time-control" th:each="control : ${T(com.example.chess.model.entity.TimeControl).values()}">
-        <a th:text="${control.prettyCode()}" th:href="@{/new_game(time_control=${control.name})}"></a>
-    </div>
-</aside>
+<h1 id="chessLive">ChessLive</h1>
+<section class="wrapper">
+    <a class="time-control" th:each="control : ${T(com.example.chess.model.entity.TimeControl).values()}"
+       th:text="${control.prettyCode()}" th:href="@{/new_game(time_control=${control.name})}"></a>
+</section>
 
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>

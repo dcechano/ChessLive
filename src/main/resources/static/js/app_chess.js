@@ -2,7 +2,7 @@
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
 const clocks = require('./timekeeper'), myClock = clocks.myClock, opponentClock = clocks.opponentClock;
-const pgnLog = document.getElementById('fen-long-form');
+const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
@@ -98,10 +98,6 @@ window.onresize = onWindowResize;
     // stompClient.debug = (str) => {};
 
     stompClient.connect({},  (frame) => {
-
-        stompClient.subscribe('/user/getGame', (data) => {
-            console.log(JSON.stringify(data.body));
-        });
 
         stompClient.subscribe('/user/queue/update', (data) => {
             let gameUpdate = JSON.parse(data.body);
