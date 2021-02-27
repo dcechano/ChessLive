@@ -2,8 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <script defer th:src="@{/js/profile.js}"></script>
     <title th:text="${username}"></title>
 </head>
 <body>
@@ -25,35 +27,44 @@
 </nav>
 <div class="profile-wrapper">
     <aside class="about_me">
-        <!--TODO Find new image to put here-->
-        <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="" src="">
+        <!-- TODO Find new image to put here -->
+        <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="">
         <p class="font">Hi! I like to play chess</p>
     </aside>
 
     <aside class="stats">
-        <div id="twoP1Stats" class="stat_wrapper">
-            <h5 class="font stat" th:text="${'2 + 1 Stats'}"></h5>
-            <p class="font stat" th:text="${stats.twoPlus1Wins + ' Wins'}"></p>
-            <p class="font stat"  th:text="${stats.twoPlus1Losses + ' Losses'}"></p>
-            <p class="font stat" th:text="${stats.twoPlus1Draws + ' Draws'}"></p>
+
+        <button class="collapsible"><span>Quick Stats</span><i class="fa fa-arrow-down"></i></button>
+        <div class="font quick_summary stat_wrapper">
+            <p class="stat" th:text="${'Total Games: ' + stats.totalGames()}"></p>
+            <p class="stat" th:text="${'Wins: ' + stats.totalWins()}"></p>
+            <p class="stat" th:text="${'Losses: ' + stats.totalLosses()}"></p>
+            <p class="stat" th:text="${'Draws: ' + stats.totalDraws()}"></p>
         </div>
 
-        <div id="fiveP0Stats" class="stat_wrapper">
-            <h5 class="font stat" th:text="${'5 + 0 Stats'}"></h5>
-            <p  class="font stat" th:text="${stats.fivePlus0Wins + ' Wins'}"></p>
-            <p  class="font stat" th:text="${stats.fivePlus0Losses + ' Losses'}"></p>
-            <p  class="font stat" th:text="${stats.fivePlus0Draws + ' Draws'}"></p>
+        <button class="collapsible"><span>2 + 1</span><i class="fa fa-arrow-down"></i></button>
+        <div id="twoP1Stats" class="font stat_wrapper">
+            <p  class="stat" th:text="${stats.twoPlus1Wins + ' Wins'}"></p>
+            <p  class="stat"  th:text="${stats.twoPlus1Losses + ' Losses'}"></p>
+            <p  class="stat" th:text="${stats.twoPlus1Draws + ' Draws'}"></p>
         </div>
 
-        <div id="fiveP5Stats" class="stat_wrapper">
-            <h5 class="font stat" th:text="${'5 + 5 Stats'}"></h5>
-            <p  class="font stat" th:text="${stats.fivePlus5Wins + ' Wins'}"></p>
-            <p  class="font stat" th:text="${stats.fivePlus5Losses + ' Losses'}"></p>
-            <p  class="font stat" th:text="${stats.fivePlus5Draws + ' Draws'}"></p>
+        <button class="collapsible"><span>5 + 0</span><i class="fa fa-arrow-down"></i></button>
+        <div id="fiveP0Stats" class="font stat_wrapper">
+            <p  class="stat" th:text="${stats.fivePlus0Wins + ' Wins'}"></p>
+            <p  class="stat" th:text="${stats.fivePlus0Losses + ' Losses'}"></p>
+            <p  class="stat" th:text="${stats.fivePlus0Draws + ' Draws'}"></p>
         </div>
 
-        <div id="tenP10Stats" class="stat_wrapper">
-            <h5 class="stat" th:text="${'10 + 10 Stats'}"></h5>
+        <button class="collapsible"><span>5 + 1</span><i class="fa fa-arrow-down"></i></button>
+        <div id="fiveP5Stats" class="font stat_wrapper">
+            <p  class="stat" th:text="${stats.fivePlus5Wins + ' Wins'}"></p>
+            <p  class="stat" th:text="${stats.fivePlus5Losses + ' Losses'}"></p>
+            <p  class="stat" th:text="${stats.fivePlus5Draws + ' Draws'}"></p>
+        </div>
+
+        <button class="collapsible"><span>10 + 10</span><i class="fa fa-arrow-down"></i></button>
+        <div id="tenP10Stats" class="font stat_wrapper">
             <p  class="stat" th:text="${stats.tenPlus10Wins + ' Wins'}"></p>
             <p  class="stat" th:text="${stats.tenPlus10Losses + ' Losses'}"></p>
             <p  class="stat" th:text="${stats.tenPlus10Draws + ' Draws'}"></p>
