@@ -24,3 +24,5 @@ class GameUpdate {
         this.updateType = "DECLINE_DRAW";
     }
 }
+
+module.exports = GameUpdate;

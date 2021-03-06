@@ -1,15 +1,14 @@
-
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
 const clocks = require('./timekeeper'), myClock = clocks.myClock, opponentClock = clocks.opponentClock;
-const pgnLog = document.getElementById('fen-long-form');
+const GameUpdate = require('./GameUpdate');
+const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
 const color = gameData.white === me.textContent ? 'white' : 'black';
 let stompClient = null;
 let moveList = [];
-let FENList = [];
 
 let config ={
     orientation: color,
@@ -67,23 +66,6 @@ function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
 
-function determineSize() {
-
-    let htmlBoard = document.getElementsByClassName('board-b72b1')[0];
-    let oldWidth = htmlBoard.style.width.split('px')[0];
-
-    // + 4 because htmlBoard has a 2px border and content-box box-sizing
-    let newWidth = Number(oldWidth) + 4;
-
-    let info = document.getElementsByClassName('user-info');
-    for (let arg of info) {
-        arg.style.width = newWidth + 'px';
-    }
-
-    let pgn = document.getElementById('pgn');
-    pgn.style.width = newWidth + 'px';
-}
-
 function onWindowResize() {
     // board.resize();
     // determineSize();
@@ -95,13 +77,9 @@ window.onresize = onWindowResize;
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
-    // stompClient.debug = (str) => {};
+    stompClient.debug = (str) => {};
 
     stompClient.connect({},  (frame) => {
-
-        stompClient.subscribe('/user/getGame', (data) => {
-            console.log(JSON.stringify(data.body));
-        });
 
         stompClient.subscribe('/user/queue/update', (data) => {
             let gameUpdate = JSON.parse(data.body);
@@ -229,7 +207,14 @@ function stopClocks() {
 
 function updatePgnLog() {
     let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
+    pgnLog.insertAdjacentHTML('beforeend',
+        `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`);
+    let el = document.getElementsByClassName('pgn-link')[moveList.length - 1];
+    // Why does event listener disappear after new move.
+    el.addEventListener('click', () => {
+        console.log(el);
+        board.set({fen: el.dataset.fen});
+    });
 }
 
 module.exports = {

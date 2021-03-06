@@ -110,9 +110,16 @@ public class BaseController {
         return "analysis";
     }
 
-//    TODO remove this mapping before publication
+//    TODO remove
+    @GetMapping("/dev")
+    public String dev() {
+        return "dev/dev";
+    }
+
+    //    TODO remove this mapping before publication
     @GetMapping("/websocket")
     public String socket() {
+
         return "websocket";
     }
 

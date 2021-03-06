@@ -1,137 +1,67 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-class ChatMessage{
-    constructor(from, to, message) {
-        this.from = from;
-        this.to = to;
-        this.message = message;
-    }
-}
-
-module.exports = ChatMessage;
-},{}],2:[function(require,module,exports){
-class Clock {
-    constructor(timeControl, domDisplay) {
-        let arr = timeControl.split('_');
-        this.inc = +arr.pop();
-        switch (arr[0]) {
-            case 'TWO':
-                this.seconds = 2*60;
-                break;
-            case 'FIVE':
-                this.seconds = 5*60;
-                break;
-            case 'TEN':
-                this.seconds = 10*60;
-                break;
-        }
-        this.on = false;
-        this.display = domDisplay;
-    }
-
-    run() {
-        if (this.on) {
-            this.seconds--;
-            this.updateDisplay();
-        }
-    }
-
-    stop() {
-        this.on = false;
-    }
-
-    pause() {
-        this.on = false;
-        this.seconds += this.inc;
-        this.updateDisplay();
-    }
-
-    resume() {
-        this.on = true;
-    }
-
-    updateDisplay() {
-        if (this.seconds === 0) {
-            this.display.style.color = 'red';
-            this.display.textContent = '00:00';
-            this.on = false;
-            return;
-        }
-        let mins = Math.floor(this.seconds / 60);
-        let seconds = this.seconds % 60;
-        this.display.textContent = `${mins}:${(seconds < 10) ? ('0' + seconds): seconds}`;
-    }
-}
-
-module.exports = Clock;
-},{}],3:[function(require,module,exports){
 
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
-const clocks = require('./timekeeper'), myClock = clocks.myClock, opponentClock = clocks.opponentClock;
-const pgnLog = document.getElementById('fen-long-form');
+const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
 const me = document.getElementById('you');
 const opponent = document.getElementById('opponent');
 const color = gameData.white === me.textContent ? 'white' : 'black';
 let stompClient = null;
 let moveList = [];
-let FENList = [];
 
 let config ={
-    orientation: color,
+    orientation: 'white',
     turnColor: 'white',
     autoCastle: true,
     animation: {
         enabled: true,
-        duration: 500
+        duration: 250
     }, highlight: {
         lastMove: true,
         check: true
     },
     movable: {
         free: false,
-        color: color,
+        color: 'both',
         rookCastle: true,
         dests: getValidMoves(chess),
         showDests: true,
         events: {}
     },
     events: {
-        move: function (orig, dest) {
-            let moveObj = chess.move({from: orig, to: dest});
-            if (chess.game_over()) {
-                processGameOver();
-            }
-
-
-            let config = {
-                turnColor: sideToMove(chess),
-                movable: {
-                    dests: getValidMoves(chess)
-                }
-            }
-            board.set(config);
-            if (!(chess.turn() === color.charAt(0))) {
-                myClock.pause();
-                opponentClock.resume();
-                let gameUpdate = new GameUpdate(me.textContent,
-                    opponent.textContent,
-                    `${orig}-${dest}`,
-                    chess.fen(),
-                    myClock.seconds);
-
-                sendData(gameUpdate);
-            }
-            moveList.push(moveObj.san);
-            updatePgnLog();
-        }
+        // move: function (orig, dest) {
+        //     let moveObj = chess.move({from: orig, to: dest});
+        //     if (chess.game_over()) {
+        //         processGameOver();
+        //     }
+        //
+        //
+        //     let config = {
+        //         turnColor: sideToMove(chess),
+        //         movable: {
+        //             dests: getValidMoves(chess)
+        //         }
+        //     }
+        //     board.set(config);
+        //     if (!(chess.turn() === color.charAt(0))) {
+        //         myClock.pause();
+        //         opponentClock.resume();
+        //         let gameUpdate = new GameUpdate(me.textContent,
+        //             opponent.textContent,
+        //             `${orig}-${dest}`,
+        //             chess.fen(),
+        //             myClock.seconds);
+        //
+        //         sendData(gameUpdate);
+        //     }
+        //     moveList.push(moveObj.san);
+        //     updatePgnLog();
+        // }
     }
 };
 
 const board = new Chessground(document.getElementById('board'), config);
-function sendData(gameUpdate) {
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
-}
 
 function determineSize() {
 
@@ -159,104 +89,35 @@ function onWindowResize() {
 window.onresize = onWindowResize;
 
 (function () {
-    let socket = new SockJS('/chess-lite');
-    stompClient = Stomp.over(socket);
-    // stompClient.debug = (str) => {};
-
-    stompClient.connect({},  (frame) => {
-
-        stompClient.subscribe('/user/getGame', (data) => {
-            console.log(JSON.stringify(data.body));
-        });
-
-        stompClient.subscribe('/user/queue/update', (data) => {
-            let gameUpdate = JSON.parse(data.body);
-
-            if (!gameUpdate.updateType) {
-                throw new Error("The type of update hasn't been set for GameUpdate object");
-            }
-
-            switch (gameUpdate.updateType) {
-                case 'NEW_MOVE':
-                    processNewMove(gameUpdate);
-                    break;
-
-                case 'RESIGNATION':
-                    processResignation();
-                    break;
-
-                case 'DRAW_OFFER':
-                    decideDrawOffer();
-                    break;
-
-                case 'ACCEPT_DRAW':
-                    acceptDrawOffer();
-                    break;
-            }
-
-        });
-
-        stompClient.subscribe('/user/queue/message', (data) => {
-            let msg = JSON.parse(data.body).message;
-            let chatLog = document.getElementById('chat-messages');
-            chatLog.innerHTML += `<li class="opponent_message">${msg}</li>`;
-        });
+    gameData.pgn.split(' ').forEach(move => {
+        let moveObj = chess.move(move);
+        console.log(moveObj);
+        moveList.push(move);
+        updatePgnLog();
     });
+
+    let pgnNodes = document.getElementsByClassName('pgn-link');
+    for (let node of pgnNodes) {
+        node.addEventListener('click', (e) => {
+            e.preventDefault();
+            board.set({fen: node.dataset.fen})
+        });
+    }
 
 })();
 
 (function () {
-    (color === 'white') ? myClock.resume() : opponentClock.resume();
-})();
-
-function processNewMove(gameUpdate) {
-    opponentClock.pause();
-    opponentClock.seconds = gameUpdate.seconds;
-    opponentClock.updateDisplay();
-    myClock.resume();
-    let from_to = gameUpdate.newMove.split('-');
-
-    board.move(from_to[0], from_to[1]);
-}
-
-function processGameOver() {
-
-    let result;
-    if (chess.in_checkmate()) {
-        result = 'checkmate';
-    } else if (chess.in_threefold_repetition()) {
-        result = 'threefold repetition';
-    } else if (chess.in_stalemate()) {
-        result = 'stalemate';
-    } else if (chess.insufficient_material()) {
-        result = 'draw due to insufficient material'
+    let list = [];
+    let output = [];
+    for (let i = 0; i < 50; i++) {
+        list.push(i);
     }
-    displayResult(result);
-}
-
-function processResignation() {
-    stopClocks();
-    chess.set_resign(true);
-    board.set({viewOnly: true});
-    displayResult('Resignation');
-
-    gameData.pgn = chess.history().join(' ');
-    gameData.result = `${color} won by resignation`;
-
-    stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
-
-}
-
-function acceptDrawOffer(){
-    stopClocks();
-    chess.set_draw(true);
-    board.set({viewOnly: true});
-    displayResult('Draw');
-    gameData.pgn = chess.history().join(' ');
-    gameData.result = 'Game drawn by agreement';
-    stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
-
-}
+    output = list.map(num => {
+        return num * 2;
+    });
+    console.log(`printing the original list ${list}`);
+    console.log(`printing the mapped list ${output}`);
+})();
 
 function getValidMoves(chess) {
     var dests = new Map();
@@ -272,176 +133,12 @@ function sideToMove(chess) {
     return (chess.turn() === 'w') ? 'white' : 'black';
 }
 
-function displayResult(result) {
-    let game_result = document.getElementById('game_result');
-    let currActive = document.getElementsByClassName('active')[0];
-    currActive.classList.toggle('active');
-    game_result.classList.toggle('active');
-    let resultLabel = document.getElementById('result');
-    resultLabel.textContent = `Game finished by ${result}.`
-}
-
-function decideDrawOffer() {
-    let draw_decision = document.getElementById('draw_decision');
-    let currActive = document.getElementsByClassName('active')[0];
-    currActive.classList.toggle('active');
-    draw_decision.classList.toggle('active');
-}
-
-function stopClocks() {
-    myClock.stop();
-    opponentClock.stop();
-}
-
 function updatePgnLog() {
     let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
     pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
 }
 
-module.exports = {
-    stompClient: stompClient,
-    board: board,
-    chess: chess,
-    me: me,
-    opponent: opponent,
-    stopClocks: stopClocks,
-    displayResult: displayResult,
-
-}
-},{"./timekeeper":23,"chessground":8}],4:[function(require,module,exports){
-const app = require('./app_chess');
-const stompClient = app.stompClient,
-    chess = app.chess,
-    board = app.board,
-    me = app.me,
-    opponent = app.opponent,
-    stopClocks = app.stopClocks,
-    displayResult = app.displayResult;
-const ChatMessage = require('./ChatMessage');
-
-// Log related listeners
-
-let links = document.getElementsByClassName('widget-link');
-for (let link of links) {
-    link.addEventListener('click', () =>  {
-        let currSelected = document.getElementsByClassName('selected')[0];
-        currSelected.classList.toggle('selected');
-        link.classList.toggle('selected');
-
-        let dataSet = link.dataset.for;
-        let ref = document.getElementById(dataSet);
-        let currActive = document.getElementsByClassName('active')[0];
-        currActive.classList.toggle('active');
-        ref.classList.toggle('active');
-    });
-}
-
-let chatInput = document.getElementById('chat-input');
-chatInput.addEventListener('keyup', (e) => {
-    if(e.key === 'Enter') chatButton.click();
-});
-
-
-let chatButton = document.getElementById('chat-button');
-chatButton.addEventListener('click', () => {
-
-    let chatLog = document.getElementById('chat-messages');
-    let msg = chatInput.value;
-    chatLog.innerHTML += `<li class="user-message">${msg}</li>`;
-    chatInput.value = null;
-    let chatMsg = new ChatMessage(me.textContent, opponent.textContent, msg);
-    stompClient.send('/app/message', {}, JSON.stringify(chatMsg));
-});
-
-let notesInput = document.getElementById('notes-input');
-notesInput.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') noteButton.click();
-});
-
-let noteButton = document.getElementById('notes-button');
-noteButton.addEventListener('click', () => {
-    let notesLog = document.getElementById('notes');
-    notesLog.innerHTML += `<li class="note">${notesInput.value}</li> `
-    notesInput.value = null;
-});
-
-
-// Game control listeners
-
-let endGame = document.getElementsByClassName('endgame')[0];
-endGame.addEventListener('click', () => {
-    let btns = document.getElementsByClassName('end-buttons')[0];
-    btns.style.display = 'flex';
-});
-
-let close = document.getElementsByClassName('window-close')[0];
-close.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeWindow();
-});
-
-let resign = document.getElementById('resign');
-resign.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeWindow();
-    chess.set_resign(true);
-    board.set({viewOnly: true});
-    stopClocks();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
-    gameUpdate.resign();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
-    displayResult('Resignation');
-
-});
-
-let draw = document.getElementById('offer_draw');
-draw.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeWindow();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
-    gameUpdate.offerDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
-});
-
-let accept = document.getElementById('accept');
-accept.addEventListener('click', () =>  {
-    chess.set_draw(true);
-    board.set({viewOnly: true});
-    displayResult('draw agreement');
-    afterDrawDecision();
-    displayResult('Draw');
-    stopClocks();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
-    gameUpdate.acceptDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
-});
-
-let decline = document.getElementById('decline');
-decline.addEventListener('click', () => {
-    afterDrawDecision();
-    let gameUpdate = new GameUpdate(me.textContent, opponent.textContent);
-    gameUpdate.declineDraw();
-    stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
-
-});
-
-// Util functions
-
-function closeWindow() {
-    let btns = document.getElementsByClassName('end-buttons')[0];
-    btns.style.display = 'none';
-}
-
-function afterDrawDecision() {
-    let currActive = document.getElementsByClassName('active')[0];
-    currActive.classList.toggle('active');
-    let currSelected = document.getElementsByClassName('selected')[0]
-
-    let dataSet = currSelected.dataset.for;
-    let ref = document.getElementById(dataSet);
-    ref.classList.toggle('active');
-}
-},{"./ChatMessage":1,"./app_chess":3}],5:[function(require,module,exports){
+},{"chessground":5}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = exports.anim = void 0;
@@ -552,7 +249,7 @@ function easing(t) {
     return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 
-},{"./util":21}],6:[function(require,module,exports){
+},{"./util":18}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = void 0;
@@ -646,7 +343,7 @@ function start(state, redrawAll) {
 }
 exports.start = start;
 
-},{"./anim":5,"./board":7,"./config":9,"./drag":10,"./explosion":14,"./fen":15}],7:[function(require,module,exports){
+},{"./anim":2,"./board":4,"./config":6,"./drag":7,"./explosion":11,"./fen":12}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.whitePov = exports.getSnappedKeyAtDomPos = exports.getKeyAtDomPos = exports.stop = exports.cancelMove = exports.playPredrop = exports.playPremove = exports.isDraggable = exports.canMove = exports.unselect = exports.setSelected = exports.selectSquare = exports.dropNewPiece = exports.userMove = exports.baseNewPiece = exports.baseMove = exports.unsetPredrop = exports.unsetPremove = exports.setCheck = exports.setPieces = exports.reset = exports.toggleOrientation = exports.callUserFunction = void 0;
@@ -997,7 +694,7 @@ function whitePov(s) {
 }
 exports.whitePov = whitePov;
 
-},{"./premove":16,"./util":21}],8:[function(require,module,exports){
+},{"./premove":13,"./util":18}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Chessground = void 0;
@@ -1057,7 +754,7 @@ function debounceRedraw(redrawNow) {
     };
 }
 
-},{"./api":6,"./config":9,"./events":13,"./render":17,"./state":18,"./svg":19,"./util":21,"./wrap":22}],9:[function(require,module,exports){
+},{"./api":3,"./config":6,"./events":10,"./render":14,"./state":15,"./svg":16,"./util":18,"./wrap":19}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configure = void 0;
@@ -1103,7 +800,7 @@ function isObject(o) {
     return typeof o === 'object';
 }
 
-},{"./board":7,"./fen":15}],10:[function(require,module,exports){
+},{"./board":4,"./fen":12}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cancel = exports.end = exports.move = exports.dragNewPiece = exports.start = void 0;
@@ -1300,7 +997,7 @@ function pieceElementByKey(s, key) {
     return;
 }
 
-},{"./anim":5,"./board":7,"./draw":11,"./util":21}],11:[function(require,module,exports){
+},{"./anim":2,"./board":4,"./draw":8,"./util":18}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clear = exports.cancel = exports.end = exports.move = exports.processDraw = exports.start = void 0;
@@ -1395,7 +1092,7 @@ function onChange(drawable) {
         drawable.onChange(drawable.shapes);
 }
 
-},{"./board":7,"./util":21}],12:[function(require,module,exports){
+},{"./board":4,"./util":18}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.drop = exports.cancelDropMode = exports.setDropMode = void 0;
@@ -1433,7 +1130,7 @@ function drop(s, e) {
 }
 exports.drop = drop;
 
-},{"./board":7,"./drag":10,"./util":21}],13:[function(require,module,exports){
+},{"./board":4,"./drag":7,"./util":18}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bindDocument = exports.bindBoard = void 0;
@@ -1509,7 +1206,7 @@ function dragOrDraw(s, withDrag, withDraw) {
     };
 }
 
-},{"./drag":10,"./draw":11,"./drop":12,"./util":21}],14:[function(require,module,exports){
+},{"./drag":7,"./draw":8,"./drop":9,"./util":18}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.explosion = void 0;
@@ -1532,7 +1229,7 @@ function setStage(state, stage) {
     }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.write = exports.read = exports.initial = void 0;
@@ -1590,7 +1287,7 @@ function write(pieces) {
 }
 exports.write = write;
 
-},{"./types":20,"./util":21}],16:[function(require,module,exports){
+},{"./types":17,"./util":18}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.premove = exports.queen = exports.knight = void 0;
@@ -1638,7 +1335,7 @@ function premove(pieces, key, canCastle) {
 }
 exports.premove = premove;
 
-},{"./util":21}],17:[function(require,module,exports){
+},{"./util":18}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateBounds = exports.render = void 0;
@@ -1850,7 +1547,7 @@ function appendValue(map, key, value) {
         map.set(key, [value]);
 }
 
-},{"./board":7,"./util":21}],18:[function(require,module,exports){
+},{"./board":4,"./util":18}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaults = void 0;
@@ -1937,7 +1634,7 @@ function defaults() {
 }
 exports.defaults = defaults;
 
-},{"./fen":15,"./util":21}],19:[function(require,module,exports){
+},{"./fen":12,"./util":18}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderSvg = exports.createElement = void 0;
@@ -2132,7 +1829,7 @@ function pos2px(pos, bounds) {
     return [(pos[0] + 0.5) * bounds.width / 8, (7.5 - pos[1]) * bounds.height / 8];
 }
 
-},{"./util":21}],20:[function(require,module,exports){
+},{"./util":18}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ranks = exports.files = exports.colors = void 0;
@@ -2140,7 +1837,7 @@ exports.colors = ['white', 'black'];
 exports.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 exports.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-},{}],21:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.computeSquareCenter = exports.createEl = exports.isRightButton = exports.eventPosition = exports.setVisible = exports.translateRel = exports.translateAbs = exports.posToTranslateRel = exports.posToTranslateAbs = exports.samePiece = exports.distanceSq = exports.opposite = exports.timer = exports.memo = exports.allPos = exports.key2pos = exports.pos2key = exports.allKeys = exports.invRanks = void 0;
@@ -2227,7 +1924,7 @@ function computeSquareCenter(key, asWhite, bounds) {
 }
 exports.computeSquareCenter = computeSquareCenter;
 
-},{"./types":20}],22:[function(require,module,exports){
+},{"./types":17}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderWrap = void 0;
@@ -2282,22 +1979,4 @@ function renderCoords(elems, className) {
     return el;
 }
 
-},{"./svg":19,"./types":20,"./util":21}],23:[function(require,module,exports){
-const Clock = require("./Clock")
-const timeControl = JSON.parse(document.getElementById('gameAsJSON').value).timeControl;
-
-const myClock = new Clock(timeControl, document.getElementById('clock2'));
-const opponentClock = new Clock(timeControl, document.getElementById('clock1'));
-
-setInterval(function () {
-    myClock.run();
-    opponentClock.run();
-}, 1000);
-
-module.exports = {
-    myClock: myClock,
-    opponentClock: opponentClock
-};
-
-
-},{"./Clock":2}]},{},[3,23,2,1,4]);
+},{"./svg":16,"./types":17,"./util":18}]},{},[1]);

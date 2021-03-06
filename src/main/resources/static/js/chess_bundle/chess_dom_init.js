@@ -6,7 +6,22 @@ const stompClient = app.stompClient,
     opponent = app.opponent,
     stopClocks = app.stopClocks,
     displayResult = app.displayResult;
+
+const GameUpdate = require('./GameUpdate');
 const ChatMessage = require('./ChatMessage');
+
+let prevScroll = window.pageYOffset;
+window.onscroll = () => {
+    let nav = document.getElementsByClassName('nav')[0];
+
+    let currentScrollPos = window.pageYOffset;
+    if (prevScroll > currentScrollPos) {
+        nav.style.top = '0';
+    } else {
+        nav.style.top = '-50px';
+    }
+    prevScroll = currentScrollPos;
+}
 
 // Log related listeners
 
@@ -91,6 +106,7 @@ draw.addEventListener('click', (e) => {
     gameUpdate.offerDraw();
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 });
+
 
 let accept = document.getElementById('accept');
 accept.addEventListener('click', () =>  {
