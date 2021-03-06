@@ -2,11 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
-    <script defer th:src="@{/js/profile.js}"></script>
+    <script defer th:src="@{/js/profile_bundle/profile.js}"></script>
     <title th:text="${username}"></title>
+
 </head>
 <body>
 
@@ -28,7 +29,7 @@
 <div class="profile-wrapper">
     <aside class="about_me">
         <!-- TODO Find new image to put here -->
-        <img th:src="@{/img/chesspieces/wikipedia/wN.png}" alt="">
+        <img th:src="@{/images/chalo-garcia-8EW9qpWZF7E-unsplash.jpg}" alt="">
         <p class="font">Hi! I like to play chess</p>
     </aside>
 

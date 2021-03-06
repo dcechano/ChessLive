@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!--TODO is this script needed?-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/chessground.css}">
-    <link rel="stylesheet" th:href="@{/css/chessground2.css}">
-    <link rel="stylesheet" th:href="@{/css/chessground3.css}">
+    <link rel="stylesheet" th:href="@{/css/chess.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground/chessground.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground/chessground2.css}">
+    <link rel="stylesheet" th:href="@{/css/chessground/chessground3.css}">
     <title>Let's Play Chess</title>
+
     </head>
 <body>
 <input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
@@ -53,7 +54,7 @@
     <ul class="log-links">
         <li id="chat-link" class="widget-link selected" data-for="chat-log"><span class="fa fa-comments"></span></li>
         <li id="notes-link" class="widget-link" data-for="notes-log"><span class="fa fa-sticky-note"></span></li>
-        <li id="fen-link" class="widget-link" data-for="fen-log"><span class="fa fa-chess-pawn"></span></li>
+        <li id="pgn-link" class="widget-link" data-for="pgn-log"><span class="fa fa-chess-pawn"></span></li>
     </ul>
 </nav>
 <section class="logs">
@@ -97,11 +98,6 @@
 <script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
 <script th:src="@{/js/node_modules/chess.js/chess.js}"></script>
 <script th:src="@{/js/node_modules/jquery/dist/jquery.js}"></script>
-<!--<script th:src="@{/js/Clock.js}"></script>-->
-<!--<script th:src="@{/js/timekeeper.js}"></script>-->
-<script th:src="@{/js/GameUpdate.js}"></script>
-<!--<script th:src="@{/js/app_chess.js}"></script>-->
-<script th:src="@{/js/bundle.js}"></script>
-<!--<script th:src="@{/js/chess_dom_init.js}"></script>-->
+<script th:src="@{/js/chess_bundle/chess_bundle.js}"></script>
 </body>
 </html>

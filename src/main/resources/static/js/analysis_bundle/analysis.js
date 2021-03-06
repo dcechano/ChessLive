@@ -136,3 +136,15 @@ function updatePgnLog() {
     let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
     pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
 }
+
+let prevScrollpos = window.pageYOffset;
+window.onscroll = function() {
+    let currentScrollPos = window.pageYOffset;
+    let nav = document.getElementsByClassName('nav')[0];
+    if (prevScrollpos > currentScrollPos) {
+        nav.style.top = '0';
+    } else {
+        nav.style.top = '-50px';
+    }
+    prevScrollpos = currentScrollPos;
+}

@@ -6,12 +6,28 @@
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/landing.css}">
     <title>ChessLive</title>
+
+    <style>
+        html, body {
+            min-height: 100%;
+            font-family: var(--thin);
+            margin: 0;
+        }
+
+        body {
+            background-image: url("/images/piotr-makowski-27LH_0jXKYI-unsplash.jpg");
+            background-size: cover;
+            background-position: center;
+
+        }
+
+    </style>
 </head>
 <body>
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link" sec:authorize="isAuthenticated()">
-            <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
+            <a class="profile-link" target="_parent" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
         </li>
         <li id="github" class="nav-link">
             <a href="https://github.com/dcechano/ChessLive"><i class="fa fa-chess-queen"></i></a>
@@ -19,7 +35,7 @@
         <li class="nav-link">
             <a th:href="@{/analysis}">Analysis</a>
         </li>
-        <li class="nav-link" sec:authorize="!isAuthenticated()">
+        <li id="login" class="nav-link" sec:authorize="!isAuthenticated()">
             <a th:href="@{/login}">Login</a>
         </li>
     </ul>
@@ -28,7 +44,7 @@
     <h1 id="chessLive">Chess<br/>Live</h1>
     <div class="info-wrapper">
         <span id="info" class="fa fa-info-circle"></span>
-        <p class="tiny">Pick a time control - start time + increment per move</p>
+        <small class="tiny">Pick a time control - start time + increment per move</small>
     </div>
     <section class="wrapper">
         <a class="time-control" th:each="control : ${T(com.example.chess.model.entity.TimeControl).values()}"
@@ -37,6 +53,6 @@
 </main>
 <script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
-<script th:src="@{/js/landing.js}"></script>
+<script th:src="@{/js/landing_bundle/landing.js}"></script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200&display=swap');
 :root {
 
-
     --thin: 'Work Sans', sans-serif;
 
     --darkLightBlue: #92BADD;
@@ -15,17 +14,7 @@
 
 }
 
-html, body {
-    min-height: 100%;
-    font-family: var(--thin);
-    margin: 0;
-}
-
-
-body {
-    background-image: url("../images/piotr-makowski-27LH_0jXKYI-unsplash.jpg");
-    background-size: cover;
-    background-position: center;
+body{
     overflow: auto;
     color: var(--white);
     text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
@@ -41,7 +30,7 @@ main{
     word-wrap: break-word;
     font-size: 5rem;
     font-weight: 100;
-    color: white;
+    color: var(--white);
 }
 
 a {
@@ -49,14 +38,13 @@ a {
     color: var(--white);
 }
 
-
 .nav {
     box-sizing: border-box;
     position: sticky;
     top: 0;
     height: fit-content;
     width: inherit;
-
+    margin-top: 0.5rem;
     z-index: 100;
 }
 
@@ -74,11 +62,25 @@ a {
 }
 
 .nav-link:hover {
-    border-bottom: 2px solid var(--accent);
+    border-bottom-color: var(--secondaryColor);
+    transition: border-bottom-color 500ms ease-in;
 }
 
 #github a:hover{
-    color: var(--accent);
+    color: var(--secondaryColor);
+    transition: color 500ms ease-in;
+}
+
+#login{
+    background-color: var(--secondaryColor);
+    border: 2px solid var(--secondaryColor);
+    border-radius: 5px;
+}
+
+#login:hover {
+    background-color: var(--shadowBlue);
+    border-color: var(--shadowBlue);
+    transition: all 500ms ease-in;
 }
 
 .wrapper {
@@ -118,9 +120,10 @@ a {
 
 .time-control:hover {
     cursor: pointer;
-    border: 2px solid #861657;
-
+    background-color: var(--secondaryColor);
+    transition: all ease-in 200ms;
 }
+
 @media screen and (min-width: 480px) {
     body{
         padding: 0 5px;
@@ -166,7 +169,6 @@ a {
         justify-content: space-around;
     }
 }
-
 
 @media screen and (min-width: 1000px){
 

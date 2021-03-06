@@ -12,15 +12,15 @@ for (let button of collapsibles) {
 
     });
 }
-/*
-for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.maxHeight){
-            content.style.maxHeight = null;
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
-    });
-}*/
+/* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
+let prevScroll = window.pageYOffset;
+window.onscroll = () => {
+    let currentScrollPos = window.pageYOffset;
+    let nav = document.getElementsByClassName('nav')[0];
+    if (prevScroll > currentScrollPos) {
+        nav.style.top = '0';
+    } else {
+        nav.style.top = '-50px';
+    }
+    prevScroll = currentScrollPos;
+}
