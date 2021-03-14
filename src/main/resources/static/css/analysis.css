@@ -82,6 +82,23 @@ a, a:visited {
 
 }
 
+#login{
+    background-color: var(--secondaryColor);
+    border: 2px solid var(--secondaryColor);
+    border-radius: 5px;
+}
+
+#login:hover {
+    background-color: var(--shadowBlue);
+    border-color: var(--shadowBlue);
+    transition: all 500ms ease-in;
+}
+
+#github a:hover{
+    color: var(--secondaryColor);
+    transition: color 500ms ease-in;
+}
+
 .container {
     width: 97%;
     display: flex;
@@ -337,6 +354,17 @@ cg-board{
 
     #pgn{
         display: none;
+    }
+
+    .user-info{
+        margin: 0 auto;
+        width: 450px;
+
+    }
+
+    .cg-wrap{
+        width: 450px;
+        height: 450px;
     }
 
     .logs-nav {

@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
+    <script defer th:src="@{/js/node_modules/chess.js/chess.js}"></script>
+    <script defer th:src="@{/js/node_modules/jquery/dist/jquery.js}"></script>
+    <script defer th:src="@{/js/analysis_bundle/analysis_bundle.js}"></script>
+
+
     <link rel="stylesheet" th:href="@{/css/chessground/chessground.css}">
     <link rel="stylesheet" th:href="@{/css/chessground/chessground2.css}">
     <link rel="stylesheet" th:href="@{/css/chessground/chessground3.css}">
@@ -20,7 +25,16 @@
         <li class="nav-link" sec:authorize="isAuthenticated()">
             <a class="profile-link" th:href="@{'/user/' + session.user.username}" th:text="${session.user.username}"></a>
         </li>
+        <li id="github" class="nav-link">
+            <a href="https://github.com/dcechano/ChessLive"><i class="fa fa-chess-queen"></i></a>
+        </li>
         <li class="nav-link"><a th:href="@{/}">Home</a></li>
+        <li id="login" class="nav-link" sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Login</a>
+        </li>
+        <li class="nav-link" sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}">Logout</a>
+        </li>
     </ul>
 </nav>
 <main class="container">
@@ -47,10 +61,6 @@
         </div>
     </section>
 </main>
-
-<script th:src="@{/js/node_modules/chess.js/chess.js}"></script>
-<script th:src="@{/js/node_modules/jquery/dist/jquery.js}"></script>
-<script th:src="@{/js/analysis_bundle/analysis_bundle.js}"></script>
 
 </body>
 </html>

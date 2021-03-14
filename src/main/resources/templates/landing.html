@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
+    <script defer src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+    <script defer src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script defer th:src="@{/js/landing_bundle/landing.js}"></script>
+
     <link rel="stylesheet" th:href="@{/css/landing.css}">
     <title>ChessLive</title>
 
@@ -51,8 +55,6 @@
            th:text="${control.prettyCode()}" th:href="@{/new_game(time_control=${control.name})}"></a>
     </section>
 </main>
-<script src="webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-<script src="webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
-<script th:src="@{/js/landing_bundle/landing.js}"></script>
+
 </body>
 </html>

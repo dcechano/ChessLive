@@ -198,14 +198,25 @@ function stopClocks() {
 }
 
 function updatePgnLog() {
-    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    pgnLog.insertAdjacentHTML('beforeend',
-        `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`);
-    let el = document.getElementsByClassName('pgn-link')[moveList.length - 1];
-    // Why does event listener disappear after new move.
+    const index = moveList.length - 1;
+    let ply = (moveList.length % 2 !== 0) ? `${(index + 2) / 2}. ` : '';
+    let newTag = `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[index]}</li>`;
+
+    pgnLog.insertAdjacentHTML('beforeend', newTag);
+    let el = document.querySelectorAll('#pgn-long-form .pgn-link')[index];
     el.addEventListener('click', () => {
-        console.log(el);
         board.set({fen: el.dataset.fen});
+    });
+
+    let pgn = document.getElementById('pgn');
+    if (!moveList[1]) {
+        document.getElementById('pgn').textContent = null;
+    }
+    pgn.insertAdjacentHTML('beforeend', `${newTag} `);
+
+    let el2 = document.querySelectorAll('#pgn .pgn-link')[index];
+    el2.addEventListener('click', () => {
+        board.set({fen: el2.dataset.fen});
     });
 }
 
@@ -217,5 +228,4 @@ module.exports = {
     opponent: opponent,
     stopClocks: stopClocks,
     displayResult: displayResult,
-
 }
