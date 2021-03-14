@@ -27,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/images/**", "/libraries/**",
-                "/css/**", "/js/**", "/webjars/**");
+        web.ignoring().antMatchers("/images/**",
+                "/css/**", "/js/**", "/webjars/**", "/svg/**");
     }
 
 //    TODO remove and clean up the /secured/* endpoints. These aren't used anymore
@@ -42,8 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/").authenticated()
                 .antMatchers("/",
                         "/user/**",
-                        "/archive/**",
-                        "/dev")
+                        "/archive/**"
+                )
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()

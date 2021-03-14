@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <script src="https://kit.fontawesome.com/9162a0353b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/css/chess.css}">
     <link rel="stylesheet" th:href="@{/css/chessground/chessground.css}">
     <link rel="stylesheet" th:href="@{/css/chessground/chessground2.css}">
     <link rel="stylesheet" th:href="@{/css/chessground/chessground3.css}">
+    <link rel="stylesheet" th:href="@{/css/chess.css}">
+
     <title>Let's Play Chess</title>
 
     </head>
@@ -20,14 +21,20 @@
         <li class="nav-link"><a th:href="@{/}">Home</a></li>
         <li class="nav-link endgame"><i class="fa fa-hands-helping"></i>
             <div class="end-buttons">
-                <a id="offer_draw" href="#" class="draw">Offer Draw</a>
+                <a id="offer_draw" href="#" class="draw">Draw</a>
                 <a id="resign" href="#" class="resign">Resign</a>
                 <div class="window-close">
                     <span class="fa fa-window-close"></span>
                 </div>
             </div>
         </li>
+        <li id="close-nav" class="nav-link">
+            <span class="fa fa-window-close"></span>
+        </li>
+
     </ul>
+    <button id="nav-button"><i class="fa fa-chevron-down"></i></button>
+
 </nav>
 
 <main class="container">
@@ -40,7 +47,6 @@
         <div id="clock1" class="black-clock clock"
              th:text="${game.timeControl.minutes + ':00'}"></div>
     </div>
-
     <div id="board"></div>
 
     <div id="player1-info" class="user-info">
@@ -88,7 +94,6 @@
             <div id="accept" class="decision">Accept</div>
             <div id="decline" class="decision">Decline</div>
         </div>
-
     </div>
 </section>
 </main>

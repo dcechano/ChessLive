@@ -161,14 +161,6 @@ function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
 
-function onWindowResize() {
-    // board.resize();
-    // determineSize();
-}
-
-// determineSize();
-window.onresize = onWindowResize;
-
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
@@ -335,21 +327,26 @@ const stompClient = app.stompClient,
 const GameUpdate = require('./GameUpdate');
 const ChatMessage = require('./ChatMessage');
 
-let prevScroll = window.pageYOffset;
-window.onscroll = () => {
-    let nav = document.getElementsByClassName('nav')[0];
 
-    let currentScrollPos = window.pageYOffset;
-    if (prevScroll > currentScrollPos) {
-        if (window.pageYOffset > 50) nav.style.backgroundColor = '#2c578a';
-        else nav.style.backgroundColor = null;
+// Nav listener
 
-        nav.style.top = '0';
-    } else {
-        nav.style.top = '-50px';
-    }
-    prevScroll = currentScrollPos;
-}
+let navButton = document.getElementById('nav-button');
+navButton.addEventListener('click', () => {
+
+    let navLinks = document.getElementsByClassName('nav-links')[0];
+    navLinks.style.display =  'flex';
+    navButton.style.display = 'none';
+
+});
+
+let closeNav = document.getElementById('close-nav');
+closeNav.addEventListener('click', () => {
+    let navLinks = document.getElementsByClassName('nav-links')[0];
+    navLinks.style.display = 'none';
+    navButton.style.display = 'unset';
+
+});
+
 
 // Log related listeners
 

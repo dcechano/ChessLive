@@ -66,14 +66,6 @@ function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
 
-function onWindowResize() {
-    // board.resize();
-    // determineSize();
-}
-
-// determineSize();
-window.onresize = onWindowResize;
-
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);

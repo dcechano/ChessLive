@@ -86,6 +86,10 @@ a {
 	gap: 10px;
 }
 
+.profile-wrapper > * {
+	box-shadow: 2px 2px 1rem 1px rgba(0, 0, 0, .4);
+}
+
 .collapsible {
 	background-color: var(--secondaryColor);
 	color: var(--white);
