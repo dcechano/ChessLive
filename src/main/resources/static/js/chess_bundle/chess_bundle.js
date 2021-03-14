@@ -161,14 +161,6 @@ function sendData(gameUpdate) {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
 
-function onWindowResize() {
-    // board.resize();
-    // determineSize();
-}
-
-// determineSize();
-window.onresize = onWindowResize;
-
 (function () {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
@@ -301,14 +293,24 @@ function stopClocks() {
 }
 
 function updatePgnLog() {
-    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    pgnLog.insertAdjacentHTML('beforeend',
-        `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`);
-    let el = document.getElementsByClassName('pgn-link')[moveList.length - 1];
-    // Why does event listener disappear after new move.
+    const index = moveList.length - 1;
+    let ply = (moveList.length % 2 !== 0) ? `${(index + 2) / 2}. ` : '';
+    let newTag = `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[index]}</li>`;
+
+    pgnLog.insertAdjacentHTML('beforeend', newTag);
+    let el = document.querySelectorAll('#pgn-long-form .pgn-link')[index];
     el.addEventListener('click', () => {
-        console.log(el);
         board.set({fen: el.dataset.fen});
+    });
+
+    let pgn = document.getElementById('pgn');
+    if (!moveList[1]) {
+        document.getElementById('pgn').textContent = null;
+    }
+    pgn.insertAdjacentHTML('beforeend', `${newTag} `);
+    let el2 = document.querySelectorAll('#pgn .pgn-link')[index];
+    el2.addEventListener('click', () => {
+        board.set({fen: el2.dataset.fen});
     });
 }
 
@@ -320,7 +322,6 @@ module.exports = {
     opponent: opponent,
     stopClocks: stopClocks,
     displayResult: displayResult,
-
 }
 },{"./GameUpdate":3,"./timekeeper":6,"chessground":10}],5:[function(require,module,exports){
 const app = require('./app_chess');
@@ -335,21 +336,26 @@ const stompClient = app.stompClient,
 const GameUpdate = require('./GameUpdate');
 const ChatMessage = require('./ChatMessage');
 
-let prevScroll = window.pageYOffset;
-window.onscroll = () => {
-    let nav = document.getElementsByClassName('nav')[0];
 
-    let currentScrollPos = window.pageYOffset;
-    if (prevScroll > currentScrollPos) {
-        if (window.pageYOffset > 50) nav.style.backgroundColor = '#2c578a';
-        else nav.style.backgroundColor = null;
+// Nav listener
 
-        nav.style.top = '0';
-    } else {
-        nav.style.top = '-50px';
-    }
-    prevScroll = currentScrollPos;
-}
+let navButton = document.getElementById('nav-button');
+navButton.addEventListener('click', () => {
+
+    let navLinks = document.getElementsByClassName('nav-links')[0];
+    navLinks.style.display =  'flex';
+    navButton.style.display = 'none';
+
+});
+
+let closeNav = document.getElementById('close-nav');
+closeNav.addEventListener('click', () => {
+    let navLinks = document.getElementsByClassName('nav-links')[0];
+    navLinks.style.display = 'none';
+    navButton.style.display = 'unset';
+
+});
+
 
 // Log related listeners
 

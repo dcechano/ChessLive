@@ -77,6 +77,11 @@ a {
 	transition: border-bottom-color 500ms ease-in;
 }
 
+#github a:hover{
+	color: var(--secondaryColor);
+	transition: color 500ms ease-in;
+}
+
 .profile-wrapper{
 	display: grid;
 	grid-template-columns: 1fr 2fr;
@@ -84,6 +89,10 @@ a {
 	grid-template-areas: "about_me stats"
     "games games";
 	gap: 10px;
+}
+
+.profile-wrapper > * {
+	box-shadow: 2px 2px 1rem 1px rgba(0, 0, 0, .4);
 }
 
 .collapsible {
