@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -24,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     private AuthenticationSuccessHandler authenticationSuccessHandler;
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -47,15 +49,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
-                .loginPage("/login").permitAll()
+                .loginPage("/login")
                 .loginProcessingUrl("/auth")
                 .successHandler(authenticationSuccessHandler)
                 .permitAll()
                 .and()
                 .logout()
-                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
-                .clearAuthentication(true);
+                .clearAuthentication(true)
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler);
     }
 
     @Override
@@ -86,5 +89,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void setAuthenticationSuccessHandler(
             @Qualifier("authenticationHandler") AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
+    }
+
+    @Autowired
+    public void setLogoutSuccessHandler(@Qualifier("logoutHandler") LogoutSuccessHandler logoutSuccessHandler) {
+        this.logoutSuccessHandler = logoutSuccessHandler;
     }
 }

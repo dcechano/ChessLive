@@ -9,4 +9,6 @@ public interface PlayerRepo extends AbstractRepo<Player> {
 
     Statistics findStatsByUsername(String username);
 
+    void deleteByUsername(String username);
+
 }
