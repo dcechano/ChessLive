@@ -77,7 +77,7 @@ function sendData(gameUpdate) {
             let gameUpdate = JSON.parse(data.body);
 
             if (!gameUpdate.updateType) {
-                throw new Error("The type of update hasn't been set for GameUpdate object");
+                throw new Error('The type of update hasn\'t been set for GameUpdate object');
             }
 
             switch (gameUpdate.updateType) {
