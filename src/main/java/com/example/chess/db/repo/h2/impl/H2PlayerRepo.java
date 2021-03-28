@@ -7,6 +7,7 @@ import org.jboss.logging.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 @Repository
@@ -31,5 +32,13 @@ public class H2PlayerRepo extends H2AbstractRepoImpl<Player> implements PlayerRe
     public Statistics findStatsByUsername(String username) {
 //        No implementation for H2 database. Here as a matter of compilation
         return null;
+    }
+
+    @Override
+    public void deleteByUsername(String username) {
+        Query query = this.entityManager.createQuery(
+                "DELETE FROM Player p WHERE p.username =: username");
+        query.setParameter("username", username);
+        query.executeUpdate();
     }
 }

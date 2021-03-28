@@ -36,11 +36,13 @@
         <li id="github" class="nav-link">
             <a href="https://github.com/dcechano/ChessLive"><i class="fa fa-chess-queen"></i></a>
         </li>
-        <li class="nav-link">
-            <a th:href="@{/analysis}">Analysis</a>
-        </li>
         <li id="login" class="nav-link" sec:authorize="!isAuthenticated()">
             <a th:href="@{/login}">Login</a>
+        </li>
+        <li class="nav-link" sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
         </li>
     </ul>
 </nav>

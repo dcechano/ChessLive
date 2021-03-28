@@ -83,6 +83,23 @@ a {
     transition: all 500ms ease-in;
 }
 
+button{
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    letter-spacing: inherit;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+button:focus{
+    border: none;
+}
+
 .wrapper {
     display:flex;
     justify-content: space-between;

@@ -3,6 +3,7 @@ package com.example.chess.security.auth;
 
 import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.model.entity.Player;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -31,7 +32,6 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException, ServletException {
 
         String username = authentication.getName();
-        authentication.getPrincipal();
         Player player = mySqlPlayerRepo.findByUsername(username);
         h2PlayerRepo.save(player);
 
