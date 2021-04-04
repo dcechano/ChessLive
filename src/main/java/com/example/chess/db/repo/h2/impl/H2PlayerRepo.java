@@ -30,7 +30,7 @@ public class H2PlayerRepo extends H2AbstractRepoImpl<Player> implements PlayerRe
 
     @Override
     public Statistics findStatsByUsername(String username) {
-//        No implementation for H2 database. Here as a matter of compilation
+        //        No implementation for H2 database. Here as a matter of compilation
         return null;
     }
 

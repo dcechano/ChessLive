@@ -22,6 +22,4 @@ public class ChessApplication {
     void construct() {
         StatisticsUtils.setStatsRepo(statsRepo);
     }
-
-
 }

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 @Controller
 public class BaseController {
 
-    private Logger logger;
+    private final Logger logger;
 
     private final GlobalManager globalManager;
 
@@ -110,18 +110,6 @@ public class BaseController {
         return "analysis";
     }
 
-//    TODO remove
-    @GetMapping("/dev")
-    public String dev() {
-        return "dev/dev";
-    }
-
-    //    TODO remove this mapping before publication
-    @GetMapping("/websocket")
-    public String socket() {
-
-        return "websocket";
-    }
 
     @Autowired
     public void setStatsRepo(StatsRepo statsRepo) {

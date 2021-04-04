@@ -11,13 +11,12 @@
 </head>
 <body>
 
-<!--TODO make this nav bar more appropriate for the page-->
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link" sec:authorize="isAuthenticated()">
             <a class="profile-link" th:href="@{'/user/' + ${session.user.username}}" th:text="${session.user.username}"></a>
         </li>
-        <li class="nav-link"><a th:href="@{/}">Home</a></li>
+        <li class="nav-link"><a th:href="@{/}">ChessLive</a></li>
         <li id="github" class="nav-link">
             <a href="https://github.com/dcechano/ChessLive"><i class="fa fa-chess-queen"></i></a>
         </li>
@@ -31,7 +30,6 @@
 </nav>
 <div class="profile-wrapper">
     <aside class="about_me">
-        <!-- TODO Find new image to put here -->
         <img th:src="@{/images/chalo-garcia-8EW9qpWZF7E-unsplash.jpg}" alt="">
         <p class="font">Hi! I like to play chess</p>
     </aside>

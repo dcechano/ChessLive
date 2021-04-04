@@ -11,7 +11,7 @@ public enum TimeControl {
     private final int increment;
 
     TimeControl(String s) {
-        switch (s){
+        switch (s) {
             case "TWO_PLUS_1":
                 minutes = 2;
                 increment = 1;
@@ -44,4 +44,5 @@ public enum TimeControl {
     public String prettyCode() {
         return minutes + " + " + increment;
     }
+
 }

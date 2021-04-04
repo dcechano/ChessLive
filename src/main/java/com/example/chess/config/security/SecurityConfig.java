@@ -33,15 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/css/**", "/js/**", "/webjars/**", "/svg/**");
     }
 
-//    TODO remove and clean up the /secured/* endpoints. These aren't used anymore
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(
-                        "/secured/**/**",
-                        "/secured/success",
-                        "/secured/socket",
-                        "/").authenticated()
                 .antMatchers("/",
                         "/user/**",
                         "/archive/**"
@@ -81,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void setUserDetailsService(@Qualifier("userDetailsServiceImpl")
-                                                  UserDetailsService userDetailsService) {
+                                              UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

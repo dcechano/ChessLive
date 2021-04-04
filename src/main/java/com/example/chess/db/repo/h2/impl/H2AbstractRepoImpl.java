@@ -8,13 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Transactional(transactionManager = "h2TransactionManager")
 public abstract class H2AbstractRepoImpl<T extends AbstractEntity> implements AbstractRepo<T> {
 
-//    TODO remove this and logging statements
-    Logger logger = Logger.getLogger(getClass().toString());
     private final Class<T> clazz;
 
     protected EntityManager entityManager;

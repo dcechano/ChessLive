@@ -6,7 +6,7 @@ import com.example.chess.model.entity.Player;
 
 import java.util.List;
 
-public interface GameRepo extends AbstractRepo<Game>{
+public interface GameRepo extends AbstractRepo<Game> {
 
     List<Game> findGamesByPlayer(Player player);
 

@@ -154,6 +154,18 @@ public class Statistics extends AbstractEntity {
         this.tenPlus10Draws = tenPlus10Draws;
     }
 
+    public int totalWins() {
+        return twoPlus1Wins + fivePlus5Wins + fivePlus0Wins + tenPlus10Wins;
+    }
+
+    public int totalLosses() {
+        return twoPlus1Losses + fivePlus5Losses + fivePlus0Losses + tenPlus10Losses;
+    }
+
+    public int totalDraws() {
+        return twoPlus1Draws + fivePlus5Draws + fivePlus0Draws + tenPlus10Draws;
+    }
+
     public int totalGames() {
         return twoPlus1Wins + twoPlus1Draws + twoPlus1Losses +
                 fivePlus0Wins + fivePlus0Draws + fivePlus0Losses +

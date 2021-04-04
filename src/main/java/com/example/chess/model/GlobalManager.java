@@ -4,11 +4,15 @@ import com.example.chess.db.repo.PlayerRepo;
 import com.example.chess.db.repo.h2.GameRepo;
 import com.example.chess.db.repo.h2.PairedPlayersRepo;
 import com.example.chess.db.repo.h2.WaitListRepo;
-import com.example.chess.model.entity.*;
+import com.example.chess.model.entity.Game;
+import com.example.chess.model.entity.Player;
+import com.example.chess.model.entity.TimeControl;
+import com.example.chess.model.entity.WaitingPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Component
@@ -23,7 +27,7 @@ public class GlobalManager {
     private PairedPlayersRepo pairedPlayersRepo;
 
     private GameRepo gameRepo;
-    
+
     private Game awaitChallenge(Player player, TimeControl timeControl) {
 
         WaitingPlayer matchedPlayer = waitListRepo.getWaitingPlayerByTimeControl(timeControl, player.getId());
@@ -54,7 +58,7 @@ public class GlobalManager {
 
     private Game pair(Player player1, Player player2, TimeControl timeControl) {
         pairedPlayersRepo.setPairedPlayers(player1, player2);
-        Game game = GameFactory.createGame(player1, player2);
+        Game game = createGame(player1, player2);
         game.setTimeControl(timeControl);
         gameRepo.save(game);
         return game;
@@ -63,6 +67,20 @@ public class GlobalManager {
     public Game createChallenge(String timeControl, Player player) {
         TimeControl time = TimeControl.valueOf(timeControl);
         return awaitChallenge(player, time);
+    }
+
+    private static Game createGame(Player player1, Player player2) {
+        Game game = new Game();
+        game.setId(UUID.randomUUID().toString());
+        if (System.currentTimeMillis() % 2 == 0) {
+            game.setWhite(player1);
+            game.setBlack(player2);
+        } else {
+            game.setBlack(player1);
+            game.setWhite(player2);
+        }
+
+        return game;
     }
 
 

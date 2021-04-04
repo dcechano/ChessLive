@@ -19,7 +19,6 @@
 
 <input type="hidden" id="gameAsJSON" th:value="${gameAsJSON}">
 
-<!--TODO fix. Some links have no meaning in an analysis context-->
 <nav class="nav">
     <ul class="nav-links">
         <li class="nav-link" sec:authorize="isAuthenticated()">
@@ -39,7 +38,6 @@
 </nav>
 <main class="container">
 
-    <!--TODO align usernames with board-->
     <div id="player2-info" class="user-info">
         <div id="opponent" class="username" th:text="${game.black.username}"></div>
     </div>

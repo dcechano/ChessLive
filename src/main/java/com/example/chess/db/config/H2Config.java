@@ -19,7 +19,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan
-public class H2Config{
+public class H2Config {
 
     @Bean("h2DataSource")
     public DataSource dataSource() {

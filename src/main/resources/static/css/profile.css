@@ -18,7 +18,6 @@
 	font-weight: 200;
 }
 
-
 html, body {
 	/*min-width: 100%;*/
 	min-height: 100%;
@@ -30,7 +29,6 @@ html, body {
 	/*background: -moz-linear-gradient(top,  #7d7e7d 0%, #0e0e0e 100%); !* FF3.6-15 *!*/
 	/*background: -webkit-linear-gradient(top,  #7d7e7d 0%,#0e0e0e 100%); !* Chrome10-25,Safari5.1-6 *!*/
 	/*background: linear-gradient(to bottom,  #7d7e7d 0%,#0e0e0e 100%); !* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ *!*/
-
 }
 
 body {
@@ -43,7 +41,6 @@ a {
 	text-decoration: none;
 	color: black;
 }
-
 
 .nav {
 	box-sizing: border-box;

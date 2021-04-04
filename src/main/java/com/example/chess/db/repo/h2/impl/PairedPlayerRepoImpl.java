@@ -41,18 +41,18 @@ public class PairedPlayerRepoImpl extends H2AbstractRepoImpl<PairedPlayer> imple
 
     @Override
     public void removePairing(Player player) {
-//        logger.info("Printing the state of the PairedPlayer DB before removal");
-//        for (PairedPlayer p : this.findAll()) {
-//            logger.info(p.toString());
-//        }
+        //        logger.info("Printing the state of the PairedPlayer DB before removal");
+        //        for (PairedPlayer p : this.findAll()) {
+        //            logger.info(p.toString());
+        //        }
         Query query = this.entityManager.createQuery(
                 "DELETE FROM PairedPlayer p WHERE p.white =: player OR p.black =: player");
         query.setParameter("player", player);
         query.executeUpdate();
-//        logger.info("Printing state of DB after PairedPlayer removal");
-//        for (PairedPlayer p : this.findAll()) {
-//            logger.info(p.toString());
-//        }
+        //        logger.info("Printing state of DB after PairedPlayer removal");
+        //        for (PairedPlayer p : this.findAll()) {
+        //            logger.info(p.toString());
+        //        }
     }
 
     @Override

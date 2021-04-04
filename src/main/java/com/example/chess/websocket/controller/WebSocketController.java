@@ -13,21 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.logging.Logger;
 
-
-// TODO clean this shit up
 @Controller
 public class WebSocketController {
-
-    private final Logger logger;
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -42,7 +36,6 @@ public class WebSocketController {
 
     public WebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        logger = Logger.getLogger(getClass().toString());
     }
 
     @MessageMapping("/updateOpponent")
@@ -74,8 +67,6 @@ public class WebSocketController {
 
     @MessageMapping("/message")
     public void send(@Payload ChatMessage chatMessage) {
-        logger.info("Logging chat message: " + chatMessage.toString());
-
         messagingTemplate.convertAndSendToUser(chatMessage.getTo(), "/queue/message", chatMessage);
     }
 
