@@ -37,7 +37,7 @@
     <aside class="stats">
 
         <button class="collapsible"><span>Quick Stats</span><i class="fa fa-arrow-down"></i></button>
-        <div class="font quick_summary stat_wrapper">
+        <div class="quick_summary stat_wrapper">
             <p class="stat" th:text="${'Total Games: ' + stats.totalGames()}"></p>
             <p class="stat" th:text="${'Wins: ' + stats.totalWins()}"></p>
             <p class="stat" th:text="${'Losses: ' + stats.totalLosses()}"></p>
@@ -45,28 +45,28 @@
         </div>
 
         <button class="collapsible"><span>2 + 1</span><i class="fa fa-arrow-down"></i></button>
-        <div id="twoP1Stats" class="font stat_wrapper">
+        <div id="twoP1Stats" class="stat_wrapper">
             <p  class="stat" th:text="${stats.twoPlus1Wins + ' Wins'}"></p>
             <p  class="stat"  th:text="${stats.twoPlus1Losses + ' Losses'}"></p>
             <p  class="stat" th:text="${stats.twoPlus1Draws + ' Draws'}"></p>
         </div>
 
         <button class="collapsible"><span>5 + 0</span><i class="fa fa-arrow-down"></i></button>
-        <div id="fiveP0Stats" class="font stat_wrapper">
+        <div id="fiveP0Stats" class="stat_wrapper">
             <p  class="stat" th:text="${stats.fivePlus0Wins + ' Wins'}"></p>
             <p  class="stat" th:text="${stats.fivePlus0Losses + ' Losses'}"></p>
             <p  class="stat" th:text="${stats.fivePlus0Draws + ' Draws'}"></p>
         </div>
 
         <button class="collapsible"><span>5 + 1</span><i class="fa fa-arrow-down"></i></button>
-        <div id="fiveP5Stats" class="font stat_wrapper">
+        <div id="fiveP5Stats" class="stat_wrapper">
             <p  class="stat" th:text="${stats.fivePlus5Wins + ' Wins'}"></p>
             <p  class="stat" th:text="${stats.fivePlus5Losses + ' Losses'}"></p>
             <p  class="stat" th:text="${stats.fivePlus5Draws + ' Draws'}"></p>
         </div>
 
         <button class="collapsible"><span>10 + 10</span><i class="fa fa-arrow-down"></i></button>
-        <div id="tenP10Stats" class="font stat_wrapper">
+        <div id="tenP10Stats" class="stat_wrapper">
             <p  class="stat" th:text="${stats.tenPlus10Wins + ' Wins'}"></p>
             <p  class="stat" th:text="${stats.tenPlus10Losses + ' Losses'}"></p>
             <p  class="stat" th:text="${stats.tenPlus10Draws + ' Draws'}"></p>

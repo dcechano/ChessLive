@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300&display=swap');
 :root {
 
     --thin: 'Work Sans', sans-serif;
@@ -12,7 +12,7 @@
     --accent: #861657;
     --lightBlue: #bdd5ea;
     --white: #f7f7ff;
-    font-weight: 200;
+    font-weight: 300;
 
 }
 
