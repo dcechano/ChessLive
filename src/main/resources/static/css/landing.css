@@ -77,6 +77,11 @@ a {
     border-radius: 5px;
 }
 
+#login a:nth-child(1) {
+    padding-right: 7px;
+    border-right: 1px solid #eee;
+}
+
 #login:hover {
     background-color: var(--shadowBlue);
     border-color: var(--shadowBlue);
