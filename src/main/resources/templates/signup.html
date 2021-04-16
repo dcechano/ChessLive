@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <link rel="stylesheet" th:href="@{/css/login.css}">
+  <title>Sign up</title>
+</head>
+<body>
+
+<div class="container">
+
+  <form method="post" th:action="@{/signup}" th:object="${newUser}">
+    <div class="card">
+      <p th:unless="${T(java.util.Objects).isNull(message)}" th:text="${message}" class="error"></p>
+      <h3 class="header">Please Register</h3>
+      <div class="my-3">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" class="form-control" type="text" name="username" placeholder="Username"
+                  th:field="${newUser.username}">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" th:value="password" placeholder="Password"
+                  th:field="${newUser.password}">
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Register">
+        </div>
+        <div>
+          <a th:href="@{/}" class="btn btn-primary">Not now</a>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+
+</body>
+</html>
