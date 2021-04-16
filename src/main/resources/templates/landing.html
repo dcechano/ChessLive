@@ -38,6 +38,7 @@
         </li>
         <li id="login" class="nav-link" sec:authorize="!isAuthenticated()">
             <a th:href="@{/login}">Login</a>
+            <a th:href="@{/signup}">Sign Up</a>
         </li>
         <li class="nav-link" sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="post">
