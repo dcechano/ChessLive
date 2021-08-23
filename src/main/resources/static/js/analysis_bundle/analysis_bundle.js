@@ -1,14 +1,68 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-
 const chess = new Chess();
 const Chessground = require('chessground').Chessground;
 const pgnLog = document.getElementById('pgn-long-form');
 const gameData = JSON.parse(document.getElementById('gameAsJSON').value);
-const me = document.getElementById('you');
-const opponent = document.getElementById('opponent');
-const color = gameData.white === me.textContent ? 'white' : 'black';
-let stompClient = null;
 let moveList = [];
+
+(() => {
+    gameData.pgn.split(' ').forEach(move => {
+        let moveObj = chess.move(move);
+        console.log(moveObj);
+        moveList.push(move);
+        updatePgnLog();
+    });
+
+    let pgnNodes = document.getElementsByClassName('pgn-link');
+    for (let node of pgnNodes) {
+        node.addEventListener('click', (e) => {
+            e.preventDefault();
+            board.set({fen: node.dataset.fen})
+        });
+    }
+
+})();
+
+(() => {
+    let list = [];
+    let output = [];
+    for (let i = 0; i < 50; i++) {
+        list.push(i);
+    }
+    output = list.map(num => {
+        return num * 2;
+    });
+    console.log(`printing the original list ${list}`);
+    console.log(`printing the mapped list ${output}`);
+})();
+
+const getValidMoves = (chess) => {
+    let dests = new Map();
+    chess.SQUARES.forEach(function (s) {
+        let ms = chess.moves({ square: s, verbose: true });
+        if (ms.length)
+            dests.set(s, ms.map((m) => { return m.to; }));
+    });
+    return dests;
+}
+
+const updatePgnLog = () => {
+    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
+    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
+}
+
+let prevScrollpos = window.pageYOffset;
+window.onscroll = () => {
+    let currentScrollPos = window.pageYOffset;
+    let nav = document.getElementsByClassName('nav')[0];
+    if (prevScrollpos > currentScrollPos) {
+        nav.style.top = '0';
+    } else {
+        nav.style.top = '-50px';
+    }
+    prevScrollpos = currentScrollPos;
+}
+
 
 let config ={
     orientation: 'white',
@@ -28,117 +82,14 @@ let config ={
         dests: getValidMoves(chess),
         showDests: true,
         events: {}
-    },
-    events: {
-        // move: function (orig, dest) {
-        //     let moveObj = chess.move({from: orig, to: dest});
-        //     if (chess.game_over()) {
-        //         processGameOver();
-        //     }
-        //
-        //
-        //     let config = {
-        //         turnColor: sideToMove(chess),
-        //         movable: {
-        //             dests: getValidMoves(chess)
-        //         }
-        //     }
-        //     board.set(config);
-        //     if (!(chess.turn() === color.charAt(0))) {
-        //         myClock.pause();
-        //         opponentClock.resume();
-        //         let gameUpdate = new GameUpdate(me.textContent,
-        //             opponent.textContent,
-        //             `${orig}-${dest}`,
-        //             chess.fen(),
-        //             myClock.seconds);
-        //
-        //         sendData(gameUpdate);
-        //     }
-        //     moveList.push(moveObj.san);
-        //     updatePgnLog();
-        // }
     }
 };
 
 const board = new Chessground(document.getElementById('board'), config);
 
-function determineSize() {
+},{"chessground":6}],2:[function(require,module,exports){
 
-    let htmlBoard = document.getElementsByClassName('board-b72b1')[0];
-    let oldWidth = htmlBoard.style.width.split('px')[0];
-
-    // + 4 because htmlBoard has a 2px border and content-box box-sizing
-    let newWidth = Number(oldWidth) + 4;
-
-    let info = document.getElementsByClassName('user-info');
-    for (let arg of info) {
-        arg.style.width = newWidth + 'px';
-    }
-
-    let pgn = document.getElementById('pgn');
-    pgn.style.width = newWidth + 'px';
-}
-
-function onWindowResize() {
-    // board.resize();
-    // determineSize();
-}
-
-// determineSize();
-window.onresize = onWindowResize;
-
-(function () {
-    gameData.pgn.split(' ').forEach(move => {
-        let moveObj = chess.move(move);
-        console.log(moveObj);
-        moveList.push(move);
-        updatePgnLog();
-    });
-
-    let pgnNodes = document.getElementsByClassName('pgn-link');
-    for (let node of pgnNodes) {
-        node.addEventListener('click', (e) => {
-            e.preventDefault();
-            board.set({fen: node.dataset.fen})
-        });
-    }
-
-})();
-
-(function () {
-    let list = [];
-    let output = [];
-    for (let i = 0; i < 50; i++) {
-        list.push(i);
-    }
-    output = list.map(num => {
-        return num * 2;
-    });
-    console.log(`printing the original list ${list}`);
-    console.log(`printing the mapped list ${output}`);
-})();
-
-function getValidMoves(chess) {
-    var dests = new Map();
-    chess.SQUARES.forEach(function (s) {
-        var ms = chess.moves({ square: s, verbose: true });
-        if (ms.length)
-            dests.set(s, ms.map(function (m) { return m.to; }));
-    });
-    return dests;
-}
-
-function sideToMove(chess) {
-    return (chess.turn() === 'w') ? 'white' : 'black';
-}
-
-function updatePgnLog() {
-    let ply = (moveList.length % 2 !== 0) ? `${(moveList.length + 1) / 2}. ` : '';
-    pgnLog.innerHTML += `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[moveList.length - 1]}</li>`;
-}
-
-},{"chessground":5}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = exports.anim = void 0;
@@ -249,7 +200,7 @@ function easing(t) {
     return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 
-},{"./util":18}],3:[function(require,module,exports){
+},{"./util":19}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = void 0;
@@ -343,7 +294,7 @@ function start(state, redrawAll) {
 }
 exports.start = start;
 
-},{"./anim":2,"./board":4,"./config":6,"./drag":7,"./explosion":11,"./fen":12}],4:[function(require,module,exports){
+},{"./anim":3,"./board":5,"./config":7,"./drag":8,"./explosion":12,"./fen":13}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.whitePov = exports.getSnappedKeyAtDomPos = exports.getKeyAtDomPos = exports.stop = exports.cancelMove = exports.playPredrop = exports.playPremove = exports.isDraggable = exports.canMove = exports.unselect = exports.setSelected = exports.selectSquare = exports.dropNewPiece = exports.userMove = exports.baseNewPiece = exports.baseMove = exports.unsetPredrop = exports.unsetPremove = exports.setCheck = exports.setPieces = exports.reset = exports.toggleOrientation = exports.callUserFunction = void 0;
@@ -694,7 +645,7 @@ function whitePov(s) {
 }
 exports.whitePov = whitePov;
 
-},{"./premove":13,"./util":18}],5:[function(require,module,exports){
+},{"./premove":14,"./util":19}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Chessground = void 0;
@@ -754,7 +705,7 @@ function debounceRedraw(redrawNow) {
     };
 }
 
-},{"./api":3,"./config":6,"./events":10,"./render":14,"./state":15,"./svg":16,"./util":18,"./wrap":19}],6:[function(require,module,exports){
+},{"./api":4,"./config":7,"./events":11,"./render":15,"./state":16,"./svg":17,"./util":19,"./wrap":20}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configure = void 0;
@@ -800,7 +751,7 @@ function isObject(o) {
     return typeof o === 'object';
 }
 
-},{"./board":4,"./fen":12}],7:[function(require,module,exports){
+},{"./board":5,"./fen":13}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cancel = exports.end = exports.move = exports.dragNewPiece = exports.start = void 0;
@@ -997,7 +948,7 @@ function pieceElementByKey(s, key) {
     return;
 }
 
-},{"./anim":2,"./board":4,"./draw":8,"./util":18}],8:[function(require,module,exports){
+},{"./anim":3,"./board":5,"./draw":9,"./util":19}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clear = exports.cancel = exports.end = exports.move = exports.processDraw = exports.start = void 0;
@@ -1092,7 +1043,7 @@ function onChange(drawable) {
         drawable.onChange(drawable.shapes);
 }
 
-},{"./board":4,"./util":18}],9:[function(require,module,exports){
+},{"./board":5,"./util":19}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.drop = exports.cancelDropMode = exports.setDropMode = void 0;
@@ -1130,7 +1081,7 @@ function drop(s, e) {
 }
 exports.drop = drop;
 
-},{"./board":4,"./drag":7,"./util":18}],10:[function(require,module,exports){
+},{"./board":5,"./drag":8,"./util":19}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bindDocument = exports.bindBoard = void 0;
@@ -1206,7 +1157,7 @@ function dragOrDraw(s, withDrag, withDraw) {
     };
 }
 
-},{"./drag":7,"./draw":8,"./drop":9,"./util":18}],11:[function(require,module,exports){
+},{"./drag":8,"./draw":9,"./drop":10,"./util":19}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.explosion = void 0;
@@ -1229,7 +1180,7 @@ function setStage(state, stage) {
     }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.write = exports.read = exports.initial = void 0;
@@ -1287,7 +1238,7 @@ function write(pieces) {
 }
 exports.write = write;
 
-},{"./types":17,"./util":18}],13:[function(require,module,exports){
+},{"./types":18,"./util":19}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.premove = exports.queen = exports.knight = void 0;
@@ -1335,7 +1286,7 @@ function premove(pieces, key, canCastle) {
 }
 exports.premove = premove;
 
-},{"./util":18}],14:[function(require,module,exports){
+},{"./util":19}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateBounds = exports.render = void 0;
@@ -1547,7 +1498,7 @@ function appendValue(map, key, value) {
         map.set(key, [value]);
 }
 
-},{"./board":4,"./util":18}],15:[function(require,module,exports){
+},{"./board":5,"./util":19}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaults = void 0;
@@ -1634,7 +1585,7 @@ function defaults() {
 }
 exports.defaults = defaults;
 
-},{"./fen":12,"./util":18}],16:[function(require,module,exports){
+},{"./fen":13,"./util":19}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderSvg = exports.createElement = void 0;
@@ -1829,7 +1780,7 @@ function pos2px(pos, bounds) {
     return [(pos[0] + 0.5) * bounds.width / 8, (7.5 - pos[1]) * bounds.height / 8];
 }
 
-},{"./util":18}],17:[function(require,module,exports){
+},{"./util":19}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ranks = exports.files = exports.colors = void 0;
@@ -1837,7 +1788,7 @@ exports.colors = ['white', 'black'];
 exports.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 exports.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.computeSquareCenter = exports.createEl = exports.isRightButton = exports.eventPosition = exports.setVisible = exports.translateRel = exports.translateAbs = exports.posToTranslateRel = exports.posToTranslateAbs = exports.samePiece = exports.distanceSq = exports.opposite = exports.timer = exports.memo = exports.allPos = exports.key2pos = exports.pos2key = exports.allKeys = exports.invRanks = void 0;
@@ -1924,7 +1875,7 @@ function computeSquareCenter(key, asWhite, bounds) {
 }
 exports.computeSquareCenter = computeSquareCenter;
 
-},{"./types":17}],19:[function(require,module,exports){
+},{"./types":18}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderWrap = void 0;
@@ -1979,4 +1930,4 @@ function renderCoords(elems, className) {
     return el;
 }
 
-},{"./svg":16,"./types":17,"./util":18}]},{},[1]);
+},{"./svg":17,"./types":18,"./util":19}]},{},[1,2]);

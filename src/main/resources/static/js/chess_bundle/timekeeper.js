@@ -4,7 +4,7 @@ const timeControl = JSON.parse(document.getElementById('gameAsJSON').value).time
 const myClock = new Clock(timeControl, document.getElementById('clock2'));
 const opponentClock = new Clock(timeControl, document.getElementById('clock1'));
 
-setInterval(function () {
+setInterval(() => {
     myClock.run();
     opponentClock.run();
 }, 1000);

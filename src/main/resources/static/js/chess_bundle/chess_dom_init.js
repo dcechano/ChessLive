@@ -140,12 +140,12 @@ decline.addEventListener('click', () => {
 
 // Util functions
 
-function closeWindow() {
+const closeWindow = () => {
     let btns = document.getElementsByClassName('end-buttons')[0];
     btns.style.display = 'none';
 }
 
-function afterDrawDecision() {
+const afterDrawDecision = () => {
     let currActive = document.getElementsByClassName('active')[0];
     currActive.classList.toggle('active');
     let currSelected = document.getElementsByClassName('selected')[0]

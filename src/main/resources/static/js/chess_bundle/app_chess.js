@@ -10,63 +10,12 @@ const color = gameData.white === me.textContent ? 'white' : 'black';
 let stompClient = null;
 let moveList = [];
 
-let config ={
-    orientation: color,
-    turnColor: 'white',
-    autoCastle: true,
-    animation: {
-        enabled: true,
-        duration: 500
-    }, highlight: {
-        lastMove: true,
-        check: true
-    },
-    movable: {
-        free: false,
-        color: color,
-        rookCastle: true,
-        dests: getValidMoves(chess),
-        showDests: true,
-        events: {}
-    },
-    events: {
-        move: function (orig, dest) {
-            let moveObj = chess.move({from: orig, to: dest});
-            if (chess.game_over()) {
-                processGameOver();
-            }
 
-
-            let config = {
-                turnColor: sideToMove(chess),
-                movable: {
-                    dests: getValidMoves(chess)
-                }
-            }
-            board.set(config);
-            if (!(chess.turn() === color.charAt(0))) {
-                myClock.pause();
-                opponentClock.resume();
-                let gameUpdate = new GameUpdate(me.textContent,
-                    opponent.textContent,
-                    `${orig}-${dest}`,
-                    chess.fen(),
-                    myClock.seconds);
-
-                sendData(gameUpdate);
-            }
-            moveList.push(moveObj.san);
-            updatePgnLog();
-        }
-    }
-};
-
-const board = new Chessground(document.getElementById('board'), config);
-function sendData(gameUpdate) {
+const sendData = (gameUpdate) => {
     stompClient.send('/app/updateOpponent', {}, JSON.stringify(gameUpdate));
 }
 
-(function () {
+(() => {
     let socket = new SockJS('/chess-lite');
     stompClient = Stomp.over(socket);
     stompClient.debug = (str) => {};
@@ -109,11 +58,11 @@ function sendData(gameUpdate) {
 
 })();
 
-(function () {
+(() => {
     (color === 'white') ? myClock.resume() : opponentClock.resume();
 })();
 
-function processNewMove(gameUpdate) {
+const processNewMove = (gameUpdate) => {
     opponentClock.pause();
     opponentClock.seconds = gameUpdate.seconds;
     opponentClock.updateDisplay();
@@ -123,7 +72,7 @@ function processNewMove(gameUpdate) {
     board.move(from_to[0], from_to[1]);
 }
 
-function processGameOver() {
+const processGameOver = () => {
 
     let result;
     if (chess.in_checkmate()) {
@@ -138,7 +87,7 @@ function processGameOver() {
     displayResult(result);
 }
 
-function processResignation() {
+const processResignation = () => {
     stopClocks();
     chess.set_resign(true);
     board.set({viewOnly: true});
@@ -151,7 +100,7 @@ function processResignation() {
 
 }
 
-function acceptDrawOffer(){
+const acceptDrawOffer = () =>{
     stopClocks();
     chess.set_draw(true);
     board.set({viewOnly: true});
@@ -159,12 +108,11 @@ function acceptDrawOffer(){
     gameData.pgn = chess.history().join(' ');
     gameData.result = 'Game drawn by agreement';
     stompClient.send('/app/gameOver', {}, JSON.stringify(gameData));
-
 }
 
-function getValidMoves(chess) {
-    var dests = new Map();
-    chess.SQUARES.forEach(function (s) {
+const getValidMoves = (chess) => {
+    let dests = new Map();
+    chess.SQUARES.forEach((s) => {
         var ms = chess.moves({ square: s, verbose: true });
         if (ms.length)
             dests.set(s, ms.map(function (m) { return m.to; }));
@@ -172,11 +120,11 @@ function getValidMoves(chess) {
     return dests;
 }
 
-function sideToMove(chess) {
+const sideToMove = (chess) => {
     return (chess.turn() === 'w') ? 'white' : 'black';
 }
 
-function displayResult(result) {
+const displayResult = (result) => {
     let game_result = document.getElementById('game_result');
     let currActive = document.getElementsByClassName('active')[0];
     currActive.classList.toggle('active');
@@ -185,19 +133,19 @@ function displayResult(result) {
     resultLabel.textContent = `Game finished by ${result}.`
 }
 
-function decideDrawOffer() {
+const decideDrawOffer = () => {
     let draw_decision = document.getElementById('draw_decision');
     let currActive = document.getElementsByClassName('active')[0];
     currActive.classList.toggle('active');
     draw_decision.classList.toggle('active');
 }
 
-function stopClocks() {
+const stopClocks = () => {
     myClock.stop();
     opponentClock.stop();
 }
 
-function updatePgnLog() {
+const updatePgnLog = () => {
     const index = moveList.length - 1;
     let ply = (moveList.length % 2 !== 0) ? `${(index + 2) / 2}. ` : '';
     let newTag = `<li class="pgn-link" data-fen=${chess.fen()}>${ply}${moveList[index]}</li>`;
@@ -219,6 +167,59 @@ function updatePgnLog() {
         board.set({fen: el2.dataset.fen});
     });
 }
+
+let config ={
+    orientation: color,
+    turnColor: 'white',
+    autoCastle: true,
+    animation: {
+        enabled: true,
+        duration: 500
+    }, highlight: {
+        lastMove: true,
+        check: true
+    },
+    movable: {
+        free: false,
+        color: color,
+        rookCastle: true,
+        dests: getValidMoves(chess),
+        showDests: true,
+        events: {}
+    },
+    events: {
+        move: (orig, dest) => {
+            let moveObj = chess.move({from: orig, to: dest});
+            if (chess.game_over()) {
+                processGameOver();
+            }
+
+
+            let config = {
+                turnColor: sideToMove(chess),
+                movable: {
+                    dests: getValidMoves(chess)
+                }
+            }
+            board.set(config);
+            if (!(chess.turn() === color.charAt(0))) {
+                myClock.pause();
+                opponentClock.resume();
+                let gameUpdate = new GameUpdate(me.textContent,
+                    opponent.textContent,
+                    `${orig}-${dest}`,
+                    chess.fen(),
+                    myClock.seconds);
+
+                sendData(gameUpdate);
+            }
+            moveList.push(moveObj.san);
+            updatePgnLog();
+        }
+    }
+};
+
+const board = new Chessground(document.getElementById('board'), config);
 
 module.exports = {
     stompClient: stompClient,
