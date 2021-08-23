@@ -2,6 +2,7 @@ package com.example.chess.db.config;
 
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,16 @@ import java.util.Properties;
 @ComponentScan
 public class MySqlConfig {
 
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
+
     @Primary
     @Bean
     public DataSource dataSource() {
@@ -32,9 +43,9 @@ public class MySqlConfig {
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/chesslive");
-        dataSource.setUser("springstudent");
-        dataSource.setPassword("springstudent");
+        dataSource.setJdbcUrl(url);
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
         dataSource.setInitialPoolSize(5);
         dataSource.setMinPoolSize(5);
         dataSource.setMaxPoolSize(20);
