@@ -1,4 +1,4 @@
-use ChessLive;
+use chesslive;
 
 create table PLAYER(
     ID varchar(128) PRIMARY KEY NOT NULL,

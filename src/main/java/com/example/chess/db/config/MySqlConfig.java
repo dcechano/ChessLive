@@ -33,16 +33,20 @@ public class MySqlConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClass;
+
 
     @Primary
     @Bean
     public DataSource dataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
+            dataSource.setDriverClass(driverClass);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
+
         dataSource.setJdbcUrl(url);
         dataSource.setUser(username);
         dataSource.setPassword(password);
