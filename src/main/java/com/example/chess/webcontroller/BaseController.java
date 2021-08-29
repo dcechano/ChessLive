@@ -58,8 +58,6 @@ public class BaseController {
 
     @GetMapping("/new_game")
     public String newGame(@RequestParam("time_control") String timeControl, HttpSession httpSession) {
-
-
         Player player = (Player) httpSession.getAttribute("user");
         Game game = globalManager.createChallenge(timeControl, player);
         if (game == null) {

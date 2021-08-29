@@ -11,7 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>chess</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>chess</name>
     <description>Lite chess UI using Spring Boot</description>
 
