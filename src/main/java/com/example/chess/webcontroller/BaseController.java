@@ -135,7 +135,7 @@ public class BaseController {
             Logger.getLogger(getClass().toString()).info(newUser.toString());
             playerRepo.save(newUser);
         } catch (Exception e) {
-            return "redirect:/signup?message=Username taken. Please choose another";
+            return "redirect:/signup?message=Username taken. Please choose another.";
         }
 
         return "redirect:/login";

@@ -10,8 +10,10 @@
 
 <div class="container">
 
+
     <form method="post" th:action="@{/auth}">
         <div class="card">
+        <p th:unless="${T(java.util.Objects).isNull(message)}" th:text="${message}" class="error"></p>
 
             <h3 class="header">Please Sign in</h3>
             <div class="my-3">
